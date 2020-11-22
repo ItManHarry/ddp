@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="60 second">
 	<!-- 定义日志文件路径,勿在Logback配置文件中使用相对路径 -->
-	<property name="LOG_HOME" value="c:/logs/dicc" />
+	<property name="LOG_HOME" value="c:/logs/ddp/pm" />
     <property name="FILESIZE" value="20MB" />
     <property name="MAXHISTORY" value="30" />
     <timestamp key="DATETIME" datePattern="yyyy-MM-dd HH:mm:ss" />
