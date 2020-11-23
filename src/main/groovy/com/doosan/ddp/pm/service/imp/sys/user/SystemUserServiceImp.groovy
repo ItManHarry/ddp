@@ -71,7 +71,6 @@ class SystemUserServiceImp implements SystemUserService {
 		return systemUserDao.count(getSpec(name, code))
 	}
 	
-	@SuppressWarnings("serial")
 	Specification<SystemUser> getSpec(String name, String code) {
 		// TODO Auto-generated method stub
 		Specification<SystemUser> spec = new Specification<SystemUser>(){
