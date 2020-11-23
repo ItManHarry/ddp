@@ -75,7 +75,7 @@ class DictionaryController {
 				return ServerResultJson.error(0, "字典代码已存在,请勿重复添加!", "")
 			dict.setCreatetime(new Date())
 			dict.setCreateuserid(userId)
-			dict.setStatus("1")
+			dict.setStatus(1)
 		}
 		dict.setCode(request.getParameter("code").toUpperCase())
 		dict.setName(request.getParameter("name"))

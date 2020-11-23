@@ -12,19 +12,19 @@ class SystemEnumerationServiceImp implements SystemEnumerationService {
 	SystemEnumerationDao systemEnumerationDao
 	
 	@Transactional
-	public void save(SystemEnumeration em) {
+	void save(SystemEnumeration em) {
 		// TODO Auto-generated method stub
 		systemEnumerationDao.save(em)
 	}
 
 	@Transactional
-	public SystemEnumeration getEnumerationById(String id) {
+	SystemEnumeration getEnumerationById(String id) {
 		// TODO Auto-generated method stub
 		return systemEnumerationDao.getOne(id)
 	}
 
 	@Transactional
-	public List<SystemEnumeration> findByDictionary(String dict) {
+	List<SystemEnumeration> findByDictionary(String dict) {
 		// TODO Auto-generated method stub
 		return systemEnumerationDao.findByDict(dict)
 	}

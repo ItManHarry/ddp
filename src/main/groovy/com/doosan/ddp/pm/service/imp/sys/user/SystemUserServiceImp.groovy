@@ -21,13 +21,13 @@ class SystemUserServiceImp implements SystemUserService {
 	private SystemUserDao systemUserDao;
 
 	@Transactional
-	public long getCount() {
+	long getCount() {
 		// TODO Auto-generated method stub
 		return systemUserDao.count()
 	}
 
 	@Transactional
-	public List<SystemUser> getAllByPages(Integer page, Integer limit) {
+	List<SystemUser> getAllByPages(Integer page, Integer limit) {
 		// TODO Auto-generated method stub
 		Sort sort = Sort.by("code","name")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)//page从0开始
@@ -36,13 +36,13 @@ class SystemUserServiceImp implements SystemUserService {
 	}
 
 	@Transactional
-	public void save(SystemUser user) {
+	void save(SystemUser user) {
 		// TODO Auto-generated method stub
 		systemUserDao.save(user)
 	}
 
 	@Transactional
-	public SystemUser getUserByCode(String code) {
+	SystemUser getUserByCode(String code) {
 		// TODO Auto-generated method stub
 		List<SystemUser> users = systemUserDao.findByCode(code)
 		if(users != null && users.size() != 0)
@@ -52,13 +52,13 @@ class SystemUserServiceImp implements SystemUserService {
 	}
 
 	@Transactional
-	public SystemUser getUserById(String id) {
+	SystemUser getUserById(String id) {
 		// TODO Auto-generated method stub
 		return systemUserDao.getOne(id);
 	}
 
 	@Transactional
-	public List<SystemUser> findByNameAndCode(Integer page, Integer limit, String name, String code) {
+	List<SystemUser> findByNameAndCode(Integer page, Integer limit, String name, String code) {
 		// TODO Auto-generated method stub
 		Sort sort = Sort.by("code","name")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)//page从0开始
@@ -66,13 +66,13 @@ class SystemUserServiceImp implements SystemUserService {
 	}
 
 	@Transactional
-	public long getCountByNameAndCode(String name, String code) {
+	long getCountByNameAndCode(String name, String code) {
 		// TODO Auto-generated method stub
 		return systemUserDao.count(getSpec(name, code))
 	}
 	
 	@SuppressWarnings("serial")
-	public Specification<SystemUser> getSpec(String name, String code) {
+	Specification<SystemUser> getSpec(String name, String code) {
 		// TODO Auto-generated method stub
 		Specification<SystemUser> spec = new Specification<SystemUser>(){
 			/**

@@ -80,11 +80,14 @@ class SystemUserController {
 	@PostMapping("/save")
 	@ResponseBody
 	def save(HttpServletRequest request, Map map){
-		def userId = request.getSession().getAttribute("currentUser")
+		//session获取用户账号
+		//def userId = request.getSession().getAttribute("currentUser")
+		//参数传递用户账号
+		def userId = request.getParameter("userId")
 		SystemUser user = new SystemUser()
-		String tid = request.getParameter("tid")
-		if(tid) {
-			user = systemUserService.getUserById(tid);
+		String id = request.getParameter("id")
+		if(id) {
+			user = systemUserService.getUserById(id);
 			user.setModifytime(new Date())
 			user.setModifyuserid(userId)
 		}else {

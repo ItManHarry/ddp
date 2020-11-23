@@ -49,7 +49,7 @@ class EnumerationController {
 		}else {
 			em.setCreatetime(new Date())
 			em.setCreateuserid(userId)
-			em.setStatus("1")
+			em.setStatus(1)
 		}
 		em.setDict(request.getParameter("dict"))
 		em.setValue(request.getParameter("value"))

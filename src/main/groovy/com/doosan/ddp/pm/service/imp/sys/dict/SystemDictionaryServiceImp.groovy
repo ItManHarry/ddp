@@ -16,13 +16,13 @@ class SystemDictionaryServiceImp implements SystemDictionaryService {
 	SystemDictionaryDao systemDictionaryDao
 
 	@Transactional
-	public long getCount() {
+	long getCount() {
 		// TODO Auto-generated method stub
 		return systemDictionaryDao.count()
 	}
 
 	@Transactional
-	public List<SystemDictionary> getAllByPages(Integer page, Integer limit) {
+	List<SystemDictionary> getAllByPages(Integer page, Integer limit) {
 		// TODO Auto-generated method stub
 		Sort sort = Sort.by("code","name")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)				//page从0开始
@@ -31,13 +31,13 @@ class SystemDictionaryServiceImp implements SystemDictionaryService {
 	}
 
 	@Transactional
-	public void save(SystemDictionary dict) {
+	void save(SystemDictionary dict) {
 		// TODO Auto-generated method stub
 		systemDictionaryDao.save(dict)
 	}
 
 	@Transactional
-	public SystemDictionary getDictByCode(String code) {
+	SystemDictionary getDictByCode(String code) {
 		// TODO Auto-generated method stub
 		List<SystemDictionary> dicts = systemDictionaryDao.findByCode(code)
 		if(dicts == null || dicts.size() == 0)
@@ -47,7 +47,7 @@ class SystemDictionaryServiceImp implements SystemDictionaryService {
 	}
 
 	@Transactional
-	public SystemDictionary getDictById(String id) {
+	SystemDictionary getDictById(String id) {
 		// TODO Auto-generated method stub
 		return systemDictionaryDao.getOne(id)
 	}
