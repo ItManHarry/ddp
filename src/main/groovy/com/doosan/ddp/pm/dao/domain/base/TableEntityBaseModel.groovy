@@ -29,7 +29,7 @@ class TableEntityBaseModel implements Serializable {
 	/*修改时间*/
 	@Column(name="modifytime")
 	Date modifytime;
-	/*删除标记(0 : 正常  1 : 删除  2 : 审核)*/
+	/*删除标记(1 : 正常  0 : 删除)*/
 	@Column(name="status")
 	int status;
 }
