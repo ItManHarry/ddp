@@ -3,7 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import com.doosan.ddp.pm.dao.domain.sys.orgs.SystemOrg
-import com.doosan.ddp.pm.dao.jpa.sys.orgs.SystemOrgDao
+import com.doosan.ddp.pm.dao.jpa.sys.org.SystemOrgDao
 import com.doosan.ddp.pm.service.sys.org.SystemOrgService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest

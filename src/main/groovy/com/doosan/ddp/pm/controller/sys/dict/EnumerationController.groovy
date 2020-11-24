@@ -38,8 +38,10 @@ class EnumerationController {
 	@PostMapping("/save")
 	@ResponseBody
 	def save(HttpServletRequest request, Map map){
-		println "add / update Enum : " + request.getParameter("dicId")
-		def userId = request.getSession().getAttribute("currentUser")
+		//session获取用户账号
+		//def userId = request.getSession().getAttribute("currentUser")
+		//参数传递用户账号
+		def userId = request.getParameter("userId")
 		SystemEnumeration em = new SystemEnumeration()
 		String id = request.getParameter("id")
 		if(id) {

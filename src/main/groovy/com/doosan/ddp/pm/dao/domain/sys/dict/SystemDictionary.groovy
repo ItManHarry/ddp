@@ -3,7 +3,6 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
 import javax.persistence.Transient
-
 import com.doosan.ddp.pm.dao.domain.base.TableEntityBaseModel
 /**
  * 系统字典表
