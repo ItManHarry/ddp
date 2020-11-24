@@ -1,5 +1,5 @@
 package com.doosan.ddp.pm.service.sys.org
-import com.doosan.ddp.pm.dao.domain.sys.orgs.SystemOrg
+import com.doosan.ddp.pm.dao.domain.sys.org.SystemOrg
 
 interface SystemOrgService {
 	/**

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
-import com.doosan.ddp.pm.dao.domain.sys.orgs.SystemOrg
+import com.doosan.ddp.pm.dao.domain.sys.org.SystemOrg
 import com.doosan.ddp.pm.service.sys.org.SystemOrgService
 @Controller
 @RequestMapping("/pm/sys/org")

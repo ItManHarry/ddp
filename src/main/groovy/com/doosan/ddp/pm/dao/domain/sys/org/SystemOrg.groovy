@@ -1,4 +1,4 @@
-package com.doosan.ddp.pm.dao.domain.sys.orgs
+package com.doosan.ddp.pm.dao.domain.sys.org
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
