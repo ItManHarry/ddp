@@ -30,5 +30,5 @@ class SystemUser extends TableEntityBaseModel {
 	String userorg
 	//用户状态,此栏位不会生成列
 	@Transient
-	String stsStr;
+	String stsStr
 }

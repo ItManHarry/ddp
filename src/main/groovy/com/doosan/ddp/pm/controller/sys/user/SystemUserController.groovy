@@ -32,7 +32,6 @@ class SystemUserController {
 	
 	/**
 	 * 	获取数据
-	 * 	@param order
 	 * 	@param page
 	 * 	@param limit
 	 * 	@return
