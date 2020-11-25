@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.dict
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -70,13 +71,13 @@ class DictionaryController {
 		String id = request.getParameter("id")
 		if(id) {
 			dict = systemDictionaryService.getDictById(id)
-			dict.setModifytime(new Date())
+			dict.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			dict.setModifyuserid(userId)
 		}else {
 			def d = systemDictionaryService.getDictByCode(request.getParameter("code").toUpperCase())
 			if(d != null)
 				return ServerResultJson.error(0, "字典代码已存在,请勿重复添加!", "")
-			dict.setCreatetime(new Date())
+			dict.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			dict.setCreateuserid(userId)
 			dict.setStatus(1)
 		}

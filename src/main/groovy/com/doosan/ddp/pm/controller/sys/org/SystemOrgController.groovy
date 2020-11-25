@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.org
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -32,10 +33,10 @@ class SystemOrgController {
 		String id = request.getParameter("id")
 		if(id) {
 			role = systemOrgService.getOrgById(id);
-			role.setModifytime(new Date())
+			role.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			role.setModifyuserid(userId)
 		}else {
-			role.setCreatetime(new Date())
+			role.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			role.setCreateuserid(userId)
 		}
 		role.setOrgname(request.getParameter("orgname"))

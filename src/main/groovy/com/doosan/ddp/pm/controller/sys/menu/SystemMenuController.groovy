@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.menu
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -53,10 +54,10 @@ class SystemMenuController {
 		String id = request.getParameter("id")
 		if(id) {
 			menu = systemMenuService.getMenuById(id);
-			menu.setModifytime(new Date())
+			menu.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			menu.setModifyuserid(userId)
 		}else {
-			menu.setCreatetime(new Date())
+			menu.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			menu.setCreateuserid(userId)
 		}
 		menu.setStatus(1)

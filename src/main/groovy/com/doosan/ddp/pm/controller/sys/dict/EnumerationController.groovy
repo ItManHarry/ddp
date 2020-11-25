@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.dict
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -46,10 +47,10 @@ class EnumerationController {
 		String id = request.getParameter("id")
 		if(id) {
 			em = systemEnumerationService.getEnumerationById(id)
-			em.setModifytime(new Date())
+			em.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			em.setModifyuserid(userId)
 		}else {
-			em.setCreatetime(new Date())
+			em.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			em.setCreateuserid(userId)
 			em.setStatus(1)
 		}

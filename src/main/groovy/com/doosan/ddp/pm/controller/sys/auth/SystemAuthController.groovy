@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.auth
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -25,7 +26,7 @@ class SystemAuthController {
 		def userId = request.getParameter("userid")
 		auth.setRoleid(request.getParameter("roleid"))
 		auth.setMenuid(request.getParameter("menuid"))
-		auth.setCreatetime(new Date())
+		auth.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 		auth.setCreateuserid(userId)
 		systemAuthService.save(auth)
 		return ServerResultJson.success()
@@ -40,7 +41,7 @@ class SystemAuthController {
 		def userId = request.getParameter("userid")
 		log.setUserid(userId)
 		log.setContent("批量删除授权")
-		log.setCreatetime(new Date())
+		log.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 		log.setCreateuserid(userId)
 		systemLogService.save(log)
 		return ServerResultJson.success()

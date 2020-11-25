@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.user
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -87,13 +88,13 @@ class SystemUserController {
 		String id = request.getParameter("id")
 		if(id) {
 			user = systemUserService.getUserById(id);
-			user.setModifytime(new Date())
+			user.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			user.setModifyuserid(userId)
 		}else {
 			def d = systemUserService.getUserByCode(request.getParameter("code").toUpperCase())
 			if(d != null)
 				return ServerResultJson.error(0, "用户已存在,请勿重复添加!", "")
-			user.setCreatetime(new Date())
+			user.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			user.setCreateuserid(userId)
 		}
 		user.setCode(request.getParameter("code").toUpperCase())

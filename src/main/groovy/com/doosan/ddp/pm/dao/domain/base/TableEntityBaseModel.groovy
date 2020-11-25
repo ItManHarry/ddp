@@ -21,14 +21,15 @@ class TableEntityBaseModel implements Serializable {
 	/*创建者*/
 	@Column(name="createuserid",length=30)
 	String createuserid;
-	@Column(name="createtime")
-	Date createtime;
+	/*创建时间(格式：YYYY-MM-DD HH:MM:SS)*/
+	@Column(name="createtime",length=30)
+	String createtime;
 	/*最后修改人*/
 	@Column(name="modifyuserid",length=30)
 	String modifyuserid;
-	/*修改时间*/
-	@Column(name="modifytime")
-	Date modifytime;
+	/*修改时间(格式：YYYY-MM-DD HH:MM:SS)*/
+	@Column(name="modifytime",length=30)
+	String modifytime;
 	/*删除标记(1 : 正常  0 : 删除)*/
 	@Column(name="status")
 	int status;

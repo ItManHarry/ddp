@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.sys.test
+import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
@@ -21,7 +22,7 @@ class SystemTestController {
 		def userId = request.getParameter("userid")
 		log.setUserid(userId)
 		log.setContent(request.getParameter("content"))
-		log.setCreatetime(new Date())
+		log.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 		log.setCreateuserid(userId)
 		systemLogService.save(log)
 		return ServerResultJson.success()
