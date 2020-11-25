@@ -4,4 +4,6 @@ import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramGroup
 
 interface ProgramGroupDao extends JpaRepository<ProgramGroup, String> {
 
+	List<ProgramGroup> findByProgramid(String proId)
+	
 }
