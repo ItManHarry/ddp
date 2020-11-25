@@ -16,7 +16,7 @@
     <appender name = "FILE" class = "ch.qos.logback.core.rolling.RollingFileAppender">
     	<rollingPolicy class = "ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
     		<!-- 日志文件名 -->
-    		<fileNamePattern>${LOG_HOME}/datacenter.log.%d{yyyy-MM-dd}.log</fileNamePattern>
+    		<fileNamePattern>${LOG_HOME}/program.log.%d{yyyy-MM-dd}.log</fileNamePattern>
     		<!-- 日志文件保留天数 -->
     		<maxHistory>${MAXHISTORY}</maxHistory>
     	</rollingPolicy>
