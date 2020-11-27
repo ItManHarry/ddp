@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+		<div id = "app">
+			<el-button @click="visible = true">Button</el-button>
+		    <el-dialog :visible.sync="visible" title="Hello world">
+		      <p>Try Element</p>
+		    </el-dialog>
+		    <el-select v-model="value" filterable placeholder="请选择">
+		    	<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
+		  	</el-select>
+		</div>
+	<script>
+		var vm = new Vue({
+			el:"#app",
+			data:function(){				
+				return {
+					visible:false,
+					options: [{
+			          value: '选项1',
+			          label: '黄金糕'
+			        }, {
+			          value: '选项2',
+			          label: '双皮奶'
+			        }, {
+			          value: '选项3',
+			          label: '蚵仔煎'
+			        }, {
+			          value: '选项4',
+			          label: '龙须面'
+			        }, {
+			          value: '选项5',
+			          label: '北京烤鸭'
+			        }, {
+			          value: '选项6',
+			          label: '九九鸭脖'
+			        }, {
+			          value: '选项7',
+			          label: '全鸭汤'
+			        }],
+			        value:''
+				}
+			},
+			methods:{
+				
+			},
+			created:function(){
+				//alert('Created...');
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+			}
+		});		
+	</script>
+</body>
+</html>

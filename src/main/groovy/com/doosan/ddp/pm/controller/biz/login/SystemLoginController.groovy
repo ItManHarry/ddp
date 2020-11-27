@@ -25,6 +25,16 @@ class SystemLoginController {
 		return SYS_URL + "/login"
 	}
 	/**
+	 * 跳转主页
+	 * @param request
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/work")
+	def home(HttpServletRequest  request, Map map) {
+		return BIZ_URL + "/workplace/home"
+	}
+	/**
 	 * 系统登出
 	 * @param request
 	 * @param map
