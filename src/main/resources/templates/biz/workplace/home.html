@@ -39,17 +39,7 @@
 		<div id = "app">
 		  	 <el-container>
 		  	 	<el-header>
-		  	 		<el-row align = "bottom" justify = "end" type = "flex">
-		  	 			<el-col :span = "2">
-		  	 				<el-image src="/static/images/logoes/head_logo.png" :fit="fill"></el-image>
-		  	 			</el-col>
-		  	 			<el-col :span = "4" style = "font-size:10pt;">项目管理系统</el-col>
-		  	 			<el-col :span = "2" :offset = "16">
-		  	 				<!--el-button type = "text"><i class = "el-icon-user"></i>&nbsp;&nbsp;20112004</el-button-->
-		  	 				<el-avatar icon="el-icon-user-solid"></el-avatar>
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<hr>
+					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
 		  	 	</el-header>
 		  	 	<el-main>
 			  	 	<el-row>

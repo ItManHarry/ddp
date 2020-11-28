@@ -82,7 +82,7 @@ class SystemLoginController {
 					}else {
 						boolean loginResult = false
 						//用户类型 - 工厂走AD认证
-						if(user.getUsertype() == 1 || user.getUsertype() == 2) {
+						if(user.getUsertype() == 1) {
 							//AD账号登录
 							Auth auth = new Auth("authsj.corp.doosan.com", "dsg\\"+name, pwd)
 							if(auth.validateUser(name, pwd))

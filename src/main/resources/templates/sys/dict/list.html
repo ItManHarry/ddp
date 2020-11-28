@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - 字典信息维护</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+		<div id = "app">
+		  	 <el-container>
+		  	 	<el-header>
+					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+		  	 	</el-header>
+		  	 	<el-main>
+		  	 		<el-row type = "flex" justify = "center" align = "middle">
+		  	 			<el-col :span = "4">
+		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
+		  	 			</el-col>
+		  	 			<el-col :span = "2" :offset = "18">
+		  	 				<el-button type = "primary" icon = "" round @click="formVisible = true">新增</el-button>
+		  	 				<el-dialog title = "新增字典" :visible.sync = "formVisible">
+		  	 					<el-form :model="form">
+								    <el-form-item label="字典编码" :label-width="formLabelWidth">
+								      <el-input v-model="form.code" autocomplete="off"></el-input>
+								    </el-form-item>
+								    <el-form-item label="字典名称" :label-width="formLabelWidth">
+								      <el-input v-model="form.name" autocomplete="off"></el-input>
+								    </el-form-item>
+								 </el-form>
+								 <div slot="footer" class="dialog-footer">
+								    <el-button @click="formVisible = false">取 消</el-button>
+								    <el-button type="primary" @click="saveDict()">保存</el-button>
+								 </div>
+		  	 				</el-dialog>
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 	</el-main>
+		  	 </el-container>		  	 
+		</div>
+	<script>
+		var vm = new Vue({
+			el:"#app",
+			data:function(){				
+				return {
+					formTitle:'新增字典',
+					formVisible:false,
+					formLabelWidth:'120px',
+					form:{
+						code:'',
+						name:''
+					}
+				}
+			},
+			methods:{
+				saveDict:function(){
+					alert('close')
+					this.formVisible = false
+				}
+			},
+			created:function(){
+				alert('Created...');
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+			}
+		});		
+	</script>
+</body>
+</html>
