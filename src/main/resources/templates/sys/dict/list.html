@@ -19,19 +19,19 @@
 		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
 		  	 			</el-col>
 		  	 			<el-col :span = "2" :offset = "18">
-		  	 				<el-button type = "primary" icon = "" round @click="formVisible = true">新增</el-button>
-		  	 				<el-dialog title = "新增字典" :visible.sync = "formVisible">
-		  	 					<el-form :model="form">
-								    <el-form-item label="字典编码" :label-width="formLabelWidth">
+		  	 				<el-button type = "primary" icon = "" round @click = "addDict('form')">新增</el-button>
+		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible">
+		  	 					<el-form :model="form" :rules= "rules" ref = "dictForm">
+								    <el-form-item label="字典编码" :label-width="formLabelWidth" prop = "code">
 								      <el-input v-model="form.code" autocomplete="off"></el-input>
 								    </el-form-item>
-								    <el-form-item label="字典名称" :label-width="formLabelWidth">
+								    <el-form-item label="字典名称" :label-width="formLabelWidth" prop = "name">
 								      <el-input v-model="form.name" autocomplete="off"></el-input>
 								    </el-form-item>
 								 </el-form>
 								 <div slot="footer" class="dialog-footer">
 								    <el-button @click="formVisible = false">取 消</el-button>
-								    <el-button type="primary" @click="saveDict()">保存</el-button>
+								    <el-button type="primary" @click="saveDict('dictForm')">保存</el-button>
 								 </div>
 		  	 				</el-dialog>
 		  	 			</el-col>
@@ -43,24 +43,43 @@
 		var vm = new Vue({
 			el:"#app",
 			data:function(){				
-				return {
+				return{
 					formTitle:'新增字典',
 					formVisible:false,
 					formLabelWidth:'120px',
 					form:{
-						code:'',
+						code:'', 
 						name:''
+					},
+					rules:{
+						code:[
+							{required:true, message:'请输入字典编码!', trigger:'blur'}
+						],
+						name:[
+							{required:true, message:'请输入字典名称!', trigger:'blur'}
+						]
 					}
 				}
 			},
 			methods:{
-				saveDict:function(){
-					alert('close')
-					this.formVisible = false
-				}
+				addDict:function(form){
+					 //vm.$refs[form].resetFields()
+					 this.formVisible = true
+				},
+				saveDict:function(form) {
+			        this.$refs[form].validate(function(valid) {
+			          if (valid) {
+			            alert('submit!');
+			            this.formVisible = false
+			          } else {
+			            console.log('error submit!!');
+			            return false;
+			          }
+			        });
+		      	}
 			},
 			created:function(){
-				alert('Created...');
+				//alert('Created...');
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
