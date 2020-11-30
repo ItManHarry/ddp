@@ -5,12 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.sys.dict.SystemDictionary
 import com.doosan.ddp.pm.service.sys.dict.SystemDictionaryService
 import com.doosan.ddp.pm.service.sys.dict.SystemEnumerationService
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 @Controller
 @RequestMapping("/pm/sys/dict")
 class DictionaryController {
@@ -62,28 +66,31 @@ class DictionaryController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	def save(String code, String name, HttpServletRequest request, Map map){
-		println 'Code : \t' + code + ', name : \t' + name
+	def save(@RequestBody String params, HttpServletRequest request, Map map){
+		println 'Parameters : \t' + params 
+		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+		String code = json.get("code").asString
+		String name = json.get("name").asString
+		String user = json.get("user").asString
+		print("Code is : $code, name is : $name, user is : $user")
 		//session获取用户账号
-		//def userId = request.getSession().getAttribute("currentUser")
-		//参数传递用户账号
-		def userId = request.getParameter("userId") ? request.getParameter("userId") : 'admin'
+		//def user = request.getSession().getAttribute("currentUser")
 		SystemDictionary dict = new SystemDictionary()
 		String id = request.getParameter("id")
 		if(id) {
 			dict = systemDictionaryService.getDictById(id)
 			dict.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			dict.setModifyuserid(userId)
+			dict.setModifyuserid(user)
 		}else {
-			def d = systemDictionaryService.getDictByCode(request.getParameter("code").toUpperCase())
+			def d = systemDictionaryService.getDictByCode(code.toUpperCase())
 			if(d != null)
 				return ServerResultJson.error(0, "字典代码已存在,请勿重复添加!", "")
 			dict.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			dict.setCreateuserid(userId)
+			dict.setCreateuserid(user)
 			dict.setStatus(1)
 		}
-		dict.setCode(request.getParameter("code").toUpperCase())
-		dict.setName(request.getParameter("name"))
+		dict.setCode(code)
+		dict.setName(name)
 		systemDictionaryService.save(dict)
 		return ServerResultJson.success()
 	}

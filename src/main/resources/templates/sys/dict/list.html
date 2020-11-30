@@ -69,19 +69,19 @@
 				saveDict:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
-			            alert('Code : ' + app.form.code + ', name : ' + app.form.name);
+			            //alert('Code : ' + app.form.code + ', name : ' + app.form.name)
 			            axios.post('/pm/sys/dict/save', {
 			            	code:app.form.code,
-			            	name:app.form.name
+			            	name:app.form.name,
+			            	user:'admin'
 			            }).then(function (response) {
-			                alert(response);
+			                alert(response)
 			            }).catch(function (error) {
 			            	alert(error)
-			                console.log(error);
 			            });
 			            app.formVisible = false
 			          } else {
-			            console.log('error submit!!');
+			            console.log('error submit!!')
 			            return false;
 			          }
 			        });
