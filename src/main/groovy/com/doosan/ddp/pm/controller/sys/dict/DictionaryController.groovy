@@ -89,7 +89,7 @@ class DictionaryController {
 			dict.setCreateuserid(user)
 			dict.setStatus(1)
 		}
-		dict.setCode(code)
+		dict.setCode(code.toUpperCase())
 		dict.setName(name)
 		systemDictionaryService.save(dict)
 		return ServerResultJson.success()
