@@ -62,11 +62,12 @@ class DictionaryController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	def save(HttpServletRequest request, Map map){
+	def save(String code, String name, HttpServletRequest request, Map map){
+		println 'Code : \t' + code + ', name : \t' + name
 		//session获取用户账号
 		//def userId = request.getSession().getAttribute("currentUser")
 		//参数传递用户账号
-		def userId = request.getParameter("userId")
+		def userId = request.getParameter("userId") ? request.getParameter("userId") : 'admin'
 		SystemDictionary dict = new SystemDictionary()
 		String id = request.getParameter("id")
 		if(id) {

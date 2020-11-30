@@ -19,7 +19,7 @@
 		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
 		  	 			</el-col>
 		  	 			<el-col :span = "2" :offset = "18">
-		  	 				<el-button type = "primary" icon = "" round @click = "addDict('form')">新增</el-button>
+		  	 				<el-button type = "primary" icon = "" round @click = "addDict('dictForm')">新增</el-button>
 		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible">
 		  	 					<el-form :model="form" :rules= "rules" ref = "dictForm">
 								    <el-form-item label="字典编码" :label-width="formLabelWidth" prop = "code">
@@ -40,7 +40,7 @@
 		  	 </el-container>		  	 
 		</div>
 	<script>
-		var vm = new Vue({
+		var app = new Vue({
 			el:"#app",
 			data:function(){				
 				return{
@@ -63,14 +63,23 @@
 			},
 			methods:{
 				addDict:function(form){
-					 //vm.$refs[form].resetFields()
 					 this.formVisible = true
+					 this.$refs[form].resetFields()
 				},
 				saveDict:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
-			            alert('submit!');
-			            this.formVisible = false
+			            alert('Code : ' + app.form.code + ', name : ' + app.form.name);
+			            axios.post('/pm/sys/dict/save', {
+			            	code:app.form.code,
+			            	name:app.form.name
+			            }).then(function (response) {
+			                alert(response);
+			            }).catch(function (error) {
+			            	alert(error)
+			                console.log(error);
+			            });
+			            app.formVisible = false
 			          } else {
 			            console.log('error submit!!');
 			            return false;
