@@ -74,21 +74,23 @@ class DictionaryController {
 	def save(@RequestBody String params, HttpServletRequest request, Map map){
 		println 'Parameters : \t' + params 
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+		String id = json.get("id").asString
 		String code = json.get("code").asString
 		String name = json.get("name").asString
 		String user = json.get("user").asString
-		print("Code is : $code, name is : $name, user is : $user")
+		print("ID is : $id, Code is : $code, name is : $name, user is : $user")
+		def d = systemDictionaryService.getDictByCode(code.toUpperCase())
 		//session获取用户账号
 		//def user = request.getSession().getAttribute("currentUser")
 		SystemDictionary dict = new SystemDictionary()
-		String id = request.getParameter("id")
 		if(id) {
 			dict = systemDictionaryService.getDictById(id)
+			if(dict.getCode() != code.toUpperCase() && d)
+				return ServerResultJson.error(0, "字典代码已存在,请修改!", "")
 			dict.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			dict.setModifyuserid(user)
 		}else {
-			def d = systemDictionaryService.getDictByCode(code.toUpperCase())
-			if(d != null)
+			if(d)
 				return ServerResultJson.error(0, "字典代码已存在,请勿重复添加!", "")
 			dict.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			dict.setCreateuserid(user)

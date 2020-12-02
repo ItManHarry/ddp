@@ -39,9 +39,11 @@
 		  	 		<el-row>
 		  	 			<el-col :span = "24">
 		  	 				<el-table :data="dictData" style="width:100%;" :max-height = "height">
+		  	 					<!-- 使用 v-if 隐藏列 -->
+						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
 						      	<el-table-column prop = "code" label = "字典编码"></el-table-column>
 						      	<el-table-column prop = "name" label = "字典名称"></el-table-column>
-						      	<el-table-column label = "操作" width = "200">
+						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
 								        <el-button
 								          size="mini"
@@ -81,11 +83,13 @@
 				return{
 					total:10,							//记录总条数
 					items:10,							//每页条数
+					page: 1,							//当前页
 					height:window.screen.height * 0.55,	//表格最大高度
 					formTitle:'新增字典',
 					formVisible:false,
 					formLabelWidth:'120px',
 					form:{
+						id:'',
 						code:'', 
 						name:''
 					},
@@ -103,12 +107,15 @@
 			methods:{
 				closeDictionary:function(){
 					this.formVisible = false
+					this.form.id = ''
 					this.form.code = ''
-			      	this.form.name = ''
+			      	this.form.name = ''			      	
 				},
 				addDict:function(f){
+					this.form.id = ''
 					this.form.code = ''
 		      		this.form.name = ''
+		      		this.formTitle = '新增字典'
 					this.formVisible = true
 					this.$refs[f].resetFields()
 				},
@@ -116,6 +123,7 @@
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
 			            axios.post('/pm/sys/dict/save', {
+			            	id:app.form.id,
 			            	code:app.form.code,
 			            	name:app.form.name,
 			            	user:'admin'
@@ -128,8 +136,10 @@
 			            			duration:2000,
 			            			offset:120
 			            		})	
-			            	else
+			            	else{
 			            		app.formVisible = false
+			            		app.getData()
+			            	}			            		
 			            }).catch(function (error) {
 			            	alert(error)
 			            });			            
@@ -140,6 +150,8 @@
 			        });
 		      	},
 		      	edit:function(index, row){
+		      		//alert(row.tid)
+		      		this.form.id = row.tid
 		      		this.form.code = row.code
 		      		this.form.name = row.name
 		      		this.formVisible = true
@@ -151,12 +163,13 @@
 		      		alert('Row : ' + row.name)
 		      	},
 		      	changePage:function(page){
-		      		this.getData(page)
+		      		this.page = page
+		      		this.getData()
 		      	},
-		      	getData:function(page){
+		      	getData:function(){
 		      		axios.get('/pm/sys/dict/all', {
 		      		    params: {
-		      		      page:page,
+		      		      page:app.page,
 		      		      limit:app.items
 		      		    }
 		      		}).then(function (response) {
@@ -171,7 +184,7 @@
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
-				this.getData(1)
+				this.getData()
 			}
 		});		
 	</script>
