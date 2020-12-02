@@ -47,9 +47,14 @@ class DictionaryController {
 	 */
 	@ResponseBody
 	@GetMapping("/all")
-	def all(Integer page, Integer limit){
+	def all(int page, int limit){
+//		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+//		String page = json.get("page").asInt
+//		String limit = json.get("limit").asInt
 		def count = systemDictionaryService.getCount() ? systemDictionaryService.getCount().intValue() : 0
+		println "Count is : $count"
 		def data = systemDictionaryService.getAllByPages(page, limit)
+		println "Data is : $data"
 		data.each { 
 			if(it.getStatus().equals("1"))
 				it.setStsStr("停用")
