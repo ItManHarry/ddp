@@ -20,7 +20,7 @@
 		  	 			</el-col-->
 		  	 			<el-col :span = "1" :offset = "23">
 		  	 				<el-button type = "primary" icon = "" round @click = "addDict('dictForm')" size = "small">新增</el-button>
-		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeDictionary">
+		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeDictionary" :close-on-click-modal = "false">
 		  	 					<el-form :model="form" :rules= "rules" ref = "dictForm">
 								    <el-form-item label="字典编码" :label-width="formLabelWidth" prop = "code">
 								      <el-input v-model="form.code" autocomplete="off"></el-input>
