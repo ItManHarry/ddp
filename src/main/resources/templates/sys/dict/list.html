@@ -18,10 +18,10 @@
 		  	 			<!--el-col :span = "4">
 		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
 		  	 			</el-col-->
-		  	 			<el-col :span = "1" :offset = "23">
+		  	 			<el-col :span = "2" :offset = "22">
 		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addDict('dictForm')" size = "small">新增</el-button>
 		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeDictionary" :close-on-click-modal = "false">
-		  	 					<el-form :model="form" :rules= "rules" ref = "dictForm">
+		  	 					<el-form :model="form" :rules = "rules" ref = "dictForm">
 								    <el-form-item label="字典编码" :label-width="formLabelWidth" prop = "code">
 								      <el-input v-model="form.code" autocomplete="off"></el-input>
 								    </el-form-item>
@@ -50,7 +50,7 @@
 								          type = "primary"
 								          icon = "el-icon-edit"
 								          plain
-								          @click="edit(scope.$index, scope.row)"></el-button>
+								          @click="editDict(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
 								          type="success"
@@ -75,20 +75,20 @@
 		  	 		</el-row>	
 		  	 		<!-- 枚举之维护 -->
 			        <el-dialog title = "字典枚举值" :visible.sync = "enumVisible" @close = "closeEnumeration" :close-on-click-modal = "false">
-			          	<el-form :inline="true" :model="eform" size = "mini">
-			          		 <el-form-item label="Value">
+			          	<el-form :inline="true" :model="eform" :rules = "erules" size = "mini" ref = "enumForm">
+			          		 <el-form-item prop = "value">
 							    <el-input v-model="eform.value" placeholder="value"></el-input>
 							 </el-form-item>
-							 <el-form-item label="View">
+							 <el-form-item prop = "view">
 							    <el-input v-model="eform.view" placeholder="view"></el-input>
 							 </el-form-item>
 							 <el-form-item>
-							    <el-button type="primary" @click="saveEnum" icon = "el-icon-check" size = "mini" plain round>{{ebuttonText}}</el-button>
-							    <el-button type="success" @click="resetEnum" icon = "el-icon-refresh-left" size = "mini" plain round>重置</el-button>
+							    <el-button type="primary" @click="saveEnum('enumForm')" icon = "el-icon-check" size = "mini" plain round>{{ebuttonText}}</el-button>
+							    <el-button type="success" @click="resetEnum('enumForm')" icon = "el-icon-refresh-left" size = "mini" plain round>重置</el-button>
 							 </el-form-item>
 			          	</el-form>
 			          	<el-table :data="enumData" size = "mini" @row-click = "editEnum">
-			          		<el-table-column prop="id" label="枚举 - ID" align = "center" v-if = "false"></el-table-column>
+			          		<el-table-column prop="tid" label="枚举 - ID" align = "center" v-if = "false"></el-table-column>
 					      	<el-table-column prop="value" label="枚举 - Value" align = "center"></el-table-column>
 					      	<el-table-column prop="view" label="枚举 - View" align = "center"></el-table-column>
 					    </el-table>
@@ -128,21 +128,29 @@
 							{required:true, message:'请输入字典名称!', trigger:'blur'}
 						]
 					},
+					erules:{
+						value:[
+							{required:true, message:'请输入枚举Value!', trigger:'blur'}
+						],
+						view:[
+							{required:true, message:'请输入枚举View!', trigger:'blur'}
+						]
+					},
 					dictData: [],
 					enumData: [{
-						id:'111111',
+						tid:'111111',
 			            value: '0',
 			            view: 'All'
 			          }, {
-			        	id:'222222',
+			        	tid:'222222',
 				        value: '1',
 				        view: 'AAA'
 			          }, {
-			        	id:'333333',
+			        	tid:'333333',
 				        value: '2',
 				        view: 'BBB'
 			          }, {
-			        	id:'444444',
+			        	tid:'444444',
 			            value: '3',
 			            view: 'CCC'
 			          }]
@@ -193,7 +201,7 @@
 			          }
 			        });
 		      	},
-		      	edit:function(index, row){
+		      	editDict:function(index, row){
 		      		//alert(row.tid)
 		      		this.form.id = row.tid
 		      		this.form.code = row.code
@@ -206,12 +214,56 @@
 		      		//alert('Index : ' + index)
 		      		//alert('Row : ' + row.name)
 		      		this.enumVisible = true
+		      		//清空表单
+		      		this.resetEnum('enumForm')
+		      		//获取枚举数据
+		      		
 		      	},
 		      	editEnum:function(row, column, event){
 		      		//alert('row clicked...'+row.id)
+		      		this.$refs['enumForm'].resetFields()
+		      		this.eform.value = row.id
 		      		this.eform.value = row.value
 		      		this.eform.view = row.view
-		      		this.ebuttonText = '修改'
+		      		this.ebuttonText = '修改'		      		
+		      	},
+		      	resetEnum:function(f){
+		      		this.eform.value = ''
+		      		this.eform.value = ''
+		      		this.eform.view = ''
+		      		this.ebuttonText = '新增'
+		      		this.$refs[f].resetFields()
+		      	},
+		      	saveEnum:function(form){
+		      		this.$refs[form].validate(function(valid) {
+		          	if (valid) {
+		          		alert('save enumeration ...')
+			            /*axios.post('/pm/sys/dict/save', {
+			            	id:app.form.id,
+			            	code:app.form.code,
+			            	name:app.form.name,
+			            	user:'admin'
+			            }).then(function (response) {
+			            	var result = response.data
+			            	if(result.status == 0)
+			            		app.$message({
+			            			message:result.message,
+			            			type:'warning',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+			            	else{
+			            		app.formVisible = false
+			            		app.getDictData()
+			            	}			            		
+			            }).catch(function (error) {
+			            	alert(error)
+			            });	*/		            
+			          } else {
+			            console.log('error submit!!')
+			            return false;
+			          }
+			        });
 		      	},
 		      	changePage:function(page){
 		      		this.page = page
