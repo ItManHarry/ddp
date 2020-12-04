@@ -22,9 +22,6 @@ class DictionaryController {
 	final String WEB_URL = "sys/dict"
 	@Autowired
 	SystemDictionaryService systemDictionaryService
-	@Autowired
-	SystemEnumerationService systemEnumerationService
-	
 	/**
 	 * 	跳转字典清单
 	 * 	@return
@@ -100,19 +97,5 @@ class DictionaryController {
 		dict.setName(name)
 		systemDictionaryService.save(dict)
 		return ServerResultJson.success()
-	}
-	/**
-	 * 	根据字典Code获取下拉列表
-	 * 	@param code
-	 * 	@return
-	 */
-	@ResponseBody
-	@GetMapping("/enums")
-	def enums(String code){
-		def dict = systemDictionaryService.getDictByCode(code.toUpperCase())
-		if(dict)
-			return ServerResultJson.success(systemEnumerationService.findByDictionary(dict.getTid()))
-		else
-			return ServerResultJson.success([])
 	}
 }

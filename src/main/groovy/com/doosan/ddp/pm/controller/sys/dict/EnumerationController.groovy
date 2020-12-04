@@ -5,16 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.sys.dict.SystemEnumeration
 import com.doosan.ddp.pm.service.sys.dict.SystemEnumerationService
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 /**
  * 字典枚举
  */
 @Controller
-@RequestMapping("/pm/sys/enums")
+@RequestMapping("/pm/sys/enum")
 class EnumerationController {
 	
 	@Autowired
@@ -32,31 +35,35 @@ class EnumerationController {
 	}
 	/**
 	 * 新增修改枚举数据
-	 * @param request
+	 * @param params
 	 * @param map
 	 * @return
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	def save(HttpServletRequest request, Map map){
+	def save(@RequestBody String params, Map map){
 		//session获取用户账号
-		//def userId = request.getSession().getAttribute("currentUser")
-		//参数传递用户账号
-		def userId = request.getParameter("userId")
+		//def user = request.getSession().getAttribute("currentUser")
+		println 'Parameters : \t' + params
+		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+		String id = json.get("id").asString
+		String dict = json.get("dict").asString
+		String value = json.get("value").asString
+		String view = json.get("view").asString
+		String user = json.get("user").asString
 		SystemEnumeration em = new SystemEnumeration()
-		String id = request.getParameter("id")
 		if(id) {
 			em = systemEnumerationService.getEnumerationById(id)
 			em.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			em.setModifyuserid(userId)
+			em.setModifyuserid(user)
 		}else {
 			em.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			em.setCreateuserid(userId)
+			em.setCreateuserid(user)
 			em.setStatus(1)
 		}
-		em.setDict(request.getParameter("dict"))
-		em.setValue(request.getParameter("value"))
-		em.setView(request.getParameter("view"))
+		em.setDict(dict)
+		em.setValue(value)
+		em.setView(view)
 		systemEnumerationService.save(em)
 		return ServerResultJson.success()
 	}
