@@ -24,7 +24,7 @@ class SystemOrgServiceImp implements SystemOrgService {
 	@Transactional
 	List<SystemOrg> getAllByPages(Integer page, Integer limit) {
 		// TODO Auto-generated method stub
-		Sort sort = Sort.by("code","name")
+		Sort sort = Sort.by("orgname")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)		//page从0开始
 		Page<SystemOrg> pageData = systemOrgDao.findAll(pageable)
 		return pageData.getContent()

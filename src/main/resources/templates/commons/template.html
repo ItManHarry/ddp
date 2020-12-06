@@ -3,7 +3,7 @@
 <head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>项目管理系统 - 字典信息维护</title>
+	<title>项目管理系统 - 页面模板</title>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -73,7 +73,7 @@
 		  	 				</el-pagination>
 		  	 			</el-col>
 		  	 		</el-row>	
-		  	 		<!-- 枚举值维护 -->
+		  	 		<!-- 枚举之维护 -->
 			        <el-dialog title = "字典枚举值" :visible.sync = "enumVisible" @close = "closeEnumeration" :close-on-click-modal = "false">
 			          	<el-form :inline="true" :model="eform" :rules = "erules" size = "mini" ref = "enumForm">
 			          		 <el-form-item prop = "value">

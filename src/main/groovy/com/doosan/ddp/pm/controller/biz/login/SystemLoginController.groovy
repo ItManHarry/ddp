@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
+import com.doosan.ddp.pm.dao.domain.sys.log.SystemLog
 import com.doosan.ddp.pm.dao.domain.sys.user.SystemUser
 import com.doosan.ddp.pm.service.sys.user.SystemUserService
+import com.doosan.ddp.pm.service.sys.log.SystemLogService
 @Controller
 @RequestMapping("/pm/web")
 class SystemLoginController {
@@ -15,6 +17,8 @@ class SystemLoginController {
 	final String BIZ_URL = "biz"
 	@Autowired
 	SystemUserService systemUserService
+	@Autowired
+	SystemLogService systemLogService
 	
 	/**
 	 * 跳转登录页面
@@ -96,6 +100,8 @@ class SystemLoginController {
 							request.getSession().setAttribute("currentUser", name)					//登录账号
 							request.getSession().setAttribute("currentUserName", user.getName())	//用户姓名
 							request.getSession().setAttribute("currentUserType", user.getUsertype())//用户类型
+							//写入日志
+							systemLogService.save(new SystemLog(userid:name, content:"登录成功",createuserid:name,createtime:new Date()))
 						}else{
 							code = 0
 							message = "登录失败,请确认账号密码是否正确!"

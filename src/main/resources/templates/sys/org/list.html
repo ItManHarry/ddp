@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - 组织信息维护</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+		<div id = "app">
+		  	 <el-container>
+		  	 	<el-header>
+					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+		  	 	</el-header>
+		  	 	<el-main>
+		  	 		<el-row type = "flex" justify = "center" align = "middle">
+		  	 			<!--el-col :span = "4">
+		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
+		  	 			</el-col-->
+		  	 			<el-col :span = "2" :offset = "22">
+		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addOrg('orgForm')" size = "small">新增</el-button>
+		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeOrg" :close-on-click-modal = "false">
+		  	 					<el-form :model="form" :rules = "rules" ref = "orgForm">
+								    <el-form-item label="组织名称" :label-width="formLabelWidth" prop = "orgname">
+								      <el-input v-model="form.orgname" autocomplete="off"></el-input>
+								    </el-form-item>
+								 </el-form>
+								 <div slot="footer" class="dialog-footer">
+								    <el-button @click="closeOrg">取 消</el-button>
+								    <el-button type="primary" @click="saveOrg('orgForm')">保存</el-button>
+								 </div>
+		  	 				</el-dialog>
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 		<el-row>
+		  	 			<el-col :span = "24">
+		  	 				<el-table :data="orgData" style="width:100%;" :max-height = "height">
+		  	 					<!-- 使用 v-if 隐藏列 -->
+						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "orgname" label = "组织名称"></el-table-column>
+						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
+						      	<el-table-column label = "操作" width = "200" align = "center">
+						      		<template slot-scope="scope">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-edit"
+								          plain
+								          @click="editOrg(scope.$index, scope.row)"></el-button>
+								        <el-button
+								          size="mini"
+								          type="success"
+								          icon = "el-icon-close"
+								          plain
+								          @click="delOrg(scope.$index, scope.row)"></el-button>
+							      </template>
+						      	</el-table-column>
+						    </el-table>	
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 		<el-row type = "flex" justify = "end" align = "bottom">
+		  	 			<el-col :span = "24">
+		  	 				<el-pagination 
+		  	 					layout="prev, pager, next" 
+		  	 					:total="total" 
+		  	 					:page-size="items"
+		  	 					@current-change = "changePage"
+		  	 					small >
+		  	 				</el-pagination>
+		  	 			</el-col>
+		  	 		</el-row>	
+		  	 	</el-main>
+		  	 </el-container>		  	 
+		</div>
+	<script>
+		var app = new Vue({
+			el:"#app",
+			data:function(){				
+				return{
+					total:10,							//记录总条数
+					items:10,							//每页条数
+					page: 1,							//当前页
+					height:window.screen.height * 0.55,	//表格最大高度
+					formTitle:'新增组织',					//组织窗体标题
+					formVisible:false,					//组织窗体显示	
+					formLabelWidth:'120px',
+					form:{
+						id:'',
+						orgname:''
+					},
+					rules:{
+						orgname:[
+							{required:true, message:'请输入组织名称!', trigger:'blur'}
+						]
+					},					
+					orgData: [],						//组织数据list
+				}
+			},
+			methods:{
+				//关闭组织维护窗体
+				closeOrg:function(){
+					this.formVisible = false
+					this.form.id = ''
+					this.form.orgname = ''
+				},
+				//新增组织
+				addOrg:function(f){
+					this.form.id = ''
+					this.form.orgname = ''
+		      		this.formTitle = '新增组织'
+					this.formVisible = true
+					this.$refs[f].resetFields()
+				},
+				//编辑组织
+		      	editOrg:function(index, row){
+		      		//alert(row.tid)
+		      		this.form.id = row.tid
+		      		this.form.orgname = row.orgname
+		      		this.formVisible = true
+		      		this.formTitle = '修改组织'
+		      		this.$refs[form].resetFields()
+		      	},
+		      	delOrg:function(index, row){
+		      		alert('Delete organization : ' + row.tid)
+		      	},
+				//执行保存组织
+				saveOrg:function(form) {
+			        this.$refs[form].validate(function(valid) {
+			          if (valid) {
+			            axios.post('/pm/sys/org/save', {
+			            	id:app.form.id,
+			            	orgname:app.form.orgname,
+			            	user:'admin'
+			            }).then(function (response) {
+			            	var result = response.data
+			            	if(result.status == 0)
+			            		app.$message({
+			            			message:result.message,
+			            			type:'warning',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+			            	else{
+			            		app.formVisible = false
+			            		app.getOrgData()
+			            	}			            		
+			            }).catch(function (error) {
+			            	alert(error)
+			            });			            
+			          } else {
+			            console.log('error submit!!')
+			            return false;
+			          }
+			        });
+		      	},
+		      	//组织分页
+		      	changePage:function(page){
+		      		this.page = page
+		      		this.getOrgData()
+		      	},
+		      	//获取组织清单数据
+		      	getOrgData:function(){
+		      		axios.get('/pm/sys/org/all', {
+		      		    params: {
+		      		      page:app.page,
+		      		      limit:app.items
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.orgData = result.data
+		      			app.total = result.number
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	}
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+				this.getOrgData()
+			}
+		});		
+	</script>
+</body>
+</html>

@@ -41,16 +41,16 @@ class EnumerationController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	def save(@RequestBody String params, Map map){
+	def save(@RequestBody String params, HttpServletRequest request, Map map){
 		//session获取用户账号
-		//def user = request.getSession().getAttribute("currentUser")
+		def user = request.getSession().getAttribute("currentUser")
 		println 'Parameters : \t' + params
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
 		String id = json.get("id").asString
 		String dict = json.get("dict").asString
 		String value = json.get("value").asString
 		String view = json.get("view").asString
-		String user = json.get("user").asString
+		//String user = json.get("user").asString
 		SystemEnumeration em = new SystemEnumeration()
 		if(id) {
 			em = systemEnumerationService.getEnumerationById(id)

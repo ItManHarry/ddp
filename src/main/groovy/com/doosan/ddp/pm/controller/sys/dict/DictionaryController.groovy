@@ -22,6 +22,7 @@ class DictionaryController {
 	final String WEB_URL = "sys/dict"
 	@Autowired
 	SystemDictionaryService systemDictionaryService
+	
 	/**
 	 * 	跳转字典清单
 	 * 	@return
@@ -38,16 +39,12 @@ class DictionaryController {
 	/**
 	 * 	获取数据
 	 * 	@param order
-	 * 	@param page
 	 * 	@param limit
 	 * 	@return
 	 */
 	@ResponseBody
 	@GetMapping("/all")
 	def all(int page, int limit){
-//		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
-//		String page = json.get("page").asInt
-//		String limit = json.get("limit").asInt
 		def count = systemDictionaryService.getCount() ? systemDictionaryService.getCount().intValue() : 0
 		println "Count is : $count"
 		def data = systemDictionaryService.getAllByPages(page, limit)
@@ -69,16 +66,16 @@ class DictionaryController {
 	@PostMapping("/save")
 	@ResponseBody
 	def save(@RequestBody String params, HttpServletRequest request, Map map){
+		//session获取用户账号
+		def user = request.getSession().getAttribute("currentUser")
 		println 'Parameters : \t' + params 
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
 		String id = json.get("id").asString
 		String code = json.get("code").asString
 		String name = json.get("name").asString
-		String user = json.get("user").asString
+		//String user = json.get("user").asString
 		print("ID is : $id, Code is : $code, name is : $name, user is : $user")
 		def d = systemDictionaryService.getDictByCode(code.toUpperCase())
-		//session获取用户账号
-		//def user = request.getSession().getAttribute("currentUser")
 		SystemDictionary dict = new SystemDictionary()
 		if(id) {
 			dict = systemDictionaryService.getDictById(id)
