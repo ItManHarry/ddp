@@ -47,13 +47,22 @@
 								          type = "primary"
 								          icon = "el-icon-edit"
 								          plain
+								          :disabled = "scope.row.stsStr == '停用'"
 								          @click="editOrg(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
-								          type="success"
+								          type="warning"
 								          icon = "el-icon-close"
 								          plain
+								          :disabled = "scope.row.stsStr == '停用'"
 								          @click="delOrg(scope.$index, scope.row)"></el-button>
+								        <el-button
+								          size="mini"
+								          type="success"
+								          icon = "el-icon-check"
+								          plain
+								          :disabled = "scope.row.stsStr == '在用'"
+								          @click="reuseOrg(scope.$index, scope.row)"></el-button>
 							      </template>
 						      	</el-table-column>
 						    </el-table>	
@@ -87,7 +96,8 @@
 					formLabelWidth:'120px',
 					form:{
 						id:'',
-						orgname:''
+						orgname:'',
+						status:1
 					},
 					rules:{
 						orgname:[
@@ -108,6 +118,7 @@
 				addOrg:function(f){
 					this.form.id = ''
 					this.form.orgname = ''
+					this.form.status = 1
 		      		this.formTitle = '新增组织'
 					this.formVisible = true
 					this.$refs[f].resetFields()
@@ -117,42 +128,59 @@
 		      		//alert(row.tid)
 		      		this.form.id = row.tid
 		      		this.form.orgname = row.orgname
+		      		this.form.status = row.stsStr == '在用' ? 1 : 2
 		      		this.formVisible = true
 		      		this.formTitle = '修改组织'
 		      		this.$refs[form].resetFields()
 		      	},
+		      	//停用组织
 		      	delOrg:function(index, row){
-		      		alert('Delete organization : ' + row.tid)
+		      		this.form.id = row.tid
+		      		this.form.orgname = row.orgname
+		      		this.form.status = 2
+		      		this.doSaveOrg()
+		      	},
+		      	//启用组织
+		      	reuseOrg:function(index, row){
+		      		this.form.id = row.tid
+		      		this.form.orgname = row.orgname
+		      		this.form.status = 1
+		      		this.doSaveOrg()
 		      	},
 				//执行保存组织
 				saveOrg:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
-			            axios.post('/pm/sys/org/save', {
-			            	id:app.form.id,
-			            	orgname:app.form.orgname,
-			            	user:'admin'
-			            }).then(function (response) {
-			            	var result = response.data
-			            	if(result.status == 0)
-			            		app.$message({
-			            			message:result.message,
-			            			type:'warning',
-			            			duration:2000,
-			            			offset:120
-			            		})	
-			            	else{
-			            		app.formVisible = false
-			            		app.getOrgData()
-			            	}			            		
-			            }).catch(function (error) {
-			            	alert(error)
-			            });			            
+			            app.doSaveOrg()		            
 			          } else {
 			            console.log('error submit!!')
 			            return false;
 			          }
 			        });
+		      	},
+		      	//执行保存
+		      	doSaveOrg:function(){
+		      		axios.post('/pm/sys/org/save', {
+		            	id:app.form.id,
+		            	orgname:app.form.orgname,
+		            	status:app.form.status,
+		            	user:'admin'
+		            }).then(function (response) {
+		            	var result = response.data
+		            	if(result.status == 0)
+		            		app.$message({
+		            			message:result.message,
+		            			type:'warning',
+		            			duration:2000,
+		            			offset:120
+		            		})	
+		            	else{
+		            		app.formVisible = false
+		            		app.getOrgData()
+		            	}			            		
+		            }).catch(function (error) {
+		            	alert(error)
+		            });
 		      	},
 		      	//组织分页
 		      	changePage:function(page){

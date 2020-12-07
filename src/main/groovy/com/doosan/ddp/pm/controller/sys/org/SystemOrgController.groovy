@@ -3,6 +3,7 @@ import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -49,7 +50,7 @@ class SystemOrgController {
 		def data = systemOrgService.getAllByPages(page, limit)
 		println "Data is : $data"
 		data.each {
-			if(it.getStatus().equals("1"))
+			if(it.getStatus() == 2)
 				it.setStsStr("停用")
 			else
 				it.setStsStr("在用")
@@ -73,19 +74,20 @@ class SystemOrgController {
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
 		String id = json.get("id").asString
 		String orgname = json.get("orgname").asString
+		int status = json.get("status").asInt
 		//String user = json.get("user").asString
-		SystemOrg role = new SystemOrg()
+		SystemOrg org = new SystemOrg()
 		if(id) {
-			role = systemOrgService.getOrgById(id);
-			role.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			role.setModifyuserid(user)
+			org = systemOrgService.getOrgById(id)
+			org.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+			org.setModifyuserid(user)
 		}else {
-			role.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			role.setCreateuserid(user)
+			org.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+			org.setCreateuserid(user)
 		}
-		role.setOrgname(orgname)
-		role.setStatus(1)
-		systemOrgService.save(role)
+		org.setOrgname(orgname)
+		org.setStatus(status)
+		systemOrgService.save(org)
 		return ServerResultJson.success()
 	}
 }
