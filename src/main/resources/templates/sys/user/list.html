@@ -3,7 +3,7 @@
 <head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>项目管理系统 - 组织信息维护</title>
+	<title>项目管理系统 - 用户信息维护</title>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -19,26 +19,32 @@
 		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
 		  	 			</el-col-->
 		  	 			<el-col :span = "2" :offset = "22">
-		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addOrg('orgForm')" size = "small">新增</el-button>
-		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeOrg" :close-on-click-modal = "false">
-		  	 					<el-form :model="form" :rules = "rules" ref = "orgForm">
-								    <el-form-item label="组织名称" :label-width="formLabelWidth" prop = "orgname">
-								      <el-input v-model="form.orgname" autocomplete="off"></el-input>
+		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addUser('userForm')" size = "small">新增</el-button>
+		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeUser" :close-on-click-modal = "false">
+		  	 					<el-form :model="form" :rules = "rules" ref = "userForm">
+								    <el-form-item label="用户代码" :label-width="formLabelWidth" prop = "code">
+								      <el-input v-model="form.code" autocomplete="off"></el-input>
+								    </el-form-item>
+								    <el-form-item label="用户名称" :label-width="formLabelWidth" prop = "name">
+								      <el-input v-model="form.name" autocomplete="off"></el-input>
+								    </el-form-item>
+								    <el-form-item label="用户密码" :label-width="formLabelWidth" prop = "pwd">
+								      <el-input v-model="form.pwd" autocomplete="off"></el-input>
 								    </el-form-item>
 								 </el-form>
 								 <div slot="footer" class="dialog-footer">
-								    <el-button @click="closeOrg">取 消</el-button>
-								    <el-button type="primary" @click="saveOrg('orgForm')">保存</el-button>
+								    <el-button @click="closeUser">取 消</el-button>
+								    <el-button type="primary" @click="saveUser('userForm')">保存</el-button>
 								 </div>
 		  	 				</el-dialog>
 		  	 			</el-col>
 		  	 		</el-row>
 		  	 		<el-row>
 		  	 			<el-col :span = "24">
-		  	 				<el-table :data="orgData" style="width:100%;" :max-height = "height">
+		  	 				<el-table :data="userData" style="width:100%;" :max-height = "height">
 		  	 					<!-- 使用 v-if 隐藏列 -->
 						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "orgname" label = "组织名称"></el-table-column>
+						      	<el-table-column prop = "name" label = "用户名称"></el-table-column>
 						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
@@ -48,21 +54,21 @@
 								          icon = "el-icon-edit"
 								          plain
 								          :disabled = "scope.row.stsStr == '停用'"
-								          @click="editOrg(scope.$index, scope.row)"></el-button>
+								          @click="editUser(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
 								          type="warning"
 								          icon = "el-icon-close"
 								          plain
 								          :disabled = "scope.row.stsStr == '停用'"
-								          @click="unuseOrg(scope.$index, scope.row)"></el-button>
+								          @click="unuseUser(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
 								          type="success"
 								          icon = "el-icon-check"
 								          plain
 								          :disabled = "scope.row.stsStr == '在用'"
-								          @click="reuseOrg(scope.$index, scope.row)"></el-button>
+								          @click="reuseUser(scope.$index, scope.row)"></el-button>
 							      </template>
 						      	</el-table-column>
 						    </el-table>	
@@ -91,67 +97,78 @@
 					items:10,							//每页条数
 					page: 1,							//当前页
 					height:window.screen.height * 0.55,	//表格最大高度
-					formTitle:'新增组织',					//组织窗体标题
-					formVisible:false,					//组织窗体显示	
+					formTitle:'新增用户',					//用户窗体标题
+					formVisible:false,					//用户窗体显示	
 					formLabelWidth:'120px',
 					form:{
 						id:'',
-						orgname:'',
+						code:'',
+						name:'',
+						pwd:'',
+						userrole:'',
+						usertype:1,
+						userorg:'',
 						status:1
 					},
 					rules:{
-						orgname:[
-							{required:true, message:'请输入组织名称!', trigger:'blur'}
+						code:[
+							{required:true, message:'请输入用户账号!', trigger:'blur'}
+						],
+						name:[
+							{required:true, message:'请输入用户姓名!', trigger:'blur'}
+						],
+						pwd:[
+							{required:true, message:'请输入用户密码!', trigger:'blur'}
 						]
 					},					
-					orgData: []						//组织数据list
+					userData: [],						//用户数据list
 				}
 			},
 			methods:{
-				//关闭组织维护窗体
-				closeOrg:function(){
+				//关闭用户维护窗体
+				closeUser:function(){
 					this.formVisible = false
 					this.form.id = ''
-					this.form.orgname = ''
+					this.form.name = ''
 				},
-				//新增组织信息
-				addOrg:function(f){
+				//新增用户
+				addUser:function(f){
 					this.form.id = ''
-					this.form.orgname = ''
+					this.form.name = ''
 					this.form.status = 1
-		      		this.formTitle = '新增组织'
+		      		this.formTitle = '新增用户'
 					this.formVisible = true
 					this.$refs[f].resetFields()
 				},
-				//编辑组织信息
-		      	editOrg:function(index, row){
+				//编辑用户信息
+		      	editUser:function(index, row){
 		      		//alert(row.tid)
 		      		this.form.id = row.tid
-		      		this.form.orgname = row.orgname
+		      		this.form.name = row.name
 		      		this.form.status = row.stsStr == '在用' ? 1 : 2
 		      		this.formVisible = true
-		      		this.formTitle = '修改组织'
+		      		this.formTitle = '修改用户'
 		      		this.$refs[form].resetFields()
 		      	},
-		      	//停用组织
-		      	unuseOrg:function(index, row){
+		      	//停用用户
+		      	unuseUser:function(index, row){
 		      		this.form.id = row.tid
-		      		this.form.orgname = row.orgname
+		      		this.form.name = row.name
 		      		this.form.status = 2
-		      		this.doSaveOrg()
+		      		this.doSaveUser()
 		      	},
-		      	//启用组织
-		      	reuseOrg:function(index, row){
+		      	//启用用户
+		      	reuseUser:function(index, row){
 		      		this.form.id = row.tid
-		      		this.form.orgname = row.orgname
+		      		this.form.name = row.name
 		      		this.form.status = 1
-		      		this.doSaveOrg()
+		      		this.doSaveUser()
 		      	},
-				//执行保存组织信息
-				saveOrg:function(form) {
+				//执行保存用户
+				saveUser:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
-			            app.doSaveOrg()		            
+			            app.doSaveUser()		            
 			          } else {
 			            console.log('error submit!!')
 			            return false;
@@ -159,10 +176,10 @@
 			        });
 		      	},
 		      	//执行保存
-		      	doSaveOrg:function(){
-		      		axios.post('/pm/sys/org/save', {
+		      	doSaveUser:function(){
+		      		axios.post('/pm/sys/user/save', {
 		            	id:app.form.id,
-		            	orgname:app.form.orgname,
+		            	name:app.form.name,
 		            	status:app.form.status,
 		            	user:'admin'
 		            }).then(function (response) {
@@ -176,7 +193,7 @@
 		            		})	
 		            	else{
 		            		app.formVisible = false
-		            		app.getOrgData()
+		            		app.getUserData()
 		            	}			            		
 		            }).catch(function (error) {
 		            	alert(error)
@@ -185,18 +202,18 @@
 		      	//分页
 		      	changePage:function(page){
 		      		this.page = page
-		      		this.getOrgData()
+		      		this.getUserData()
 		      	},
-		      	//获取组织清单数据
-		      	getOrgData:function(){
-		      		axios.get('/pm/sys/org/all', {
+		      	//获取用户清单数据
+		      	getUserData:function(){
+		      		axios.get('/pm/sys/user/all', {
 		      		    params: {
 		      		      page:app.page,
 		      		      limit:app.items
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
-		      			app.orgData = result.data
+		      			app.userData = result.data
 		      			app.total = result.number
 		      		    console.log(response)
 		      		}).catch(function (error) {
@@ -206,7 +223,7 @@
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
-				this.getOrgData()
+				this.getUserData()
 			}
 		});		
 	</script>

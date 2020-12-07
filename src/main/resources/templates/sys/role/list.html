@@ -3,7 +3,7 @@
 <head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>项目管理系统 - 组织信息维护</title>
+	<title>项目管理系统 - 角色信息维护</title>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -19,26 +19,26 @@
 		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
 		  	 			</el-col-->
 		  	 			<el-col :span = "2" :offset = "22">
-		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addOrg('orgForm')" size = "small">新增</el-button>
-		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeOrg" :close-on-click-modal = "false">
-		  	 					<el-form :model="form" :rules = "rules" ref = "orgForm">
-								    <el-form-item label="组织名称" :label-width="formLabelWidth" prop = "orgname">
-								      <el-input v-model="form.orgname" autocomplete="off"></el-input>
+		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addRole('roleForm')" size = "small">新增</el-button>
+		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeRole" :close-on-click-modal = "false">
+		  	 					<el-form :model="form" :rules = "rules" ref = "roleForm">
+								    <el-form-item label="角色名称" :label-width="formLabelWidth" prop = "rolename">
+								      <el-input v-model="form.rolename" autocomplete="off"></el-input>
 								    </el-form-item>
 								 </el-form>
 								 <div slot="footer" class="dialog-footer">
-								    <el-button @click="closeOrg">取 消</el-button>
-								    <el-button type="primary" @click="saveOrg('orgForm')">保存</el-button>
+								    <el-button @click="closeRole">取 消</el-button>
+								    <el-button type="primary" @click="saveRole('roleForm')">保存</el-button>
 								 </div>
 		  	 				</el-dialog>
 		  	 			</el-col>
 		  	 		</el-row>
 		  	 		<el-row>
 		  	 			<el-col :span = "24">
-		  	 				<el-table :data="orgData" style="width:100%;" :max-height = "height">
+		  	 				<el-table :data="roleData" style="width:100%;" :max-height = "height">
 		  	 					<!-- 使用 v-if 隐藏列 -->
 						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "orgname" label = "组织名称"></el-table-column>
+						      	<el-table-column prop = "rolename" label = "角色名称"></el-table-column>
 						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
@@ -48,21 +48,21 @@
 								          icon = "el-icon-edit"
 								          plain
 								          :disabled = "scope.row.stsStr == '停用'"
-								          @click="editOrg(scope.$index, scope.row)"></el-button>
+								          @click="editRole(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
 								          type="warning"
 								          icon = "el-icon-close"
 								          plain
 								          :disabled = "scope.row.stsStr == '停用'"
-								          @click="unuseOrg(scope.$index, scope.row)"></el-button>
+								          @click="unuseRole(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
 								          type="success"
 								          icon = "el-icon-check"
 								          plain
 								          :disabled = "scope.row.stsStr == '在用'"
-								          @click="reuseOrg(scope.$index, scope.row)"></el-button>
+								          @click="reuseRole(scope.$index, scope.row)"></el-button>
 							      </template>
 						      	</el-table-column>
 						    </el-table>	
@@ -91,67 +91,67 @@
 					items:10,							//每页条数
 					page: 1,							//当前页
 					height:window.screen.height * 0.55,	//表格最大高度
-					formTitle:'新增组织',					//组织窗体标题
-					formVisible:false,					//组织窗体显示	
+					formTitle:'新增角色',					//角色窗体标题
+					formVisible:false,					//角色窗体显示	
 					formLabelWidth:'120px',
 					form:{
 						id:'',
-						orgname:'',
+						rolename:'',
 						status:1
 					},
 					rules:{
-						orgname:[
-							{required:true, message:'请输入组织名称!', trigger:'blur'}
+						rolename:[
+							{required:true, message:'请输入角色名称!', trigger:'blur'}
 						]
 					},					
-					orgData: []						//组织数据list
+					roleData: []						//角色数据list
 				}
 			},
 			methods:{
-				//关闭组织维护窗体
-				closeOrg:function(){
+				//关闭角色维护窗体
+				closeRole:function(){
 					this.formVisible = false
 					this.form.id = ''
-					this.form.orgname = ''
+					this.form.rolename = ''
 				},
-				//新增组织信息
-				addOrg:function(f){
+				//新增角色信息
+				addRole:function(f){
 					this.form.id = ''
-					this.form.orgname = ''
+					this.form.rolename = ''
 					this.form.status = 1
-		      		this.formTitle = '新增组织'
+		      		this.formTitle = '新增角色'
 					this.formVisible = true
 					this.$refs[f].resetFields()
 				},
-				//编辑组织信息
-		      	editOrg:function(index, row){
+				//编辑角色信息
+		      	editRole:function(index, row){
 		      		//alert(row.tid)
 		      		this.form.id = row.tid
-		      		this.form.orgname = row.orgname
+		      		this.form.rolename = row.rolename
 		      		this.form.status = row.stsStr == '在用' ? 1 : 2
 		      		this.formVisible = true
-		      		this.formTitle = '修改组织'
+		      		this.formTitle = '修改角色'
 		      		this.$refs[form].resetFields()
 		      	},
-		      	//停用组织
-		      	unuseOrg:function(index, row){
+		      	//停用角色
+		      	unuseRole:function(index, row){
 		      		this.form.id = row.tid
-		      		this.form.orgname = row.orgname
+		      		this.form.rolename = row.rolename
 		      		this.form.status = 2
-		      		this.doSaveOrg()
+		      		this.doSaveRole()
 		      	},
-		      	//启用组织
-		      	reuseOrg:function(index, row){
+		      	//启用角色
+		      	reuseRole:function(index, row){
 		      		this.form.id = row.tid
-		      		this.form.orgname = row.orgname
+		      		this.form.rolename = row.rolename
 		      		this.form.status = 1
-		      		this.doSaveOrg()
+		      		this.doSaveRole()
 		      	},
-				//执行保存组织信息
-				saveOrg:function(form) {
+				//执行保存角色信息
+				saveRole:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
-			            app.doSaveOrg()		            
+			            app.doSaveRole()		            
 			          } else {
 			            console.log('error submit!!')
 			            return false;
@@ -159,10 +159,10 @@
 			        });
 		      	},
 		      	//执行保存
-		      	doSaveOrg:function(){
-		      		axios.post('/pm/sys/org/save', {
+		      	doSaveRole:function(){
+		      		axios.post('/pm/sys/role/save', {
 		            	id:app.form.id,
-		            	orgname:app.form.orgname,
+		            	rolename:app.form.rolename,
 		            	status:app.form.status,
 		            	user:'admin'
 		            }).then(function (response) {
@@ -187,16 +187,16 @@
 		      		this.page = page
 		      		this.getOrgData()
 		      	},
-		      	//获取组织清单数据
+		      	//获取角色清单数据
 		      	getOrgData:function(){
-		      		axios.get('/pm/sys/org/all', {
+		      		axios.get('/pm/sys/role/all', {
 		      		    params: {
 		      		      page:app.page,
 		      		      limit:app.items
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
-		      			app.orgData = result.data
+		      			app.roleData = result.data
 		      			app.total = result.number
 		      		    console.log(response)
 		      		}).catch(function (error) {

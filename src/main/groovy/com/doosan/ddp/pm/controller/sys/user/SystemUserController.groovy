@@ -14,7 +14,7 @@ import com.doosan.ddp.pm.service.sys.user.SystemUserService
 @RequestMapping("/pm/sys/user")
 class SystemUserController {
 	
-	final String WEB_URL = "sys/users"
+	final String WEB_URL = "sys/user"
 	@Autowired
 	SystemUserService systemUserService
 	
@@ -43,7 +43,7 @@ class SystemUserController {
 		def count = systemUserService.getCount() ? systemUserService.getCount().intValue() : 0
 		def data = systemUserService.getAllByPages(page, limit)
 		data.each {
-			if(it.getStatus() == 0)
+			if(it.getStatus() == 2)
 				it.setStsStr("停用")
 			else
 				it.setStsStr("在用")
@@ -64,7 +64,7 @@ class SystemUserController {
 		def count = systemUserService.getCountByNameAndCode(name, code) ? systemUserService.getCountByNameAndCode(name, code).intValue() : 0
 		def data = systemUserService.findByNameAndCode(page, limit, name, code)
 		data.each {
-			if(it.getStatus() == 0)
+			if(it.getStatus() == 2)
 				it.setStsStr("停用")
 			else
 				it.setStsStr("在用")

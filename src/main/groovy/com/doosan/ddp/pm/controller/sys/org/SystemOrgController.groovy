@@ -23,7 +23,7 @@ class SystemOrgController {
 	SystemOrgService systemOrgService
 	
 	/**
-	 * 	跳转字典清单
+	 * 	跳转组织清单
 	 * 	@return
 	 */
 	@RequestMapping("/list")
@@ -37,8 +37,8 @@ class SystemOrgController {
 	}
 	
 	/**
-	 * 	获取数据
-	 * 	@param order
+	 * 	获取组织数据
+	 * 	@param page
 	 * 	@param limit
 	 * 	@return
 	 */
@@ -59,7 +59,7 @@ class SystemOrgController {
 	}
 	
 	/**
-	 * 	保存系统组织
+	 * 	保存组织信息
 	 * 	@param request
 	 * 	@param map
 	 * 	@return

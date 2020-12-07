@@ -3,6 +3,18 @@ import com.doosan.ddp.pm.dao.domain.sys.role.SystemRole
 
 interface SystemRoleService {	
 	/**
+	 *	 获取记录总数
+	 * 	@return
+	 */
+	long getCount()
+	/**
+	 * 	分页获取角色数据
+	 * 	@param page
+	 * 	@param limit
+	 * 	@return
+	 */
+	List<SystemRole> getAllByPages(Integer page, Integer limit)
+	/**
 	 * 	新增/修改角色
 	 * 	@param user
 	 */
