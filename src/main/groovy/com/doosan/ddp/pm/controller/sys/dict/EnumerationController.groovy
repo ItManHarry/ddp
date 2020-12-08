@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
+import com.doosan.ddp.pm.dao.domain.sys.dict.SystemDictionary
 import com.doosan.ddp.pm.dao.domain.sys.dict.SystemEnumeration
+import com.doosan.ddp.pm.service.sys.dict.SystemDictionaryService
 import com.doosan.ddp.pm.service.sys.dict.SystemEnumerationService
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -22,6 +24,9 @@ class EnumerationController {
 	
 	@Autowired
 	SystemEnumerationService systemEnumerationService
+	@Autowired
+	SystemDictionaryService systemDictionaryService
+	
 	/**
 	 * 根据字典ID获取所有的枚举
 	 * @param dict
@@ -33,6 +38,20 @@ class EnumerationController {
 		def data = systemEnumerationService.findByDictionary(dict)
 		return ServerResultJson.success(data)
 	}
+	
+	/**
+	 * 根据字典CODE获取所有的枚举
+	 * @param code
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/options")
+	def options(String code){
+		SystemDictionary dict = systemDictionaryService.getDictByCode(code)
+		def data = systemEnumerationService.findByDictionary(dict.getTid())
+		return ServerResultJson.success(data)
+	}
+	
 	/**
 	 * 新增修改枚举数据
 	 * @param params

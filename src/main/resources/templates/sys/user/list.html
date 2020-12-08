@@ -28,9 +28,27 @@
 								    <el-form-item label="用户名称" :label-width="formLabelWidth" prop = "name">
 								      <el-input v-model="form.name" autocomplete="off"></el-input>
 								    </el-form-item>
+								    <el-form-item label="用户类型" :label-width="formLabelWidth" prop = "usertype">
+									  <el-select v-model="form.usertype" placeholder="请选择用户类型">
+									  	<el-option label="工厂人员" value="shanghai"></el-option>
+									    <el-option label="开发公司" value="beijing"></el-option>
+									  </el-select>
+									</el-form-item>
 								    <el-form-item label="用户密码" :label-width="formLabelWidth" prop = "pwd">
 								      <el-input v-model="form.pwd" autocomplete="off"></el-input>
 								    </el-form-item>
+								    <el-form-item label="用户角色" :label-width="formLabelWidth" prop = "userrole">
+									  <el-select v-model="form.userrole" placeholder="请选择用户角色">
+									  	<el-option label="管理员" value="shanghai"></el-option>
+									    <el-option label="斗山PU" value="beijing"></el-option>
+									  </el-select>
+									</el-form-item>
+									<el-form-item label="用户组织" :label-width="formLabelWidth" prop = "userorg">
+									  <el-select v-model="form.userorg" placeholder="请选择用户组织">
+									  	<el-option label="DICC" value="shanghai"></el-option>
+									    <el-option label="DISD" value="beijing"></el-option>
+									  </el-select>
+									</el-form-item>
 								 </el-form>
 								 <div slot="footer" class="dialog-footer">
 								    <el-button @click="closeUser">取 消</el-button>
@@ -106,7 +124,7 @@
 						name:'',
 						pwd:'',
 						userrole:'',
-						usertype:1,
+						usertype:'',
 						userorg:'',
 						status:1
 					},
@@ -119,7 +137,16 @@
 						],
 						pwd:[
 							{required:true, message:'请输入用户密码!', trigger:'blur'}
-						]
+						],
+						userrole: [
+			            	{ required: true, message: '请选择用户角色', trigger: 'change' }
+			          	],
+			          	usertype: [
+			            	{ required: true, message: '请选择用户类型', trigger: 'change' }
+			          	],
+						userorg: [
+			            	{ required: true, message: '请选择用户组织', trigger: 'change' }
+			          	]
 					},					
 					userData: [],						//用户数据list
 				}
