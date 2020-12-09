@@ -152,17 +152,25 @@
 				}
 			},
 			methods:{
+				//重置form
+				resetForm:function(){
+					this.form.id = ''
+					this.form.code = ''
+					this.form.name = ''
+					this.form.pwd = ''
+					this.form.userrole = ''
+					this.form.usertype = ''
+					this.form.userorg = ''
+					this.form.status = 1
+				},
 				//关闭用户维护窗体
 				closeUser:function(){
 					this.formVisible = false
-					this.form.id = ''
-					this.form.name = ''
+					this.resetForm()
 				},
 				//新增用户
 				addUser:function(f){
-					this.form.id = ''
-					this.form.name = ''
-					this.form.status = 1
+					this.resetForm()
 		      		this.formTitle = '新增用户'
 					this.formVisible = true
 					this.$refs[f].resetFields()
