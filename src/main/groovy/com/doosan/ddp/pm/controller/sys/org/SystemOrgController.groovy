@@ -59,6 +59,29 @@ class SystemOrgController {
 	}
 	
 	/**
+	 * 	获取全部角色数据
+	 * 	@return
+	 */
+	@ResponseBody
+	@GetMapping("/items")
+	def items(){
+		def orgs = systemOrgService.getAll()
+		def data = []
+		println "Data is : $data"
+		def org = null
+		orgs.each {
+			org = [:]
+			//只添加在用角色
+			if(it.getStatus() == 1) {
+				org.put('value', it.getTid())
+				org.put('view', it.getOrgname())
+				data << org
+			}
+		}
+		return ServerResultJson.success(data)
+	}
+	
+	/**
 	 * 	保存组织信息
 	 * 	@param request
 	 * 	@param map
