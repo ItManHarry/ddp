@@ -4,6 +4,34 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>项目管理系统 - 用户信息维护</title>
+	<style>
+	  .el-row {
+	    margin-bottom: 20px;
+	    &:last-child {
+	      margin-bottom: 0;
+	    }
+	  }
+	  .el-col {
+	    border-radius: 4px;
+	  }
+	  .bg-purple-dark {
+	    background: #99a9bf;
+	  }
+	  .bg-purple {
+	    background: #d3dce6;
+	  }
+	  .bg-purple-light {
+	    background: #e5e9f2;
+	  }
+	  .grid-content {
+	    border-radius: 4px;
+	    min-height: 36px;
+	  }
+	  .row-bg {
+	    padding: 10px 0;
+	    background-color: #f9fafc;
+	  }
+	</style>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -14,49 +42,79 @@
 					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
 		  	 	</el-header>
 		  	 	<el-main>
-		  	 		<el-row type = "flex" justify = "center" align = "middle">
-		  	 			<!--el-col :span = "4">
-		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
-		  	 			</el-col-->
-		  	 			<el-col :span = "2" :offset = "22">
-		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addUser('userForm')" size = "small">新增</el-button>
-		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeUser" :close-on-click-modal = "false">
-		  	 					<el-form :model="form" :rules = "rules" ref = "userForm">
-								    <el-form-item label="用户代码" :label-width="formLabelWidth" prop = "code">
-								      <el-input v-model="form.code" autocomplete="off"></el-input>
-								    </el-form-item>
-								    <el-form-item label="用户名称" :label-width="formLabelWidth" prop = "name">
-								      <el-input v-model="form.name" autocomplete="off"></el-input>
-								    </el-form-item>
-								    <el-form-item label="用户类型" :label-width="formLabelWidth" prop = "usertype">
-									  <el-select v-model="form.usertype" placeholder="请选择用户类型">
-									  	<el-option label="工厂人员" value="shanghai"></el-option>
-									    <el-option label="开发公司" value="beijing"></el-option>
-									  </el-select>
-									</el-form-item>
-								    <el-form-item label="用户密码" :label-width="formLabelWidth" prop = "pwd">
-								      <el-input v-model="form.pwd" autocomplete="off"></el-input>
-								    </el-form-item>
-								    <el-form-item label="用户角色" :label-width="formLabelWidth" prop = "userrole">
-									  <el-select v-model="form.userrole" placeholder="请选择用户角色">
-									  	<el-option label="管理员" value="shanghai"></el-option>
-									    <el-option label="斗山PU" value="beijing"></el-option>
-									  </el-select>
-									</el-form-item>
-									<el-form-item label="用户组织" :label-width="formLabelWidth" prop = "userorg">
-									  <el-select v-model="form.userorg" placeholder="请选择用户组织">
-									  	<el-option label="DICC" value="shanghai"></el-option>
-									    <el-option label="DISD" value="beijing"></el-option>
-									  </el-select>
-									</el-form-item>
-								 </el-form>
-								 <div slot="footer" class="dialog-footer">
-								    <el-button @click="closeUser">取 消</el-button>
-								    <el-button type="primary" @click="saveUser('userForm')">保存</el-button>
-								 </div>
-		  	 				</el-dialog>
+		  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+		  	 			<el-col :span = "13" :offset = "11">
+		  	 				<el-form :inline = "true">
+		  	 					<el-form-item>
+		  	 						<el-switch							  		
+									  	v-model="searchtype"
+									  	active-text="姓名查找"
+									  	inactive-text="账号查找">
+									</el-switch>
+		  	 					</el-form-item>
+		  	 					<el-form-item>
+		  	 						<el-input v-model = "searchkey"></el-input>
+		  	 					</el-form-item>
+		  	 					<el-form-item>
+		  	 						<el-button icon = "el-icon-search" round plain type = "success">查找</el-button>
+		  	 					</el-form-item>
+		  	 					<el-form-item>
+		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addUser('userForm')">新增</el-button>
+		  	 					</el-form-item>
+		  	 				</el-form>		  	 				
 		  	 			</el-col>
 		  	 		</el-row>
+		  	 		<!-- 用户表单窗体 -->
+		  	 		<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeUser" :close-on-click-modal = "false">
+  	 					<el-form :model="form" :rules = "rules" ref = "userForm">
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="用户代码" :label-width="formLabelWidth" prop = "code">
+								      <el-input v-model="form.code" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="用户名称" :label-width="formLabelWidth" prop = "name">
+								      <el-input v-model="form.name" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>		  	 						
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="用户类型" :label-width="formLabelWidth" prop = "usertype">
+									  <el-select v-model="form.usertype" placeholder="请选择用户类型">
+									  	<el-option v-for = "type in types" :label="type.view" :value="type.value"></el-option>
+									  </el-select>
+									</el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="用户密码" :label-width="formLabelWidth" prop = "pwd">
+								      <el-input v-model="form.pwd" autocomplete="off" show-password></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>									    
+						    <el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="用户角色" :label-width="formLabelWidth" prop = "userrole">
+									  <el-select v-model="form.userrole" placeholder="请选择用户角色">
+									  	<el-option v-for = "role in roles" :label="role.view" :value="role.value"></el-option>
+									  </el-select>
+									</el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="用户组织" :label-width="formLabelWidth" prop = "userorg">
+									  <el-select v-model="form.userorg" placeholder="请选择用户组织">
+									  	<el-option v-for = "org in orgs" :label="org.view" :value="org.value"></el-option>
+									  </el-select>
+									</el-form-item>
+  	 							</el-col>
+  	 						</el-row>								    									
+						 </el-form>
+						 <div slot="footer" class="dialog-footer">
+						    <el-button @click="closeUser">取 消</el-button>
+						    <el-button type="primary" @click="saveUser('userForm')">保存</el-button>
+						 </div>
+  	 				</el-dialog>
 		  	 		<el-row>
 		  	 			<el-col :span = "24">
 		  	 				<el-table :data="userData" style="width:100%;" :max-height = "height">
@@ -149,6 +207,11 @@
 			          	]
 					},					
 					userData: [],						//用户数据list
+					searchkey:'',						//搜索值
+					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
+					types:[{value:1,view:'工厂人员'},{value:2,view:'开发人员'}],							//用户类型
+					roles:[{value:1,view:'DoosanPU'},{value:2,view:'DoosanIT'},{value:3,view:'开发公司PM'}],							//用户角色
+					orgs:[{value:1,view:'DICC'},{value:2,view:'DISD'},{value:3,view:'DBCN'}]								//用户组织
 				}
 			},
 			methods:{
