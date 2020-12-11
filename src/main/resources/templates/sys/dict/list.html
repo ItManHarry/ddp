@@ -136,33 +136,19 @@
 							{required:true, message:'请输入枚举View!', trigger:'blur'}
 						]
 					},
-					dictData: [],
-					enumData: [{
-						tid:'111111',
-			            value: '0',
-			            view: 'All'
-			          }, {
-			        	tid:'222222',
-				        value: '1',
-				        view: 'AAA'
-			          }, {
-			        	tid:'333333',
-				        value: '2',
-				        view: 'BBB'
-			          }, {
-			        	tid:'444444',
-			            value: '3',
-			            view: 'CCC'
-			          }]
+					dictData: [],			//字典数据list
+					enumData: []			//字典枚举数据list
 				}
 			},
 			methods:{
+				//关闭字典维护窗体
 				closeDictionary:function(){
 					this.formVisible = false
 					this.form.id = ''
 					this.form.code = ''
 			      	this.form.name = ''			      	
 				},
+				//新增字典
 				addDict:function(f){
 					this.form.id = ''
 					this.form.code = ''
@@ -171,6 +157,17 @@
 					this.formVisible = true
 					this.$refs[f].resetFields()
 				},
+				//编辑字典
+		      	editDict:function(index, row){
+		      		//alert(row.tid)
+		      		this.form.id = row.tid
+		      		this.form.code = row.code
+		      		this.form.name = row.name
+		      		this.formVisible = true
+		      		this.formTitle = '修改字典'
+		      		this.$refs[form].resetFields()
+		      	},
+				//执行保存字典
 				saveDict:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
@@ -201,47 +198,43 @@
 			          }
 			        });
 		      	},
-		      	editDict:function(index, row){
-		      		//alert(row.tid)
+		      	//打开字典枚举数据维护窗体
+		      	enums:function(index, row){		      		
+		      		//alert('Dictionary id : ' + row.tid)
+		      		//获取枚举数据
 		      		this.form.id = row.tid
-		      		this.form.code = row.code
-		      		this.form.name = row.name
-		      		this.formVisible = true
-		      		this.formTitle = '修改字典'
-		      		this.$refs[form].resetFields()
-		      	},
-		      	enums:function(index, row){
-		      		//alert('Index : ' + index)
-		      		//alert('Row : ' + row.name)
+		      		this.getEnumData()
 		      		this.enumVisible = true
 		      		//清空表单
-		      		this.resetEnum('enumForm')
-		      		//获取枚举数据
-		      		
+		      		this.resetEnum('enumForm')		      		
 		      	},
+		      	//编辑字典枚举数据
 		      	editEnum:function(row, column, event){
 		      		//alert('row clicked...'+row.id)
 		      		this.$refs['enumForm'].resetFields()
-		      		this.eform.value = row.id
+		      		this.eform.id = row.tid
 		      		this.eform.value = row.value
 		      		this.eform.view = row.view
 		      		this.ebuttonText = '修改'		      		
 		      	},
+		      	//重置字典枚举数据
 		      	resetEnum:function(f){
-		      		this.eform.value = ''
+		      		this.eform.id = ''
 		      		this.eform.value = ''
 		      		this.eform.view = ''
 		      		this.ebuttonText = '新增'
 		      		this.$refs[f].resetFields()
 		      	},
+		      	//保存字典枚举数据
 		      	saveEnum:function(form){
 		      		this.$refs[form].validate(function(valid) {
 		          	if (valid) {
-		          		alert('save enumeration ...')
-			            /*axios.post('/pm/sys/dict/save', {
-			            	id:app.form.id,
-			            	code:app.form.code,
-			            	name:app.form.name,
+		          		//alert('save enumeration ... DICT ID IS : ' + app.form.id)
+			            axios.post('/pm/sys/enum/save', {			            	
+			            	dict:app.form.id,
+			            	id:app.eform.id,
+			            	value:app.eform.value,
+			            	view:app.eform.view,
 			            	user:'admin'
 			            }).then(function (response) {
 			            	var result = response.data
@@ -252,23 +245,25 @@
 			            			duration:2000,
 			            			offset:120
 			            		})	
-			            	else{
-			            		app.formVisible = false
-			            		app.getDictData()
+			            	else{			            		
+			            		app.getEnumData()
+			            		app.resetEnum('enumForm')
 			            	}			            		
 			            }).catch(function (error) {
 			            	alert(error)
-			            });	*/		            
+			            });			            
 			          } else {
 			            console.log('error submit!!')
 			            return false;
 			          }
 			        });
 		      	},
+		      	//字典分页
 		      	changePage:function(page){
 		      		this.page = page
 		      		this.getDictData()
 		      	},
+		      	//获取字典清单数据
 		      	getDictData:function(){
 		      		axios.get('/pm/sys/dict/all', {
 		      		    params: {
@@ -279,6 +274,21 @@
 		      			var result = response.data
 		      			app.dictData = result.data
 		      			app.total = result.number
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	},
+		      	//根据字典uuid获取枚举值
+		      	getEnumData:function(){
+		      		//alert('Get Dictionary data and the id is : ' + app.form.id)
+		      		axios.get('/pm/sys/enum/all', {
+		      		    params: {
+		      		    	dict:app.form.id
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.enumData = result.data		      			
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      		    console.log(error)
