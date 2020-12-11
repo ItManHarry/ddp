@@ -15,6 +15,11 @@ interface SystemRoleService {
 	 */
 	List<SystemRole> getAllByPages(Integer page, Integer limit)
 	/**
+	 * 获取所有的系统角色数据
+	 * @return
+	 */
+	List<SystemRole> getAll()
+	/**
 	 * 	新增/修改角色
 	 * 	@param user
 	 */

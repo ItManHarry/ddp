@@ -36,7 +36,7 @@ class SystemRoleController {
 	}
 	
 	/**
-	 * 	获取角色数据
+	 * 	分页获取角色数据
 	 * 	@param page
 	 * 	@param limit
 	 * 	@return
@@ -55,6 +55,29 @@ class SystemRoleController {
 				it.setStsStr("在用")
 		}
 		return ServerResultJson.success(data, count)
+	}
+	
+	/**
+	 * 	获取全部角色数据
+	 * 	@return
+	 */
+	@ResponseBody
+	@GetMapping("/items")
+	def items(){
+		def roles = systemRoleService.getAll()
+		def data = []
+		println "Data is : $data"
+		def role = null
+		roles.each {
+			role = [:]
+			//只添加在用角色
+			if(it.getStatus() == 1) {
+				role.put('value', it.getTid())
+				role.put('view', it.getRolename())
+				data << role	
+			}
+		}
+		return ServerResultJson.success(data)
 	}
 	
 	/**

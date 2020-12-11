@@ -41,4 +41,10 @@ class SystemOrgServiceImp implements SystemOrgService {
 		// TODO Auto-generated method stub
 		return systemOrgDao.getOne(id)
 	}
+
+	@Transactional
+	public List<SystemOrg> getAll() {
+		// TODO Auto-generated method stub
+		return systemOrgDao.findAll()
+	}
 }

@@ -15,6 +15,11 @@ interface SystemOrgService {
 	 */
 	List<SystemOrg> getAllByPages(Integer page, Integer limit)
 	/**
+	 * 获取所有的组织数据
+	 * @return
+	 */
+	List<SystemOrg> getAll()
+	/**
 	 * 保存组织信息
 	 * @param org
 	 */

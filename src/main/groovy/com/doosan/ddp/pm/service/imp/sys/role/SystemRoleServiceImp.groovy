@@ -41,4 +41,10 @@ class SystemRoleServiceImp implements SystemRoleService {
 		// TODO Auto-generated method stub
 		return systemRoleDao.getOne(id)
 	}
+
+	@Transactional
+	public List<SystemRole> getAll() {
+		// TODO Auto-generated method stub
+		return systemRoleDao.findAll()
+	}
 }

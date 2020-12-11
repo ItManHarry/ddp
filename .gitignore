@@ -1,3 +1,7 @@
 /target/
 /.classpath
+<<<<<<< HEAD
 /.gitignore
+=======
+/pom.xml
+>>>>>>> branch 'master' of https://github.com/ItManHarry/ddp

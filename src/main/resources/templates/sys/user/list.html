@@ -103,7 +103,7 @@
   	 							</el-col>
   	 							<el-col :span = "12">
   	 								<el-form-item label="用户组织" :label-width="formLabelWidth" prop = "userorg">
-									  <el-select v-model="form.userorg" placeholder="请选择用户组织">
+									  <el-select v-model="form.userorg" filterable placeholder="请选择用户组织">
 									  	<el-option v-for = "org in orgs" :label="org.view" :value="org.value"></el-option>
 									  </el-select>
 									</el-form-item>
@@ -209,9 +209,9 @@
 					userData: [],						//用户数据list
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
-					types:[{value:1,view:'工厂人员'},{value:2,view:'开发人员'}],							//用户类型
-					roles:[{value:1,view:'DoosanPU'},{value:2,view:'DoosanIT'},{value:3,view:'开发公司PM'}],							//用户角色
-					orgs:[{value:1,view:'DICC'},{value:2,view:'DISD'},{value:3,view:'DBCN'}]								//用户组织
+					types:[],							//用户类型
+					roles:[],							//用户角色
+					orgs:[]								//用户组织
 				}
 			},
 			methods:{
@@ -317,11 +317,57 @@
 		      		}).catch(function (error) {
 		      		    console.log(error)
 		      		})
+		      	},
+		      	//获取用户类型数据
+		      	getUserType:function(){
+		      		axios.get('/pm/sys/enum/options', {
+		      		    params: {
+		      		      code:'D022'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.types = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	},
+		      	//获取系统角色数据
+		      	getRoles:function(){
+		      		axios.get('/pm/sys/role/items', {
+		      		    params: {
+		      		      
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.roles = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	}
+		      	,
+		      	//获取系统组织数据
+		      	getOrgs:function(){
+		      		axios.get('/pm/sys/org/items', {
+		      		    params: {
+		      		      
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.orgs = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
 		      	}
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
 				this.getUserData()
+				this.getUserType()
+				this.getRoles()
+				this.getOrgs()
 			}
 		});		
 	</script>
