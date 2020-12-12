@@ -150,21 +150,21 @@
 				},
 				//新增字典
 				addDict:function(f){
-					this.form.id = ''
-					this.form.code = ''
-		      		this.form.name = ''
 		      		this.formTitle = '新增字典'
 					this.formVisible = true
 					this.$refs[f].resetFields()
+					this.form.id = ''
+					this.form.code = ''
+		      		this.form.name = ''
 				},
 				//编辑字典
 		      	editDict:function(index, row){
 		      		//alert(row.tid)
-		      		this.form.id = row.tid
-		      		this.form.code = row.code
-		      		this.form.name = row.name
 		      		this.formVisible = true
 		      		this.formTitle = '修改字典'
+	      			this.form.id = row.tid
+		      		this.form.code = row.code
+		      		this.form.name = row.name
 		      		this.$refs[form].resetFields()
 		      	},
 				//执行保存字典

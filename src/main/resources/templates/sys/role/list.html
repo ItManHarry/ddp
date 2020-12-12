@@ -123,21 +123,21 @@
 				},
 				//新增角色信息
 				addRole:function(f){
-					this.form.id = ''
-					this.form.rolename = ''
-					this.form.status = 1
 		      		this.formTitle = '新增角色'
 					this.formVisible = true
 					this.$refs[f].resetFields()
+					this.form.id = ''
+					this.form.rolename = ''
+					this.form.status = 1
 				},
 				//编辑角色信息
 		      	editRole:function(index, row){
 		      		//alert(row.tid)
-		      		this.form.id = row.tid
-		      		this.form.rolename = row.rolename
-		      		this.form.status = row.stsStr == '在用' ? 1 : 2
 		      		this.formVisible = true
 		      		this.formTitle = '修改角色'
+	      			this.form.id = row.tid
+		      		this.form.rolename = row.rolename
+		      		this.form.status = row.stsStr == '在用' ? 1 : 2
 		      		this.$refs[form].resetFields()
 		      	},
 		      	//停用角色
