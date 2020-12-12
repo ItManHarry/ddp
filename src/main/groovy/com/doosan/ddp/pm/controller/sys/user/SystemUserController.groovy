@@ -117,7 +117,7 @@ class SystemUserController {
 		def count = systemUserService.getCountByNameAndCode(name, code) ? systemUserService.getCountByNameAndCode(name, code).intValue() : 0
 		def data = systemUserService.findByNameAndCode(page, limit, name, code)
 		data.each {
-			it.setUtStr(typeMap.get(it.getUsertype()))
+			it.setUtStr(typeMap.get(it.getUsertype().toString()))
 			it.setUrStr(roleMap.get(it.getUserrole()))
 			it.setUoStr(orgMap.get(it.getUserorg()))
 			if(it.getStatus() == 2)
