@@ -24,7 +24,7 @@ class SystemEnumerationServiceImp implements SystemEnumerationService {
 	}
 
 	@Transactional
-	List<SystemEnumeration> findByDictionary(String dict) {
+	List<SystemEnumeration> getByDictionary(String dict) {
 		// TODO Auto-generated method stub
 		return systemEnumerationDao.findByDict(dict)
 	}

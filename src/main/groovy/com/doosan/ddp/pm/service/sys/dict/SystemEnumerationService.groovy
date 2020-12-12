@@ -20,5 +20,5 @@ public interface SystemEnumerationService {
 	 * 	@param dict
 	 * 	@return
 	 */
-	List<SystemEnumeration> findByDictionary(String dict)
+	List<SystemEnumeration> getByDictionary(String dict)
 }

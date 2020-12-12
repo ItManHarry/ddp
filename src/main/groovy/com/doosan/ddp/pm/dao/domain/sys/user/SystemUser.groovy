@@ -22,12 +22,18 @@ class SystemUser extends TableEntityBaseModel {
 	//用户角色
 	@Column(name="userrole",length=40)
 	String userrole
+	@Transient
+	String urStr
 	//用户类型（1：工厂 2：开发公司）
 	@Column(name="usertype")
 	int usertype
+	@Transient
+	String utStr
 	//用户组织所属
 	@Column(name="userorg",length=40)
 	String userorg
+	@Transient
+	String uoStr
 	//用户状态,此栏位不会生成列
 	@Transient
 	String stsStr

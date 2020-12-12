@@ -48,7 +48,7 @@ class EnumerationController {
 	@GetMapping("/options")
 	def options(String code){
 		SystemDictionary dict = systemDictionaryService.getDictByCode(code)
-		def data = systemEnumerationService.findByDictionary(dict.getTid())
+		def data = systemEnumerationService.getByDictionary(dict.getTid())
 		return ServerResultJson.success(data)
 	}
 	

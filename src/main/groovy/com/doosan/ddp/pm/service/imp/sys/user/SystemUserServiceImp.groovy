@@ -81,7 +81,7 @@ class SystemUserServiceImp implements SystemUserService {
 			 *
 			 */
 			public Predicate toPredicate(Root<SystemUser> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-				// where name like ? and gender like ?
+				// where name like ? and code like ?
 				List<Predicate> predicates = new ArrayList<Predicate>()
 				predicates.add(builder.like(root.get("name"), "%"+name+"%"))
 				predicates.add(builder.like(root.get("code"), "%"+code+"%"))

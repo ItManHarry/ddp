@@ -119,8 +119,16 @@
 		  	 			<el-col :span = "24">
 		  	 				<el-table :data="userData" style="width:100%;" :max-height = "height">
 		  	 					<!-- 使用 v-if 隐藏列 -->
-						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "usertype" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "userrole" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "userorg" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "pwd" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "code" label = "用户账号"></el-table-column>
 						      	<el-table-column prop = "name" label = "用户名称"></el-table-column>
+						      	<el-table-column prop = "utStr" label = "用户类型"></el-table-column>
+						      	<el-table-column prop = "urStr" label = "用户角色"></el-table-column>
+						      	<el-table-column prop = "uoStr" label = "用户组织"></el-table-column>
 						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
@@ -242,31 +250,34 @@
 		      	editUser:function(index, row){
 		      		//alert(row.tid)
 		      		this.form.id = row.tid
+		      		this.form.code = row.code
+		      		this.form.pwd = row.pwd
 		      		this.form.name = row.name
-		      		this.form.status = row.stsStr == '在用' ? 1 : 2
+		      		this.form.usertype = row.usertype
+		      		this.form.userrole = row.userrole
+		      		this.form.userorg = row.userorg
+		      		this.form.status = row.stsStr == '在用' ? '1' : '2'
 		      		this.formVisible = true
 		      		this.formTitle = '修改用户'
-		      		this.$refs[form].resetFields()
+		      		this.$refs['userForm'].resetFields()
 		      	},
 		      	//停用用户
 		      	unuseUser:function(index, row){
 		      		this.form.id = row.tid
-		      		this.form.name = row.name
 		      		this.form.status = 2
-		      		this.doSaveUser()
+		      		this.doSaveUser('status')
 		      	},
 		      	//启用用户
 		      	reuseUser:function(index, row){
 		      		this.form.id = row.tid
-		      		this.form.name = row.name
 		      		this.form.status = 1
-		      		this.doSaveUser()
+		      		this.doSaveUser('status')
 		      	},
 				//执行保存用户
 				saveUser:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
-			            app.doSaveUser()		            
+			            app.doSaveUser('save')		            
 			          } else {
 			            console.log('error submit!!')
 			            return false;
@@ -274,13 +285,32 @@
 			        });
 		      	},
 		      	//执行保存
-		      	doSaveUser:function(){
-		      		axios.post('/pm/sys/user/save', {
-		            	id:app.form.id,
-		            	name:app.form.name,
-		            	status:app.form.status,
-		            	user:'admin'
-		            }).then(function (response) {
+		      	doSaveUser:function(action){
+		      		var url = ''
+		      		var params = {}
+		      		if(action == 'save'){
+		      			url = '/pm/sys/user/save'
+		      			params = {
+			            	id:app.form.id,
+			            	code:app.form.code,
+			            	name:app.form.name,
+			            	userrole:app.form.userrole,
+			            	usertype:app.form.usertype,
+			            	userorg:app.form.userorg,
+			            	status:app.form.status,
+			            	pwd:app.form.pwd,
+			            	user:'admin'
+			            }
+		      		}		      		
+		      		if(action == 'status'){
+		      			url = '/pm/sys/user/status'
+	      				params = {
+			            	id:app.form.id,
+			            	status:app.form.status,
+			            	user:'admin'
+			            }
+		      		}
+		      		axios.post(url,	params).then(function (response) {
 		            	var result = response.data
 		            	if(result.status == 0)
 		            		app.$message({
@@ -307,7 +337,9 @@
 		      		axios.get('/pm/sys/user/all', {
 		      		    params: {
 		      		      page:app.page,
-		      		      limit:app.items
+		      		      limit:app.items,
+		      		      name:'',
+		      		      code:''
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
