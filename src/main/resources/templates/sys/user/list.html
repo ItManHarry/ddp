@@ -256,7 +256,6 @@
 		      		alert("User role is : "+row.userrole)*/
 		      		this.formVisible = true
 		      		this.formTitle = '修改用户'
-		      		this.$refs['userForm'].resetFields()
 		      		this.form.id = row.tid
 		      		this.form.code = row.code
 		      		this.form.pwd = row.pwd
@@ -264,6 +263,7 @@
 		      		this.form.usertype = row.usertype+''
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
+		      		this.$refs['userForm'].resetFields()
 		      	},
 		      	//停用用户
 		      	unuseUser:function(index, row){
