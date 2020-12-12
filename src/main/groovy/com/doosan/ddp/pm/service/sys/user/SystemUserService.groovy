@@ -16,6 +16,11 @@ interface SystemUserService {
 	 */
 	List<SystemUser> getAllByPages(Integer page, Integer limit)
 	/**
+	 * 获取所有的用户信息
+	 * @return
+	 */
+	List<SystemUser> getAll()
+	/**
 	 * 	新增/修改用户
 	 * 	@param user
 	 */

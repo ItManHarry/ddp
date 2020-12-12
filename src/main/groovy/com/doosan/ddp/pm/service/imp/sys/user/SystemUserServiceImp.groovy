@@ -34,6 +34,12 @@ class SystemUserServiceImp implements SystemUserService {
 		Page<SystemUser> pageData = systemUserDao.findAll(pageable)
 		return pageData.getContent()
 	}
+	
+	@Transactional
+	public List<SystemUser> getAll() {
+		// TODO Auto-generated method stub
+		return systemUserDao.findAll()
+	}
 
 	@Transactional
 	void save(SystemUser user) {
@@ -63,6 +69,7 @@ class SystemUserServiceImp implements SystemUserService {
 		Sort sort = Sort.by("code","name")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)//page从0开始
 		Page<SystemUser> pageData = systemUserDao.findAll(getSpec(name, code), pageable)
+		return pageData.getContent()
 	}
 
 	@Transactional

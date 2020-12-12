@@ -56,10 +56,10 @@
 		  	 						<el-input v-model = "searchkey"></el-input>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
-		  	 						<el-button icon = "el-icon-search" round plain type = "success">查找</el-button>
+		  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getUserData">查找</el-button>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
-		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addUser('userForm')">新增</el-button>
+		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addUser">新增</el-button>
 		  	 					</el-form-item>
 		  	 				</el-form>		  	 				
 		  	 			</el-col>
@@ -224,7 +224,7 @@
 			},
 			methods:{
 				//重置form
-				resetForm:function(){
+				resetFormValues:function(){
 					this.form.id = ''
 					this.form.code = ''
 					this.form.name = ''
@@ -235,31 +235,35 @@
 					this.form.status = 1
 				},
 				//关闭用户维护窗体
-				closeUser:function(){
+				closeUser:function(){					
 					this.formVisible = false
-					this.resetForm()
+					this.resetFormValues()
 				},
 				//新增用户
-				addUser:function(f){
-					this.resetForm()
+				addUser:function(f){					
 		      		this.formTitle = '新增用户'
 					this.formVisible = true
-					this.$refs[f].resetFields()
+					this.$refs['userForm'].resetFields()
+					this.resetFormValues()
 				},
 				//编辑用户信息
 		      	editUser:function(index, row){
-		      		//alert(row.tid)
+		      		/*alert("User code is : "+row.code)
+		      		alert("User name is : "+row.name)
+		      		alert("User pwd is : "+row.pwd)
+		      		alert("User type is : "+row.usertype)
+		      		alert("User org is : "+row.userorg)
+		      		alert("User role is : "+row.userrole)*/
+		      		this.formVisible = true
+		      		this.formTitle = '修改用户'
+		      		this.$refs['userForm'].resetFields()
 		      		this.form.id = row.tid
 		      		this.form.code = row.code
 		      		this.form.pwd = row.pwd
 		      		this.form.name = row.name
-		      		this.form.usertype = row.usertype
+		      		this.form.usertype = row.usertype+''
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
-		      		this.form.status = row.stsStr == '在用' ? '1' : '2'
-		      		this.formVisible = true
-		      		this.formTitle = '修改用户'
-		      		this.$refs['userForm'].resetFields()
 		      	},
 		      	//停用用户
 		      	unuseUser:function(index, row){
@@ -319,9 +323,9 @@
 		            			duration:2000,
 		            			offset:120
 		            		})	
-		            	else{
+		            	else{		            		
 		            		app.formVisible = false
-		            		app.getUserData()
+		            		app.getUserData()		            		
 		            	}			            		
 		            }).catch(function (error) {
 		            	alert(error)
@@ -334,12 +338,12 @@
 		      	},
 		      	//获取用户清单数据
 		      	getUserData:function(){
-		      		axios.get('/pm/sys/user/all', {
+		      		axios.get('/pm/sys/user/query', {
 		      		    params: {
 		      		      page:app.page,
 		      		      limit:app.items,
-		      		      name:'',
-		      		      code:''
+		      		      name:app.searchtype ? app.searchkey : '',
+		      		      code:app.searchtype ? '' : app.searchkey
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
