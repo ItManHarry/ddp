@@ -35,7 +35,7 @@ class EnumerationController {
 	@ResponseBody
 	@GetMapping("/all")
 	def all(String dict){
-		def data = systemEnumerationService.findByDictionary(dict)
+		def data = systemEnumerationService.getByDictionary(dict)
 		return ServerResultJson.success(data)
 	}
 	
