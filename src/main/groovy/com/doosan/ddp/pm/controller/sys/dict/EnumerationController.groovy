@@ -28,7 +28,7 @@ class EnumerationController {
 	SystemDictionaryService systemDictionaryService
 	
 	/**
-	 * 根据字典ID获取所有的枚举
+	 * 根据字典ID获取所有的枚举 
 	 * @param dict
 	 * @return
 	 */
