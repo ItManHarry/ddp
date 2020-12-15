@@ -28,9 +28,9 @@ class ProgramIssue extends TableEntityBaseModel {
 	@Column(name="state")
 	int state
 	//issue处理开始日期
-	@Column(name="startdate")
-	Date startdate
+	@Column(name="startdate", length=20)
+	String startdate
 	//issue处理完成日期
-	@Column(name="finishdate")
-	Date finishdate
+	@Column(name="finishdate", length=20)
+	String finishdate
 }

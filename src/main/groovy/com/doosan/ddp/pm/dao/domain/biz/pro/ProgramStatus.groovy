@@ -28,11 +28,11 @@ class ProgramStatus extends TableEntityBaseModel {
 	@Column(name="possible")
 	int possible
 	//合同开始日期
-	@Column(name="contractstart")
-	Date contractstart
+	@Column(name="contractstart", length=20)
+	String contractstart
 	//合同结束日期
-	@Column(name="contractend")
-	Date contractend
+	@Column(name="contractend", length=20)
+	String contractend
 	//法人(存储组织信息uuid，维护DICC/DISD/DIVC/DICI等法人信息)
 	@Column(name="legalorg", length=40)
 	String legalorg

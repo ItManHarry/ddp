@@ -22,17 +22,17 @@ class ProgramMain extends TableEntityBaseModel {
 	@Column(name="charger", length=40)
 	String charger
 	//项目开始日期
-	@Column(name="startdate")
-	Date startdate
+	@Column(name="startdate", length=20)
+	String startdate
 	//项目实际开始日期
-	@Column(name="realstartdate")
-	Date realstartdate
+	@Column(name="realstartdate", length=20)
+	String realstartdate
 	//项目结束日期
-	@Column(name="enddate")
-	Date enddate
+	@Column(name="enddate", length=20)
+	String enddate
 	//项目实际结束日期
-	@Column(name="realenddate")
-	Date realenddate
+	@Column(name="realenddate", length=20)
+	String realenddate
 	//项目金额
 	@Column(name="amount")
 	double amount
