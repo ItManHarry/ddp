@@ -98,10 +98,10 @@ class ProgramMainController {
 			pro.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			pro.setCreateuserid(userId)
 		}
-		pro.setCode(code.toUpperCase())
+		pro.setCode(code)
 		pro.setName(name)
 		pro.setStatus(status)
-		systemUserService.save(pro)
+		programMainService.save(pro)
 		return ServerResultJson.success()
 	}
 	
