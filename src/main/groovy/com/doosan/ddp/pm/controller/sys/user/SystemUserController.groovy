@@ -138,7 +138,7 @@ class SystemUserController {
 	def save(@RequestBody String params, HttpServletRequest request, Map map){
 		//session获取用户账号
 		def userId = request.getSession().getAttribute("currentUser")
-		//参数传递用户账号
+		//传递参数值
 		println 'Parameters : \t' + params
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
 		String id = json.get("id").asString
@@ -149,6 +149,7 @@ class SystemUserController {
 		String userorg = json.get("userorg").asString
 		int status = json.get("status").asInt
 		String pwd = json.get("pwd").asString
+		//String userId = json.get("user").asString
 		SystemUser user = new SystemUser()
 		if(id) {
 			user = systemUserService.getUserById(id);

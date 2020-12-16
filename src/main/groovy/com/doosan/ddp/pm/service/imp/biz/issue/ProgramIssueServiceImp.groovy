@@ -17,9 +17,9 @@ class ProgramIssueServiceImp implements ProgramIssueService {
 	}
 
 	@Transactional
-	List<ProgramIssue> getProgramIssues(String program) {
+	List<ProgramIssue> getProgramIssuesById(String proId) {
 		// TODO Auto-generated method stub
-		return programIssueDao.findByProgramid(program)
+		return programIssueDao.findByProgramid(proId)
 	}
 	@Transactional
 	ProgramIssue getIssueById(String id) {

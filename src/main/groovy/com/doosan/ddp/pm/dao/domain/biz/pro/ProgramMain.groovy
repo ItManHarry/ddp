@@ -12,13 +12,13 @@ class ProgramMain extends TableEntityBaseModel {
 	//项目名称
 	@Column(name="name", length=100)
 	String name
-	//项目编码
+	//项目编码 - 生成规则PRO+YYYYMMDD+随机数
 	@Column(name="code", length=30)
 	String code
 	//项目描述
 	@Column(name="remark", length=200)
 	String remark
-	//项目负责人(用户uuid)
+	//项目负责人(用户code)
 	@Column(name="charger", length=40)
 	String charger
 	//项目开始日期

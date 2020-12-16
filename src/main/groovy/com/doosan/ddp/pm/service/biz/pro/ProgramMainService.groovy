@@ -39,12 +39,12 @@ interface ProgramMainService {
 	 * @param code
 	 * @return
 	 */
-	List<ProgramMain> findByNameAndCode(Integer page, Integer limit, String name, String code)
+	List<ProgramMain> getByNameAndCode(Integer page, Integer limit, String name, String code, List<String> tids)
 	/**
 	 * 根据项目名称和代码进行模糊分页查询记录数
 	 * @param name
 	 * @param code
 	 * @return
 	 */
-	long getCountByNameAndCode(String name, String code)
+	long getCountByNameAndCode(String name, String code, List<String> tids)
 }

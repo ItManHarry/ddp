@@ -28,4 +28,10 @@ class ProgramGroupServiceImp implements ProgramGroupService {
 		// TODO Auto-generated method stub
 		return programGroupDao.getOne(id)
 	}
+
+	@Transactional
+	public List<ProgramGroup> getProgramGroupByUserId(String userId) {
+		// TODO Auto-generated method stub
+		return programGroupDao.findByUserid(userId)
+	}
 }

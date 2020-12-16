@@ -91,7 +91,7 @@ class SystemRoleController {
 	def save(@RequestBody String params, HttpServletRequest request, Map map){
 		//session获取用户账号
 		def user = request.getSession().getAttribute("currentUser")
-		//参数传递用户账号
+		//传递参数值
 		println 'Parameters : \t' + params
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
 		String id = json.get("id").asString

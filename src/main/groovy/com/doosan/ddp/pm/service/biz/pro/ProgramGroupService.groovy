@@ -14,6 +14,12 @@ interface ProgramGroupService {
 	 */
 	List<ProgramGroup> getProgramGroupByProId(String proId)
 	/**
+	 * 根据项目id获取项目组信息
+	 * @param proId
+	 * @return
+	 */
+	List<ProgramGroup> getProgramGroupByUserId(String userId)
+	/**
 	 * 根据id获取项目组信息
 	 * @param id
 	 * @return

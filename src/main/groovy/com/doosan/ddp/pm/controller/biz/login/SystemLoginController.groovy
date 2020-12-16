@@ -97,7 +97,7 @@ class SystemLoginController {
 						}
 						//登录结果
 						if(loginResult){
-							request.getSession().setAttribute("currentUser", name)					//登录账号
+							request.getSession().setAttribute("currentUser", name.toUpperCase())    //登录账号
 							request.getSession().setAttribute("currentUserName", user.getName())	//用户姓名
 							request.getSession().setAttribute("currentUserType", user.getUsertype())//用户类型
 							//写入日志

@@ -58,20 +58,21 @@ class ProgramMainServiceImp implements ProgramMainService {
 	}
 
 	@Transactional
-	List<ProgramMain> findByNameAndCode(Integer page, Integer limit, String name, String code) {
+	List<ProgramMain> getByNameAndCode(Integer page, Integer limit, String name, String code, List<String> tids) {
 		// TODO Auto-generated method stub
 		Sort sort = Sort.by("code","name")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)			//page从0开始
-		Page<ProgramMain> pageData = programMainDao.findAll(getSpec(name, code), pageable)
+		Page<ProgramMain> pageData = programMainDao.findAll(getSpec(name, code, tids), pageable)
+		return pageData.getContent()
 	}
 
 	@Transactional
-	long getCountByNameAndCode(String name, String code) {
+	long getCountByNameAndCode(String name, String code, List<String> tids) {
 		// TODO Auto-generated method stub
-		return programMainDao.count(getSpec(name, code))
+		return programMainDao.count(getSpec(name, code, tids))
 	}
 	
-	Specification<ProgramMain> getSpec(String name, String code) {
+	Specification<ProgramMain> getSpec(String name, String code, List<String> tids) {
 		// TODO Auto-generated method stub
 		Specification<ProgramMain> spec = new Specification<ProgramMain>(){
 			/**
@@ -85,6 +86,11 @@ class ProgramMainServiceImp implements ProgramMainService {
 				List<Predicate> predicates = new ArrayList<Predicate>()
 				predicates.add(builder.like(root.get("name"), "%"+name+"%"))
 				predicates.add(builder.like(root.get("code"), "%"+code+"%"))
+				CriteriaBuilder.In<String> ins = builder.in(root.get("tid"))
+				tids.each { 
+					ins.value(it)
+				}
+				predicates.add(ins)
 				Predicate[] predicateArray = new Predicate[predicates.size()]
 				return builder.and(predicates.toArray(predicateArray))
 			}

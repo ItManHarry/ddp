@@ -6,4 +6,6 @@ interface ProgramGroupDao extends JpaRepository<ProgramGroup, String> {
 
 	List<ProgramGroup> findByProgramid(String proId)
 	
+	List<ProgramGroup> findByUserid(String userId)
+	
 }
