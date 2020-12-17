@@ -3,7 +3,7 @@
 <head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>项目管理系统 - 用户信息维护</title>
+	<title>项目管理系统 - 项目信息维护</title>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -20,8 +20,8 @@
 		  	 					<el-form-item>
 		  	 						<el-switch							  		
 									  	v-model="searchtype"
-									  	active-text="姓名查找"
-									  	inactive-text="账号查找">
+									  	active-text="项目名称"
+									  	inactive-text="项目编号">
 									</el-switch>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
@@ -36,46 +36,46 @@
 		  	 				</el-form>		  	 				
 		  	 			</el-col>
 		  	 		</el-row>
-		  	 		<!-- 用户表单窗体 -->
+		  	 		<!-- 项目表单窗体 -->
 		  	 		<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeUser" :close-on-click-modal = "false">
   	 					<el-form :model="form" :rules = "rules" ref = "userForm">
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户代码" :label-width="formLabelWidth" prop = "code">
+  	 								<el-form-item label="项目代码" :label-width="formLabelWidth" prop = "code">
 								      <el-input v-model="form.code" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户名称" :label-width="formLabelWidth" prop = "name">
+  	 								<el-form-item label="项目名称" :label-width="formLabelWidth" prop = "name">
 								      <el-input v-model="form.name" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>		  	 						
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户类型" :label-width="formLabelWidth" prop = "usertype">
-									  <el-select v-model="form.usertype" placeholder="请选择用户类型" @change="changeType">
+  	 								<el-form-item label="项目类型" :label-width="formLabelWidth" prop = "usertype">
+									  <el-select v-model="form.usertype" placeholder="请选择项目类型">
 									  	<el-option v-for = "type in types" :label="type.view" :value="type.value"></el-option>
 									  </el-select>
 									</el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户密码" :label-width="formLabelWidth" :disabled = "true">
+  	 								<el-form-item label="项目密码" :label-width="formLabelWidth" prop = "pwd">
 								      <el-input v-model="form.pwd" autocomplete="off" show-password></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>									    
 						    <el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户角色" :label-width="formLabelWidth" prop = "userrole">
-									  <el-select v-model="form.userrole" placeholder="请选择用户角色">
+  	 								<el-form-item label="项目角色" :label-width="formLabelWidth" prop = "userrole">
+									  <el-select v-model="form.userrole" placeholder="请选择项目角色">
 									  	<el-option v-for = "role in roles" :label="role.view" :value="role.value"></el-option>
 									  </el-select>
 									</el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户组织" :label-width="formLabelWidth" prop = "userorg">
-									  <el-select v-model="form.userorg" filterable placeholder="请选择用户组织">
+  	 								<el-form-item label="项目组织" :label-width="formLabelWidth" prop = "userorg">
+									  <el-select v-model="form.userorg" filterable placeholder="请选择项目组织">
 									  	<el-option v-for = "org in orgs" :label="org.view" :value="org.value"></el-option>
 									  </el-select>
 									</el-form-item>
@@ -83,7 +83,7 @@
   	 						</el-row>	
   	 						<el-row type = "flex" justify = "left" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="邮箱地址" :label-width="formLabelWidth">
+  	 								<el-form-item label="邮箱地址" :label-width="formLabelWidth" prop = "code">
 								      <el-input v-model="form.email" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
@@ -103,11 +103,11 @@
 						      	<el-table-column prop = "userrole" v-if = "false"></el-table-column>
 						      	<el-table-column prop = "userorg" v-if = "false"></el-table-column>
 						      	<el-table-column prop = "pwd" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "code" label = "用户账号"></el-table-column>
-						      	<el-table-column prop = "name" label = "用户名称"></el-table-column>
-						      	<el-table-column prop = "utStr" label = "用户类型"></el-table-column>
-						      	<el-table-column prop = "urStr" label = "用户角色"></el-table-column>
-						      	<el-table-column prop = "uoStr" label = "用户组织"></el-table-column>
+						      	<el-table-column prop = "code" label = "项目账号"></el-table-column>
+						      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
+						      	<el-table-column prop = "utStr" label = "项目类型"></el-table-column>
+						      	<el-table-column prop = "urStr" label = "项目角色"></el-table-column>
+						      	<el-table-column prop = "uoStr" label = "项目组织"></el-table-column>
 						      	<el-table-column prop = "email" label = "邮箱地址"></el-table-column>
 						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
@@ -121,10 +121,9 @@
 								          @click="editUser(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
-								          type="warning"
-								          icon = "el-icon-close"
+								          type="success"
+								          icon = "el-icon-user-solid"
 								          plain
-								          :disabled = "scope.row.stsStr == '停用'"
 								          @click="unuseUser(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
@@ -161,9 +160,8 @@
 					items:10,							//每页条数
 					page: 1,							//当前页
 					height:window.screen.height * 0.55,	//表格最大高度
-					formTitle:'新增用户',					//用户窗体标题
-					formVisible:false,					//用户窗体显示
-					devperson:false,					//是否开发人员
+					formTitle:'新增项目',					//项目窗体标题
+					formVisible:false,					//项目窗体显示	
 					formLabelWidth:'120px',
 					form:{
 						id:'',
@@ -178,27 +176,30 @@
 					},
 					rules:{
 						code:[
-							{required:true, message:'请输入用户账号!', trigger:'blur'}
+							{required:true, message:'请输入项目账号!', trigger:'blur'}
 						],
 						name:[
-							{required:true, message:'请输入用户姓名!', trigger:'blur'}
+							{required:true, message:'请输入项目姓名!', trigger:'blur'}
+						],
+						pwd:[
+							{required:true, message:'请输入项目密码!', trigger:'blur'}
 						],
 						userrole: [
-			            	{ required: true, message: '请选择用户角色', trigger: 'change' }
+			            	{ required: true, message: '请选择项目角色', trigger: 'change' }
 			          	],
 			          	usertype: [
-			            	{ required: true, message: '请选择用户类型', trigger: 'change' }
+			            	{ required: true, message: '请选择项目类型', trigger: 'change' }
 			          	],
 						userorg: [
-			            	{ required: true, message: '请选择用户组织', trigger: 'change' }
+			            	{ required: true, message: '请选择项目组织', trigger: 'change' }
 			          	]
 					},					
-					userData: [],						//用户数据list
+					userData: [],						//项目数据list
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
-					types:[],							//用户类型
-					roles:[],							//用户角色
-					orgs:[]								//用户组织
+					types:[],							//项目类型
+					roles:[],							//项目角色
+					orgs:[]								//项目组织
 				}
 			},
 			methods:{
@@ -212,25 +213,21 @@
 					this.form.usertype = ''
 					this.form.userorg = ''
 					this.form.email = ''
-					this.devperson = false
 					this.form.status = 1
 				},
-				//关闭用户维护窗体
+				//关闭项目维护窗体
 				closeUser:function(){					
 					this.formVisible = false
 					this.resetFormValues()
 				},
-				//新增用户
+				//新增项目
 				addUser:function(f){					
-		      		this.formTitle = '新增用户'
+		      		this.formTitle = '新增项目'
 					this.formVisible = true
 					this.$refs['userForm'].resetFields()
 					this.resetFormValues()
 				},
-				changeType:function(){
-					this.devperson = this.form.usertype == 1 ? false : true
-				},
-				//编辑用户信息
+				//编辑项目信息
 		      	editUser:function(index, row){
 		      		/*alert("User code is : "+row.code)
 		      		alert("User name is : "+row.name)
@@ -239,31 +236,30 @@
 		      		alert("User org is : "+row.userorg)
 		      		alert("User role is : "+row.userrole)*/
 		      		this.formVisible = true
-		      		this.formTitle = '修改用户'
+		      		this.formTitle = '修改项目'
 		      		this.$refs['userForm'].resetFields()
 		      		this.form.id = row.tid
 		      		this.form.code = row.code
 		      		this.form.pwd = row.pwd
 		      		this.form.name = row.name
 		      		this.form.usertype = row.usertype+''
-		      		this.devperson = row.usertype == 1 ? false : true
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
 		      		this.form.email = row.email
 		      	},
-		      	//停用用户
+		      	//停用项目
 		      	unuseUser:function(index, row){
 		      		this.form.id = row.tid
 		      		this.form.status = 2
 		      		this.doSaveUser('status')
 		      	},
-		      	//启用用户
+		      	//启用项目
 		      	reuseUser:function(index, row){
 		      		this.form.id = row.tid
 		      		this.form.status = 1
 		      		this.doSaveUser('status')
 		      	},
-				//执行保存用户
+				//执行保存项目
 				saveUser:function(form) {
 			        this.$refs[form].validate(function(valid) {
 			          if (valid) {
@@ -323,7 +319,7 @@
 		      		this.page = page
 		      		this.getUserData()
 		      	},
-		      	//获取用户清单数据
+		      	//获取项目清单数据
 		      	getUserData:function(){
 		      		axios.get('/pm/sys/user/query', {
 		      		    params: {
@@ -341,7 +337,7 @@
 		      		    console.log(error)
 		      		})
 		      	},
-		      	//获取用户类型数据
+		      	//获取项目类型数据
 		      	getUserType:function(){
 		      		axios.get('/pm/sys/enum/options', {
 		      		    params: {

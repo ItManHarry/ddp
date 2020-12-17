@@ -41,7 +41,7 @@ class ProgramMainController {
 	}
 	
 	/**
-	 * 根据姓名和code进行模糊分页查询
+	 * 根据项目或code进行模糊分页查询
 	 * @param page
 	 * @param limit
 	 * @param name
@@ -60,7 +60,7 @@ class ProgramMainController {
 			groups.each { 
 				proIds << it.getProgramid()
 			}
-			def count = programMainService.getCountByNameAndCode(name, code, proIds) ? systemUserService.getCountByNameAndCode(name, code, proIds).intValue() : 0
+			def count = programMainService.getCountByNameAndCode(name, code, proIds) ? programMainService.getCountByNameAndCode(name, code, proIds).intValue() : 0
 			def data = programMainService.getByNameAndCode(page, limit, name, code, proIds)
 			return ServerResultJson.success(data, count)
 		}else {
@@ -105,7 +105,7 @@ class ProgramMainController {
 			pro.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			pro.setCreateuserid(userCd)
 		}
-		pro.setCode(code)
+		pro.setCode(code) 
 		pro.setName(name)
 		pro.setRemark(remark)
 		pro.setCharger(userCd)
