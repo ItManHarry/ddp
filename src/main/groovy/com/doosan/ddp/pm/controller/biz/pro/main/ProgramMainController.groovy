@@ -79,7 +79,7 @@ class ProgramMainController {
 	def save(@RequestBody String params, HttpServletRequest request, Map map){
 		//session获取用户账号&uuid
 		def userCd = request.getSession().getAttribute("currentUser")
-		def userId = request.getSession().getAttribute("currentUserId")
+		//def userId = request.getSession().getAttribute("currentUserId")
 		//传递参数
 		println 'Parameters : \t' + params
 		Random rand = new Random()
@@ -100,14 +100,15 @@ class ProgramMainController {
 		if(id) {
 			pro = programMainService.getProgramById(id);
 			pro.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			pro.setModifyuserid(userId)
+			pro.setModifyuserid(userCd)
 		}else {
 			pro.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			pro.setCreateuserid(userId)
+			pro.setCreateuserid(userCd)
 		}
 		pro.setCode(code)
 		pro.setName(name)
 		pro.setRemark(remark)
+		pro.setCharger(userCd)
 		pro.setStartdate(startdate)
 		pro.setEnddate(enddate)
 		pro.setAmount(amount)

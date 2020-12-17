@@ -20,7 +20,7 @@ class ProgramMain extends TableEntityBaseModel {
 	//项目描述
 	@Column(name="remark", length=200)
 	String remark
-	//项目负责人(用户uuid)
+	//项目负责人(用户代码)
 	@Column(name="charger", length=40)
 	String charger
 	@Transient

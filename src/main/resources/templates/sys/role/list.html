@@ -135,10 +135,10 @@
 		      		//alert(row.tid)
 		      		this.formVisible = true
 		      		this.formTitle = '修改角色'
+		      		this.$refs['roleForm'].resetFields()
 	      			this.form.id = row.tid
 		      		this.form.rolename = row.rolename
 		      		this.form.status = row.stsStr == '在用' ? 1 : 2
-		      		this.$refs[form].resetFields()
 		      	},
 		      	//停用角色
 		      	unuseRole:function(index, row){

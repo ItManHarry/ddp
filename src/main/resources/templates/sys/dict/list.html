@@ -162,10 +162,10 @@
 		      		//alert(row.tid)
 		      		this.formVisible = true
 		      		this.formTitle = '修改字典'
+		      		this.$refs['dictForm'].resetFields()
 	      			this.form.id = row.tid
 		      		this.form.code = row.code
 		      		this.form.name = row.name
-		      		this.$refs[form].resetFields()
 		      	},
 				//执行保存字典
 				saveDict:function(form) {

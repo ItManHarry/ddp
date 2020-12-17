@@ -128,10 +128,10 @@
 		      		//alert(row.tid)
 		      		this.formVisible = true
 		      		this.formTitle = '修改组织'
+		      		this.$refs['orgForm'].resetFields()
 	      			this.form.id = row.tid
 		      		this.form.orgname = row.orgname
 		      		this.form.status = row.stsStr == '在用' ? 1 : 2
-		      		this.$refs[form].resetFields()
 		      	},
 		      	//停用组织
 		      	unuseOrg:function(index, row){
