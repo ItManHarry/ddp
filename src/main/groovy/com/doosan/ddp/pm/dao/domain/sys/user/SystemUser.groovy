@@ -32,6 +32,9 @@ class SystemUser extends TableEntityBaseModel {
 	//用户组织所属
 	@Column(name="userorg",length=40)
 	String userorg
+	//用户邮箱
+	@Column(name="email",length=40)
+	String email
 	@Transient
 	String uoStr
 	//用户状态,此栏位不会生成列

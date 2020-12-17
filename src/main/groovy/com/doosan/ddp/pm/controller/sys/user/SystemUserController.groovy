@@ -149,6 +149,7 @@ class SystemUserController {
 		String userorg = json.get("userorg").asString
 		int status = json.get("status").asInt
 		String pwd = json.get("pwd").asString
+		String email = json.get("email").asString
 		//String userId = json.get("user").asString
 		SystemUser user = new SystemUser()
 		if(id) {
@@ -167,6 +168,7 @@ class SystemUserController {
 		user.setUserrole(userrole)
 		user.setUsertype(usertype)
 		user.setUserorg(userorg)
+		user.setEmail(email)
 		user.setStatus(status)
 		user.setPwd(pwd)
 		systemUserService.save(user)

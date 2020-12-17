@@ -2,6 +2,8 @@ package com.doosan.ddp.pm.dao.domain.biz.pro
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
+import javax.persistence.Transient
+
 import com.doosan.ddp.pm.dao.domain.base.TableEntityBaseModel
 /**
  * 项目主信息
@@ -18,21 +20,17 @@ class ProgramMain extends TableEntityBaseModel {
 	//项目描述
 	@Column(name="remark", length=200)
 	String remark
-	//项目负责人(用户code)
+	//项目负责人(用户uuid)
 	@Column(name="charger", length=40)
 	String charger
+	@Transient
+	String chargerNm
 	//项目开始日期
 	@Column(name="startdate", length=20)
 	String startdate
-	//项目实际开始日期
-	@Column(name="realstartdate", length=20)
-	String realstartdate
 	//项目结束日期
 	@Column(name="enddate", length=20)
 	String enddate
-	//项目实际结束日期
-	@Column(name="realenddate", length=20)
-	String realenddate
 	//项目金额
 	@Column(name="amount")
 	double amount

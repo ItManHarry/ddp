@@ -4,34 +4,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>项目管理系统 - 用户信息维护</title>
-	<style>
-	  .el-row {
-	    margin-bottom: 20px;
-	    &:last-child {
-	      margin-bottom: 0;
-	    }
-	  }
-	  .el-col {
-	    border-radius: 4px;
-	  }
-	  .bg-purple-dark {
-	    background: #99a9bf;
-	  }
-	  .bg-purple {
-	    background: #d3dce6;
-	  }
-	  .bg-purple-light {
-	    background: #e5e9f2;
-	  }
-	  .grid-content {
-	    border-radius: 4px;
-	    min-height: 36px;
-	  }
-	  .row-bg {
-	    padding: 10px 0;
-	    background-color: #f9fafc;
-	  }
-	</style>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -108,6 +80,13 @@
 									  </el-select>
 									</el-form-item>
   	 							</el-col>
+  	 						</el-row>	
+  	 						<el-row type = "flex" justify = "left" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="邮箱地址" :label-width="formLabelWidth" prop = "code">
+								      <el-input v-model="form.email" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
   	 						</el-row>								    									
 						 </el-form>
 						 <div slot="footer" class="dialog-footer">
@@ -129,6 +108,7 @@
 						      	<el-table-column prop = "utStr" label = "用户类型"></el-table-column>
 						      	<el-table-column prop = "urStr" label = "用户角色"></el-table-column>
 						      	<el-table-column prop = "uoStr" label = "用户组织"></el-table-column>
+						      	<el-table-column prop = "email" label = "邮箱地址"></el-table-column>
 						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
@@ -192,7 +172,8 @@
 						userrole:'',
 						usertype:'',
 						userorg:'',
-						status:1
+						status:1,
+						email:''
 					},
 					rules:{
 						code:[
@@ -232,6 +213,7 @@
 					this.form.userrole = ''
 					this.form.usertype = ''
 					this.form.userorg = ''
+					this.form.email = ''
 					this.form.status = 1
 				},
 				//关闭用户维护窗体
@@ -263,6 +245,7 @@
 		      		this.form.usertype = row.usertype+''
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
+		      		this.form.email = row.email
 		      		this.$refs['userForm'].resetFields()
 		      	},
 		      	//停用用户
@@ -303,6 +286,7 @@
 			            	userorg:app.form.userorg,
 			            	status:app.form.status,
 			            	pwd:app.form.pwd,
+			            	email:app.form.email,
 			            	user:'admin'
 			            }
 		      		}		      		

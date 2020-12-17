@@ -35,6 +35,8 @@ class ProgramMainController {
 	 */
 	@RequestMapping("/list")
 	def list(HttpServletRequest request, Map map) {
+		def userId = request.getSession().getAttribute("currentUserId")
+		println "User uuid is : $userId"
 		return WEB_URL + "/list"
 	}
 	
@@ -50,9 +52,7 @@ class ProgramMainController {
 	@GetMapping("/query")
 	def query(Integer page, Integer limit, String name, String code, HttpServletRequest request){
 		//session获取用户账号
-		def userCode = request.getSession().getAttribute("currentUser")
-		SystemUser user = systemUserService.getUserByCode(userCode)
-		String userId = user ? user.getTid() : ''
+		def userId = request.getSession().getAttribute("currentUserId")
 		if(userId) {
 			//根据用户id获取所属的项目组
 			List<ProgramGroup> groups = programGroupService.getProgramGroupByUserId(userId)
@@ -77,8 +77,9 @@ class ProgramMainController {
 	@PostMapping("/save")
 	@ResponseBody
 	def save(@RequestBody String params, HttpServletRequest request, Map map){
-		//session获取用户账号
-		def userId = request.getSession().getAttribute("currentUser")
+		//session获取用户账号&uuid
+		def userCd = request.getSession().getAttribute("currentUser")
+		def userId = request.getSession().getAttribute("currentUserId")
 		//传递参数
 		println 'Parameters : \t' + params
 		Random rand = new Random()
@@ -87,6 +88,12 @@ class ProgramMainController {
 		//生成规则PRO+YYYYMMDD+四位随机数
 		String code = "PRO"+ new SimpleDateFormat("yyyyMMdd").format(new Date())+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)
 		String name = json.get("name").asString
+		String remark = json.get("remark").asString
+		String startdate = json.get("startdate").asString
+		String enddate = json.get("enddate").asString
+		String amount = json.get("amount").asDouble
+		String contractno = json.get("contractno").asString
+		String prno = json.get("prno").asString
 		int status = json.get("status").asInt
 		//String user = json.get("user").asString
 		ProgramMain pro = new ProgramMain()
@@ -100,6 +107,12 @@ class ProgramMainController {
 		}
 		pro.setCode(code)
 		pro.setName(name)
+		pro.setRemark(remark)
+		pro.setStartdate(startdate)
+		pro.setEnddate(enddate)
+		pro.setAmount(amount)
+		pro.setContractno(contractno)
+		pro.setPrno(prno)
 		pro.setStatus(status)
 		programMainService.save(pro)
 		return ServerResultJson.success()
