@@ -24,7 +24,7 @@ class ProgramIssue extends TableEntityBaseModel {
 	//处理人员(存储用户uuid)
 	@Column(name="handler", length=40)
 	String handler
-	//处理状态（1：未开始， 2：进行中，3：已完成，4：已取消， 5：再处理）
+	//处理状态（1：待确认， 2：处理中，3：处理完成，4：已取消， 5：Reopen）
 	@Column(name="state")
 	int state
 	//issue处理开始日期
