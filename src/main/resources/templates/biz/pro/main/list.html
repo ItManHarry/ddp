@@ -28,21 +28,21 @@
 		  	 						<el-input v-model = "searchkey"></el-input>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
-		  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getUserData">查找</el-button>
+		  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getProData">查找</el-button>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
-		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addUser">新增</el-button>
+		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addPro">新增</el-button>
 		  	 					</el-form-item>
 		  	 				</el-form>		  	 				
 		  	 			</el-col>
 		  	 		</el-row>
 		  	 		<!-- 项目表单窗体 -->
-		  	 		<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeUser" :close-on-click-modal = "false">
-  	 					<el-form :model="form" :rules = "rules" ref = "userForm">
+		  	 		<el-dialog :title = "formTitle" width = "60%" :visible.sync = "formVisible" @close = "closePro" :close-on-click-modal = "false">
+  	 					<el-form :model="form" :rules = "rules" ref = "proForm">
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="项目代码" :label-width="formLabelWidth" prop = "code">
-								      <el-input v-model="form.code" autocomplete="off"></el-input>
+  	 								<el-form-item label="项目编号" :label-width="formLabelWidth">
+								      <el-input v-model="form.code" autocomplete="off" :disabled = "true" placeholder = "系统自动生成"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
@@ -50,66 +50,72 @@
 								      <el-input v-model="form.name" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
+  	 						</el-row>	
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="合同编号" :label-width="formLabelWidth" prop = "contractno">
+								      <el-input v-model="form.contractno" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="PR编号" :label-width="formLabelWidth" prop = "prno">
+								      <el-input v-model="form.prno" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>	
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "24">
+  	 								<el-form-item label="项目描述" :label-width="formLabelWidth" prop = "remark">
+								      <el-input type = "textarea" :rows="3" autosize v-model="form.remark" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
   	 						</el-row>		  	 						
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="项目类型" :label-width="formLabelWidth" prop = "usertype">
-									  <el-select v-model="form.usertype" placeholder="请选择项目类型">
-									  	<el-option v-for = "type in types" :label="type.view" :value="type.value"></el-option>
-									  </el-select>
+  	 								<el-form-item label="开始日期" :label-width="formLabelWidth" prop = "startdate">
+									  <el-date-picker
+									      v-model="form.startdate"
+									      type="date"
+									      placeholder="选择日期"
+									      value-format = "yyyy-MM-dd">
+									  </el-date-picker>
 									</el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="项目密码" :label-width="formLabelWidth" prop = "pwd">
-								      <el-input v-model="form.pwd" autocomplete="off" show-password></el-input>
-								    </el-form-item>
+  	 								<el-form-item label="结束日期" :label-width="formLabelWidth" prop = "enddate">
+									  <el-date-picker
+									      v-model="form.enddate"
+									      type="date"
+									      placeholder="选择日期"
+									      value-format = "yyyy-MM-dd">
+									  </el-date-picker>
+									</el-form-item>
   	 							</el-col>
   	 						</el-row>									    
-						    <el-row type = "flex" justify = "center" align = "middle">
-  	 							<el-col :span = "12">
-  	 								<el-form-item label="项目角色" :label-width="formLabelWidth" prop = "userrole">
-									  <el-select v-model="form.userrole" placeholder="请选择项目角色">
-									  	<el-option v-for = "role in roles" :label="role.view" :value="role.value"></el-option>
-									  </el-select>
-									</el-form-item>
-  	 							</el-col>
-  	 							<el-col :span = "12">
-  	 								<el-form-item label="项目组织" :label-width="formLabelWidth" prop = "userorg">
-									  <el-select v-model="form.userorg" filterable placeholder="请选择项目组织">
-									  	<el-option v-for = "org in orgs" :label="org.view" :value="org.value"></el-option>
-									  </el-select>
-									</el-form-item>
-  	 							</el-col>
-  	 						</el-row>	
   	 						<el-row type = "flex" justify = "left" align = "middle">
-  	 							<el-col :span = "12">
-  	 								<el-form-item label="邮箱地址" :label-width="formLabelWidth" prop = "code">
-								      <el-input v-model="form.email" autocomplete="off"></el-input>
+  	 							<el-col :span = "10">
+  	 								<el-form-item label="合同金额" :label-width="formLabelWidth" prop = "amount">
+								      <el-input v-model="form.amount" autocomplete="off"><template slot="append">￥</template></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>								    									
 						 </el-form>
 						 <div slot="footer" class="dialog-footer">
-						    <el-button @click="closeUser">取 消</el-button>
-						    <el-button type="primary" @click="saveUser('userForm')">保存</el-button>
+						    <el-button @click="closePro">取 消</el-button>
+						    <el-button type="primary" @click="savePro('proForm')">保存</el-button>
 						 </div>
   	 				</el-dialog>
 		  	 		<el-row>
 		  	 			<el-col :span = "24">
-		  	 				<el-table :data="userData" style="width:100%;" :max-height = "height">
+		  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
 		  	 					<!-- 使用 v-if 隐藏列 -->
 						      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "usertype" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "userrole" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "userorg" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "pwd" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "code" label = "项目账号"></el-table-column>
+						      	<el-table-column prop = "code" label = "项目编号"></el-table-column>
 						      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
-						      	<el-table-column prop = "utStr" label = "项目类型"></el-table-column>
-						      	<el-table-column prop = "urStr" label = "项目角色"></el-table-column>
-						      	<el-table-column prop = "uoStr" label = "项目组织"></el-table-column>
-						      	<el-table-column prop = "email" label = "邮箱地址"></el-table-column>
-						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
+						      	<el-table-column prop = "contractno" label = "合同编号"></el-table-column>
+						      	<el-table-column prop = "prno" label = "PR编号"></el-table-column>
+						      	<el-table-column prop = "startdate" label = "开始日期"></el-table-column>
+						      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
 								        <el-button
@@ -117,21 +123,13 @@
 								          type = "primary"
 								          icon = "el-icon-edit"
 								          plain
-								          :disabled = "scope.row.stsStr == '停用'"
-								          @click="editUser(scope.$index, scope.row)"></el-button>
+								          @click="editPro(scope.$index, scope.row)"></el-button>
 								        <el-button
 								          size="mini"
 								          type="success"
 								          icon = "el-icon-user-solid"
 								          plain
-								          @click="unuseUser(scope.$index, scope.row)"></el-button>
-								        <el-button
-								          size="mini"
-								          type="success"
-								          icon = "el-icon-check"
-								          plain
-								          :disabled = "scope.row.stsStr == '在用'"
-								          @click="reuseUser(scope.$index, scope.row)"></el-button>
+								          @click="groupUsers(scope.$index, scope.row)"></el-button>
 							      </template>
 						      	</el-table-column>
 						    </el-table>	
@@ -167,39 +165,39 @@
 						id:'',
 						code:'',
 						name:'',
-						pwd:'',
-						userrole:'',
-						usertype:'',
-						userorg:'',
-						status:1,
-						email:''
+						remark:'',
+						startdate:'',
+						enddate:'',
+						amount:'',
+						contractno:'',
+						prno:''
 					},
 					rules:{
-						code:[
-							{required:true, message:'请输入项目账号!', trigger:'blur'}
-						],
 						name:[
-							{required:true, message:'请输入项目姓名!', trigger:'blur'}
+							{required:true, message:'请输入项目名称!', trigger:'blur'}
 						],
-						pwd:[
-							{required:true, message:'请输入项目密码!', trigger:'blur'}
+						contractno:[
+							{required:true, message:'请输入合同编号!', trigger:'blur'}
 						],
-						userrole: [
-			            	{ required: true, message: '请选择项目角色', trigger: 'change' }
+						prno:[
+							{required:true, message:'请输入PR编号!', trigger:'blur'}
+						],
+						remark:[
+							{required:true, message:'请输入项目描述!', trigger:'blur'}
+						],
+						startdate: [
+			            	{ required: true, message: '请选择项目开始日期', trigger: 'blur' }
 			          	],
-			          	usertype: [
-			            	{ required: true, message: '请选择项目类型', trigger: 'change' }
+			          	enddate: [
+			            	{ required: true, message: '请选择项目结束日期', trigger: 'blur' }
 			          	],
-						userorg: [
-			            	{ required: true, message: '请选择项目组织', trigger: 'change' }
+			          	amount: [
+			            	{ required: true, message: '请输入项目金额', trigger: 'blur' }
 			          	]
 					},					
-					userData: [],						//项目数据list
+					proData: [],						//项目数据list
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
-					types:[],							//项目类型
-					roles:[],							//项目角色
-					orgs:[]								//项目组织
 				}
 			},
 			methods:{
@@ -208,120 +206,96 @@
 					this.form.id = ''
 					this.form.code = ''
 					this.form.name = ''
-					this.form.pwd = ''
-					this.form.userrole = ''
-					this.form.usertype = ''
-					this.form.userorg = ''
-					this.form.email = ''
-					this.form.status = 1
+					this.form.remark = ''
+					this.form.startdate = ''
+					this.form.enddate = ''
+					this.form.amount = ''
+					this.form.contractno = ''
+					this.form.prno = ''
 				},
 				//关闭项目维护窗体
-				closeUser:function(){					
+				closePro:function(){					
 					this.formVisible = false
 					this.resetFormValues()
 				},
 				//新增项目
-				addUser:function(f){					
+				addPro:function(f){					
 		      		this.formTitle = '新增项目'
 					this.formVisible = true
-					this.$refs['userForm'].resetFields()
+					this.$refs['proForm'].resetFields()
 					this.resetFormValues()
 				},
 				//编辑项目信息
-		      	editUser:function(index, row){
-		      		/*alert("User code is : "+row.code)
-		      		alert("User name is : "+row.name)
-		      		alert("User pwd is : "+row.pwd)
-		      		alert("User type is : "+row.usertype)
-		      		alert("User org is : "+row.userorg)
-		      		alert("User role is : "+row.userrole)*/
+		      	editPro:function(index, row){
 		      		this.formVisible = true
 		      		this.formTitle = '修改项目'
-		      		this.$refs['userForm'].resetFields()
 		      		this.form.id = row.tid
 		      		this.form.code = row.code
-		      		this.form.pwd = row.pwd
 		      		this.form.name = row.name
-		      		this.form.usertype = row.usertype+''
-		      		this.form.userrole = row.userrole
-		      		this.form.userorg = row.userorg
-		      		this.form.email = row.email
+		      		this.form.remark = row.remark
+		      		this.form.startdate = row.startdate
+		      		this.form.enddate = row.enddate
+		      		this.form.amount = row.amount
+		      		this.form.contractno = row.contractno
+		      		this.form.prno = row.prno
+		      		this.$refs['proForm'].clearValidate()
 		      	},
-		      	//停用项目
-		      	unuseUser:function(index, row){
+		      	//维护项目成员
+		      	groupUsers:function(index, row){
 		      		this.form.id = row.tid
 		      		this.form.status = 2
-		      		this.doSaveUser('status')
-		      	},
-		      	//启用项目
-		      	reuseUser:function(index, row){
-		      		this.form.id = row.tid
-		      		this.form.status = 1
-		      		this.doSaveUser('status')
 		      	},
 				//执行保存项目
-				saveUser:function(form) {
+				savePro:function(form) {
 			        this.$refs[form].validate(function(valid) {
-			          if (valid) {
-			            app.doSaveUser('save')		            
-			          } else {
-			            console.log('error submit!!')
-			            return false;
-			          }
+			        	if (valid) {
+			        		axios.post('/pm/biz/pro/save',	{
+				            	id:app.form.id,
+				            	code:app.form.code,
+				            	name:app.form.name,
+				            	remark:app.form.remark,
+				            	startdate:app.form.startdate,
+				            	enddate:app.form.enddate,
+				            	amount:app.form.amount,
+				            	contractno:app.form.contractno,
+				            	prno:app.form.prno,
+				            	status:1,
+				            	user:'admin'
+				            }).then(function (response) {
+				            	var result = response.data
+				            	if(result.status == 0)
+				            		app.$message({
+				            			message:result.message,
+				            			type:'warning',
+				            			duration:2000,
+				            			offset:120
+				            		})	
+				            	else{		            		
+				            		app.formVisible = false
+				            		app.getProData()		            		
+				            	}			            		
+				            }).catch(function (error) {
+				            	app.$message({
+			            			message:result.message,
+			            			type:'danger',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+				            });
+			        	}else{
+			            	console.log('error submit!!')
+			            	return false;
+			            }
 			        });
-		      	},
-		      	//执行保存
-		      	doSaveUser:function(action){
-		      		var url = ''
-		      		var params = {}
-		      		if(action == 'save'){
-		      			url = '/pm/sys/user/save'
-		      			params = {
-			            	id:app.form.id,
-			            	code:app.form.code,
-			            	name:app.form.name,
-			            	userrole:app.form.userrole,
-			            	usertype:app.form.usertype,
-			            	userorg:app.form.userorg,
-			            	status:app.form.status,
-			            	pwd:app.form.pwd,
-			            	email:app.form.email,
-			            	user:'admin'
-			            }
-		      		}		      		
-		      		if(action == 'status'){
-		      			url = '/pm/sys/user/status'
-	      				params = {
-			            	id:app.form.id,
-			            	status:app.form.status,
-			            	user:'admin'
-			            }
-		      		}
-		      		axios.post(url,	params).then(function (response) {
-		            	var result = response.data
-		            	if(result.status == 0)
-		            		app.$message({
-		            			message:result.message,
-		            			type:'warning',
-		            			duration:2000,
-		            			offset:120
-		            		})	
-		            	else{		            		
-		            		app.formVisible = false
-		            		app.getUserData()		            		
-		            	}			            		
-		            }).catch(function (error) {
-		            	alert(error)
-		            });
 		      	},
 		      	//分页
 		      	changePage:function(page){
 		      		this.page = page
-		      		this.getUserData()
+		      		this.getProData()
 		      	},
 		      	//获取项目清单数据
-		      	getUserData:function(){
-		      		axios.get('/pm/sys/user/query', {
+		      	getProData:function(){
+		      		axios.get('/pm/biz/pro/pm/query', {
 		      		    params: {
 		      		      page:app.page,
 		      		      limit:app.items,
@@ -330,51 +304,8 @@
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
-		      			app.userData = result.data
+		      			app.proData = result.data
 		      			app.total = result.number
-		      		    console.log(response)
-		      		}).catch(function (error) {
-		      		    console.log(error)
-		      		})
-		      	},
-		      	//获取项目类型数据
-		      	getUserType:function(){
-		      		axios.get('/pm/sys/enum/options', {
-		      		    params: {
-		      		      code:'D022'
-		      		    }
-		      		}).then(function (response) {
-		      			var result = response.data
-		      			app.types = result.data
-		      		    console.log(response)
-		      		}).catch(function (error) {
-		      		    console.log(error)
-		      		})
-		      	},
-		      	//获取系统角色数据
-		      	getRoles:function(){
-		      		axios.get('/pm/sys/role/items', {
-		      		    params: {
-		      		      
-		      		    }
-		      		}).then(function (response) {
-		      			var result = response.data
-		      			app.roles = result.data
-		      		    console.log(response)
-		      		}).catch(function (error) {
-		      		    console.log(error)
-		      		})
-		      	}
-		      	,
-		      	//获取系统组织数据
-		      	getOrgs:function(){
-		      		axios.get('/pm/sys/org/items', {
-		      		    params: {
-		      		      
-		      		    }
-		      		}).then(function (response) {
-		      			var result = response.data
-		      			app.orgs = result.data
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      		    console.log(error)
@@ -383,10 +314,7 @@
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
-				this.getUserData()
-				this.getUserType()
-				this.getRoles()
-				this.getOrgs()
+				this.getProData()
 			}
 		});		
 	</script>

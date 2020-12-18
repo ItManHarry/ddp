@@ -109,7 +109,7 @@ class SystemUserController {
 		orgs.each { 
 			orgMap.put(it.getTid(), it.getOrgname())
 		}
-		def types = systemEnumerationService.getByDictionary(systemDictionaryService.getDictByCode('D022').getTid())
+		def types = systemEnumerationService.getByDictionary(systemDictionaryService.getDictByCode('D001').getTid())
 		def typeMap = [:]
 		types.each { 
 			typeMap.put(it.getValue(), it.getView())

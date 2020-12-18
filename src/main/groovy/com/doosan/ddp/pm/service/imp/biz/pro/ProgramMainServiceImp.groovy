@@ -58,21 +58,41 @@ class ProgramMainServiceImp implements ProgramMainService {
 	}
 
 	@Transactional
-	List<ProgramMain> getByNameAndCode(Integer page, Integer limit, String name, String code, List<String> tids) {
+	List<ProgramMain> getByNameAndCodeForGroup(Integer page, Integer limit, String name, String code, List<String> tids) {
 		// TODO Auto-generated method stub
 		Sort sort = Sort.by("code","name")
 		Pageable pageable = PageRequest.of(page-1, limit, sort)			//page从0开始
-		Page<ProgramMain> pageData = programMainDao.findAll(getSpec(name, code, tids), pageable)
+		Page<ProgramMain> pageData = programMainDao.findAll(getSpecForGroup(name, code, tids), pageable)
 		return pageData.getContent()
 	}
 
 	@Transactional
-	long getCountByNameAndCode(String name, String code, List<String> tids) {
+	long getCountByNameAndCodeForGroup(String name, String code, List<String> tids) {
 		// TODO Auto-generated method stub
-		return programMainDao.count(getSpec(name, code, tids))
+		return programMainDao.count(getSpecForGroup(name, code, tids))
 	}
-	
-	Specification<ProgramMain> getSpec(String name, String code, List<String> tids) {
+	@Transactional
+	List<ProgramMain> getByNameAndCodeForPM(Integer page, Integer limit, String name, String code, String charger) {
+		// TODO Auto-generated method stub
+		Sort sort = Sort.by("code","name")
+		Pageable pageable = PageRequest.of(page-1, limit, sort)			//page从0开始
+		Page<ProgramMain> pageData = programMainDao.findAll(getSpecForPM(name, code, charger), pageable)
+		return pageData.getContent()
+	}
+
+	@Transactional
+	long getCountByNameAndCodeForPM(String name, String code, String charger) {
+		// TODO Auto-generated method stub
+		return programMainDao.count(getSpecForPM(name, code, charger))
+	}
+	/**
+	 * 获取所有参与的项目清单 - 项目中的每个人	 
+	 * @param name
+	 * @param code
+	 * @param tids
+	 * @return
+	 */
+	Specification<ProgramMain> getSpecForGroup(String name, String code, List<String> tids) {
 		// TODO Auto-generated method stub
 		Specification<ProgramMain> spec = new Specification<ProgramMain>(){
 			/**
@@ -91,6 +111,34 @@ class ProgramMainServiceImp implements ProgramMainService {
 					ins.value(it)
 				}
 				predicates.add(ins)
+				Predicate[] predicateArray = new Predicate[predicates.size()]
+				return builder.and(predicates.toArray(predicateArray))
+			}
+		}
+		return spec
+	}
+	/**
+	 * 获取PM的所有项目信息
+	 * @param name
+	 * @param code
+	 * @param tid
+	 * @return
+	 */
+	Specification<ProgramMain> getSpecForPM(String name, String code, String charger) {
+		// TODO Auto-generated method stub
+		Specification<ProgramMain> spec = new Specification<ProgramMain>(){
+			/**
+			 * Root<ProgramMain>:根对象，用于查询对象的属性
+			 *  CriteriaQuery<?>:执行普通查询
+			 *  CriteriaBuilder:查询条件构造器,用于完成不同条件的查询
+			 *
+			 */
+			public Predicate toPredicate(Root<ProgramMain> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+				// where name like ? and gender like ?
+				List<Predicate> predicates = new ArrayList<Predicate>()
+				predicates.add(builder.like(root.get("name"), "%"+name+"%"))
+				predicates.add(builder.like(root.get("code"), "%"+code+"%"))
+				predicates.add(builder.equal(root.get("charger"), charger))
 				Predicate[] predicateArray = new Predicate[predicates.size()]
 				return builder.and(predicates.toArray(predicateArray))
 			}

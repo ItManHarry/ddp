@@ -5,7 +5,7 @@ import javax.persistence.Table
 import com.doosan.ddp.pm.dao.domain.base.TableEntityBaseModel
 /**
  * 项目组人员信息
- * 成员类型(1：开发公司PM ，2：斗山IT PM ，3：斗山IT，4：开发人员，5：斗山PU)
+ * 成员类型(1:斗山PU 2: 斗山IT PM 3:斗山IT 4:开发公司PM 5:开发人员)
  * 对应User中的类型
  */
 @Entity
@@ -17,4 +17,7 @@ class ProgramGroup extends TableEntityBaseModel {
 	//项目成员(用户uuid)
 	@Column(name="userid", length=40)
 	String userid
+	//项目组角色
+	@Column(name="grouprole")
+	int grouprole
 }

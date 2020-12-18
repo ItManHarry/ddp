@@ -60,8 +60,8 @@
 									</el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="用户密码" :label-width="formLabelWidth" :disabled = "true">
-								      <el-input v-model="form.pwd" autocomplete="off" show-password></el-input>
+  	 								<el-form-item label="用户密码" :label-width="formLabelWidth">
+								      <el-input v-model="form.pwd" autocomplete="off" show-password :disabled = "devperson"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>									    
@@ -228,7 +228,7 @@
 					this.resetFormValues()
 				},
 				changeType:function(){
-					this.devperson = this.form.usertype == 1 ? false : true
+					this.devperson = this.form.usertype == 1 ? true : false
 				},
 				//编辑用户信息
 		      	editUser:function(index, row){
@@ -240,16 +240,16 @@
 		      		alert("User role is : "+row.userrole)*/
 		      		this.formVisible = true
 		      		this.formTitle = '修改用户'
-		      		this.$refs['userForm'].resetFields()
 		      		this.form.id = row.tid
 		      		this.form.code = row.code
 		      		this.form.pwd = row.pwd
 		      		this.form.name = row.name
 		      		this.form.usertype = row.usertype+''
-		      		this.devperson = row.usertype == 1 ? false : true
+		      		this.devperson = row.usertype == 1 ? true : false
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
 		      		this.form.email = row.email
+		      		this.$refs['userForm'].clearValidate()
 		      	},
 		      	//停用用户
 		      	unuseUser:function(index, row){

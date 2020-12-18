@@ -49,19 +49,19 @@ class ProgramMainController {
 	 * @return
 	 */
 	@ResponseBody
-	@GetMapping("/query")
-	def query(Integer page, Integer limit, String name, String code, HttpServletRequest request){
+	@GetMapping("/pm/query")
+	def queryForPM(Integer page, Integer limit, String name, String code, HttpServletRequest request){
 		//session获取用户账号
-		def userId = request.getSession().getAttribute("currentUserId")
+		def userId = request.getSession().getAttribute("currentUser")
 		if(userId) {
 			//根据用户id获取所属的项目组
-			List<ProgramGroup> groups = programGroupService.getProgramGroupByUserId(userId)
-			def proIds = []
-			groups.each { 
-				proIds << it.getProgramid()
-			}
-			def count = programMainService.getCountByNameAndCode(name, code, proIds) ? programMainService.getCountByNameAndCode(name, code, proIds).intValue() : 0
-			def data = programMainService.getByNameAndCode(page, limit, name, code, proIds)
+//			List<ProgramGroup> groups = programGroupService.getProgramGroupByUserId(userId)
+//			def proIds = []
+//			groups.each { 
+//				proIds << it.getProgramid()
+//			}
+			def count = programMainService.getCountByNameAndCodeForPM(name, code, userId) ? programMainService.getCountByNameAndCodeForPM(name, code, userId).intValue() : 0
+			def data = programMainService.getByNameAndCodeForPM(page, limit, name, code, userId)
 			return ServerResultJson.success(data, count)
 		}else {
 			return ServerResultJson.success([], 0)
@@ -85,13 +85,13 @@ class ProgramMainController {
 		Random rand = new Random()
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
 		String id = json.get("id").asString
-		//生成规则PRO+YYYYMMDD+四位随机数
-		String code = "PRO"+ new SimpleDateFormat("yyyyMMdd").format(new Date())+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)
+		//生成规则PR-YYYYMMDD-四位随机数
+		String code = "PR-"+ new SimpleDateFormat("yyyyMMdd").format(new Date())+"-"+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)
 		String name = json.get("name").asString
 		String remark = json.get("remark").asString
 		String startdate = json.get("startdate").asString
 		String enddate = json.get("enddate").asString
-		String amount = json.get("amount").asDouble
+		double amount = json.get("amount").asDouble
 		String contractno = json.get("contractno").asString
 		String prno = json.get("prno").asString
 		int status = json.get("status").asInt

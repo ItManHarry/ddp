@@ -32,19 +32,35 @@ interface ProgramMainService {
 	 */
 	ProgramMain getProgramById(String id)
 	/**
-	 * 根据项目名称和代码进行模糊分页查询
+	 * 根据项目名称和代码进行模糊分页查询 - 项目组人员
 	 * @param page
 	 * @param limit
 	 * @param name
 	 * @param code
 	 * @return
 	 */
-	List<ProgramMain> getByNameAndCode(Integer page, Integer limit, String name, String code, List<String> tids)
+	List<ProgramMain> getByNameAndCodeForGroup(Integer page, Integer limit, String name, String code, List<String> tids)
 	/**
-	 * 根据项目名称和代码进行模糊分页查询记录数
+	 * 根据项目名称和代码进行模糊分页查询记录数 - 项目组人员
 	 * @param name
 	 * @param code
 	 * @return
 	 */
-	long getCountByNameAndCode(String name, String code, List<String> tids)
+	long getCountByNameAndCodeForGroup(String name, String code, List<String> tids)
+	/**
+	 * 根据项目名称和代码进行模糊分页查询 - PM
+	 * @param page
+	 * @param limit
+	 * @param name
+	 * @param code
+	 * @return
+	 */
+	List<ProgramMain> getByNameAndCodeForPM(Integer page, Integer limit, String name, String code, String charger)
+	/**
+	 * 根据项目名称和代码进行模糊分页查询记录数 - PM
+	 * @param name
+	 * @param code
+	 * @return
+	 */
+	long getCountByNameAndCodeForPM(String name, String code, String charger)
 }
