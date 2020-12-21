@@ -25,4 +25,9 @@ interface ProgramGroupService {
 	 * @return
 	 */
 	ProgramGroup getById(String id)
+	/**
+	 * 删除项目组成员
+	 * @param groupMember
+	 */
+	void deleteGroupMember(ProgramGroup groupMember)
 }

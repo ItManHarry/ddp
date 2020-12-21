@@ -150,10 +150,12 @@
 		  	 		<el-dialog title = "项目成员" :visible.sync = "groupVisible" :close-on-click-modal = "false">
 		  	 			<el-transfer
 		  	 				:titles="['用户选择','项目成员']"
-						    filterable						    
+						    filterable	
+						    target-order = "push"					    
 						    filter-placeholder="请输入姓名"
 						    v-model="members"
-						    :data="users">
+						    :data="users"
+						    @change = "saveGroup">
 						</el-transfer>
 		  	 		</el-dialog>
 		  	 	</el-main>
@@ -272,6 +274,32 @@
 		      			alert("error")
 		      		    console.log(error)
 		      		})
+		      	},
+		      	//保存项目组成员信息
+		      	saveGroup:function(){
+		      		//alert(this.groupProId)
+		      		//alert(this.members.join(","))
+		      		axios.post('/pm/biz/pro/group/save',	{
+		      			groupProId:app.groupProId,
+		      			members:app.members.join(","),
+		            	user:'admin'
+		            }).then(function (response) {
+		            	var result = response.data
+		            	if(result.status == 0)
+		            		app.$message({
+		            			message:result.message,
+		            			type:'warning',
+		            			duration:2000,
+		            			offset:120
+		            		})	
+		            }).catch(function (error) {
+		            	app.$message({
+	            			message:result.message,
+	            			type:'danger',
+	            			duration:2000,
+	            			offset:120
+	            		})	
+		            });
 		      	},
 				//执行保存项目
 				savePro:function(form) {

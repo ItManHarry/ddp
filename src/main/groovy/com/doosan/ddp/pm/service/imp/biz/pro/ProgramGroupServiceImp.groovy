@@ -34,4 +34,10 @@ class ProgramGroupServiceImp implements ProgramGroupService {
 		// TODO Auto-generated method stub
 		return programGroupDao.findByUserid(userId)
 	}
+
+	@Transactional
+	void deleteGroupMember(ProgramGroup groupMember) {
+		// TODO Auto-generated method stub
+		programGroupDao.delete(groupMember)
+	}
 }
