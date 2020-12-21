@@ -36,6 +36,47 @@
 		  	 				</el-form>		  	 				
 		  	 			</el-col>
 		  	 		</el-row>
+		  	 		<el-row>
+		  	 			<el-col :span = "24">
+		  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
+		  	 					<!-- 使用 v-if 隐藏列 -->
+						      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "code" label = "项目编号"></el-table-column>
+						      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
+						      	<el-table-column prop = "contractno" label = "合同编号"></el-table-column>
+						      	<el-table-column prop = "prno" label = "PR编号"></el-table-column>
+						      	<el-table-column prop = "startdate" label = "开始日期"></el-table-column>
+						      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
+						      	<el-table-column label = "操作" width = "200" align = "center">
+						      		<template slot-scope="scope">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-edit"
+								          plain
+								          @click="editPro(scope.$index, scope.row)"></el-button>
+								        <el-button
+								          size="mini"
+								          type="success"
+								          icon = "el-icon-user-solid"
+								          plain
+								          @click="groupUsers(scope.$index, scope.row)"></el-button>
+							      </template>
+						      	</el-table-column>
+						    </el-table>	
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 		<el-row type = "flex" justify = "end" align = "bottom">
+		  	 			<el-col :span = "24">
+		  	 				<el-pagination 
+		  	 					layout="prev, pager, next" 
+		  	 					:total="total" 
+		  	 					:page-size="items"
+		  	 					@current-change = "changePage"
+		  	 					small >
+		  	 				</el-pagination>
+		  	 			</el-col>
+		  	 		</el-row>
 		  	 		<!-- 项目表单窗体 -->
 		  	 		<el-dialog :title = "formTitle" width = "60%" :visible.sync = "formVisible" @close = "closePro" :close-on-click-modal = "false">
   	 					<el-form :model="form" :rules = "rules" ref = "proForm">
@@ -100,59 +141,28 @@
   	 							</el-col>
   	 						</el-row>								    									
 						 </el-form>
-						 <div slot="footer" class="dialog-footer">
+						 <div slot="footer">
 						    <el-button @click="closePro">取 消</el-button>
 						    <el-button type="primary" @click="savePro('proForm')">保存</el-button>
 						 </div>
-  	 				</el-dialog>
-		  	 		<el-row>
-		  	 			<el-col :span = "24">
-		  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
-		  	 					<!-- 使用 v-if 隐藏列 -->
-						      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "code" label = "项目编号"></el-table-column>
-						      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
-						      	<el-table-column prop = "contractno" label = "合同编号"></el-table-column>
-						      	<el-table-column prop = "prno" label = "PR编号"></el-table-column>
-						      	<el-table-column prop = "startdate" label = "开始日期"></el-table-column>
-						      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
-						      	<el-table-column label = "操作" width = "200" align = "center">
-						      		<template slot-scope="scope">
-								        <el-button
-								          size="mini"
-								          type = "primary"
-								          icon = "el-icon-edit"
-								          plain
-								          @click="editPro(scope.$index, scope.row)"></el-button>
-								        <el-button
-								          size="mini"
-								          type="success"
-								          icon = "el-icon-user-solid"
-								          plain
-								          @click="groupUsers(scope.$index, scope.row)"></el-button>
-							      </template>
-						      	</el-table-column>
-						    </el-table>	
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<el-row type = "flex" justify = "end" align = "bottom">
-		  	 			<el-col :span = "24">
-		  	 				<el-pagination 
-		  	 					layout="prev, pager, next" 
-		  	 					:total="total" 
-		  	 					:page-size="items"
-		  	 					@current-change = "changePage"
-		  	 					small >
-		  	 				</el-pagination>
-		  	 			</el-col>
-		  	 		</el-row>	
+  	 				</el-dialog>	
+  	 				<!-- 项目组成员窗体 -->
+		  	 		<el-dialog title = "项目成员" :visible.sync = "groupVisible" :close-on-click-modal = "false">
+		  	 			<el-transfer
+		  	 				:titles="['用户选择','项目成员']"
+						    filterable						    
+						    filter-placeholder="请输入姓名"
+						    v-model="members"
+						    :data="users">
+						</el-transfer>
+		  	 		</el-dialog>
 		  	 	</el-main>
 		  	 </el-container>		  	 
 		</div>
 	<script>
 		var app = new Vue({
 			el:"#app",
-			data:function(){				
+			data:function(){	
 				return{
 					total:10,							//记录总条数
 					items:10,							//每页条数
@@ -160,6 +170,7 @@
 					height:window.screen.height * 0.55,	//表格最大高度
 					formTitle:'新增项目',					//项目窗体标题
 					formVisible:false,					//项目窗体显示	
+					groupVisible:false,					//项目成员窗体
 					formLabelWidth:'120px',
 					form:{
 						id:'',
@@ -198,6 +209,9 @@
 					proData: [],						//项目数据list
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
+					users: [],							//系统用户
+			        members: [],						//项目组人员,
+			        groupProId:''						//项目组所属项目ID	
 				}
 			},
 			methods:{
@@ -242,8 +256,22 @@
 		      	},
 		      	//维护项目成员
 		      	groupUsers:function(index, row){
-		      		this.form.id = row.tid
-		      		this.form.status = 2
+		      		this.groupProId = row.tid
+		      		this.groupVisible = true
+		      		//获取成员数据
+		      		axios.get('/pm/biz/pro/group/members', {
+		      		    params: {
+		      		      proId:row.tid		      		      
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data		      			
+		      			app.users = result.data.users
+		      			app.members = result.data.members
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
 		      	},
 				//执行保存项目
 				savePro:function(form) {

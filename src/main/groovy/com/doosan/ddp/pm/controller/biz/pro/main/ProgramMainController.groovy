@@ -116,6 +116,14 @@ class ProgramMainController {
 		pro.setPrno(prno)
 		pro.setStatus(status)
 		programMainService.save(pro)
+		//新建的项目要新增项目成员(PM)
+		if(!id) {
+			println "Program id is : ${pro.getTid()}"
+			ProgramGroup group = new ProgramGroup(programid:pro.getTid(),userid:userCd,grouprole:2)
+			group.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+			group.setCreateuserid(userCd)
+			programGroupService.save(group)
+		}
 		return ServerResultJson.success()
 	}
 	
