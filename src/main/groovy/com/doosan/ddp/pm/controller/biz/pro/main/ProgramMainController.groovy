@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramGroup
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
+import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramStatus
 import com.doosan.ddp.pm.dao.domain.sys.user.SystemUser
 import com.doosan.ddp.pm.service.biz.pro.ProgramGroupService
 import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
+import com.doosan.ddp.pm.service.biz.pro.ProgramStatusService
 import com.doosan.ddp.pm.service.sys.user.SystemUserService
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -28,6 +30,8 @@ class ProgramMainController {
 	SystemUserService systemUserService
 	@Autowired
 	ProgramGroupService programGroupService
+	@Autowired
+	ProgramStatusService programStatusService
 		
 	/**
 	 *	跳转项目清单
@@ -67,7 +71,22 @@ class ProgramMainController {
 			return ServerResultJson.success([], 0)
 		}
 	}
-	
+	/**
+	 * 获取项目状态信息
+	 * @param proId
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/status")
+	def status(String proId, HttpServletRequest request){
+		List<ProgramStatus> sts = programStatusService.getProgramStatusByProId(proId)
+		if(sts) {
+			return ServerResultJson.success(sts.get(0))
+		}else {
+			return ServerResultJson.success()
+		}
+	}
 	/**
 	 * 	保存项目
 	 * 	@param request

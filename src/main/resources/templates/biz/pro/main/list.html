@@ -58,9 +58,8 @@
 								        <el-button
 								          size="mini"
 								          type="success"
-								          icon = "el-icon-user-solid"
 								          plain
-								          @click="groupUsers(scope.$index, scope.row)"></el-button>
+								          @click="groupUsers(scope.$index, scope.row)"><i class = "fa fa-users"></i></el-button>
 								       <el-button
 								          size="mini"
 								          type="warning"
@@ -88,38 +87,38 @@
   	 					<el-form :model="form" :rules = "rules" ref = "proForm">
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="项目编号" :label-width="formLabelWidth">
+  	 								<el-form-item label="项目编号" :label-width="formLabelWidth1">
 								      <el-input v-model="form.code" autocomplete="off" :disabled = "true" placeholder = "系统自动生成"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="项目名称" :label-width="formLabelWidth" prop = "name">
+  	 								<el-form-item label="项目名称" :label-width="formLabelWidth1" prop = "name">
 								      <el-input v-model="form.name" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>	
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="合同编号" :label-width="formLabelWidth" prop = "contractno">
+  	 								<el-form-item label="合同编号" :label-width="formLabelWidth1" prop = "contractno">
 								      <el-input v-model="form.contractno" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="PR编号" :label-width="formLabelWidth" prop = "prno">
+  	 								<el-form-item label="PR编号" :label-width="formLabelWidth1" prop = "prno">
 								      <el-input v-model="form.prno" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>	
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "24">
-  	 								<el-form-item label="项目描述" :label-width="formLabelWidth" prop = "remark">
+  	 								<el-form-item label="项目描述" :label-width="formLabelWidth1" prop = "remark">
 								      <el-input type = "textarea" :rows="3" autosize v-model="form.remark" autocomplete="off"></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>		  	 						
   	 						<el-row type = "flex" justify = "center" align = "middle">
   	 							<el-col :span = "12">
-  	 								<el-form-item label="开始日期" :label-width="formLabelWidth" prop = "startdate">
+  	 								<el-form-item label="开始日期" :label-width="formLabelWidth1" prop = "startdate">
 									  <el-date-picker
 									      v-model="form.startdate"
 									      type="date"
@@ -129,7 +128,7 @@
 									</el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
-  	 								<el-form-item label="结束日期" :label-width="formLabelWidth" prop = "enddate">
+  	 								<el-form-item label="结束日期" :label-width="formLabelWidth1" prop = "enddate">
 									  <el-date-picker
 									      v-model="form.enddate"
 									      type="date"
@@ -141,7 +140,7 @@
   	 						</el-row>									    
   	 						<el-row type = "flex" justify = "left" align = "middle">
   	 							<el-col :span = "10">
-  	 								<el-form-item label="合同金额" :label-width="formLabelWidth" prop = "amount">
+  	 								<el-form-item label="合同金额" :label-width="formLabelWidth1" prop = "amount">
 								      <el-input v-model="form.amount" autocomplete="off"><template slot="append">￥</template></el-input>
 								    </el-form-item>
   	 							</el-col>
@@ -164,6 +163,97 @@
 						    @change = "saveGroup">
 						</el-transfer>
 		  	 		</el-dialog>
+		  	 		<!-- 项目状态窗体 -->
+		  	 		<el-dialog title = "项目状态" width = "70%" :visible.sync = "statusVisible" @close = "statusVisible = false" :close-on-click-modal = "false">
+  	 					<el-form :model="stsform" :rules = "stsrules" ref = "proStatusForm">
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="客户公司" :label-width="formLabelWidth2" prop = "company">
+								      <el-input v-model="stsform.company" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="法人" :label-width="formLabelWidth2" prop = "legalorg">
+								      <el-input v-model="stsform.legalorg" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>	
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="客户公司主管部门" :label-width="formLabelWidth2" prop = "legaldept">
+								      <el-input v-model="stsform.legaldept" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="我司主管部门" :label-width="formLabelWidth2" prop = "ddicdept">
+								      <el-input v-model="stsform.ddicdept" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="新项目" :label-width="formLabelWidth2" prop = "newpro">
+								      <el-input v-model="stsform.newpro" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="分类" :label-width="formLabelWidth2" prop = "category">
+								      <el-input v-model="stsform.category" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>	
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="状态" :label-width="formLabelWidth2" prop = "state">
+								      <el-input v-model="stsform.state" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="执行可能性" :label-width="formLabelWidth2" prop = "possible">
+								      <el-input v-model="stsform.possible" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="合同开始日期" :label-width="formLabelWidth2" prop = "contractstart">
+									  <el-date-picker
+									      v-model="stsform.contractstart"
+									      type="date"
+									      placeholder="选择日期"
+									      value-format = "yyyy-MM-dd">
+									  </el-date-picker>
+									</el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="合同结束日期" :label-width="formLabelWidth2" prop = "contractend">
+									  <el-date-picker
+									      v-model="form.contractend"
+									      type="date"
+									      placeholder="选择日期"
+									      value-format = "yyyy-MM-dd">
+									  </el-date-picker>
+									</el-form-item>
+  	 							</el-col>
+  	 						</el-row>									    
+  	 						<el-row type = "flex" justify = "left" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="事业预算" :label-width="formLabelWidth2" prop = "budget">
+								      <el-input v-model="stsform.budget" autocomplete="off"><template slot="append">￥</template></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="进行现况" :label-width="formLabelWidth2" prop = "process">
+								      <el-input v-model="stsform.process" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>								    									
+						 </el-form>
+						 <div slot="footer">
+						    <el-button @click="statusVisible = false">取 消</el-button>
+						    <el-button type="primary" @click="saveProStatus('proStatusForm')">保存</el-button>
+						 </div>
+  	 				</el-dialog>
 		  	 	</el-main>
 		  	 </el-container>		  	 
 		</div>
@@ -179,7 +269,9 @@
 					formTitle:'新增项目',					//项目窗体标题
 					formVisible:false,					//项目窗体显示	
 					groupVisible:false,					//项目成员窗体
-					formLabelWidth:'120px',
+					statusVisible:false,				//项目状态窗体
+					formLabelWidth1:'120px',
+					formLabelWidth2:'140px',
 					form:{
 						id:'',
 						code:'',
@@ -190,6 +282,20 @@
 						amount:'',
 						contractno:'',
 						prno:''
+					},
+					stsform:{
+						company:'',
+						newpro:1,
+						category:1,
+						state:1,
+						possible:50,
+						contractstart:'',
+						contractend:'',
+						legalorg:'',
+						legaldept:'',
+						ddicdept:'',
+						budget:0.0,
+						process:''
 					},
 					rules:{
 						name:[
@@ -213,13 +319,16 @@
 			          	amount: [
 			            	{ required: true, message: '请输入项目金额', trigger: 'blur' }
 			          	]
-					},					
+					},			
+					stsrules:{
+						
+					},
 					proData: [],						//项目数据list
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
 					users: [],							//系统用户
 			        members: [],						//项目组人员,
-			        groupProId:''						//项目组所属项目ID	
+			        proId:''							//项目UUID	
 				}
 			},
 			methods:{
@@ -264,7 +373,7 @@
 		      	},
 		      	//维护项目成员
 		      	groupUsers:function(index, row){
-		      		this.groupProId = row.tid
+		      		this.proId = row.tid
 		      		this.groupVisible = true
 		      		//获取成员数据
 		      		axios.get('/pm/biz/pro/group/members', {
@@ -283,10 +392,10 @@
 		      	},
 		      	//保存项目组成员信息
 		      	saveGroup:function(){
-		      		//alert(this.groupProId)
+		      		//alert(this.proId)
 		      		//alert(this.members.join(","))
 		      		axios.post('/pm/biz/pro/group/save',	{
-		      			groupProId:app.groupProId,
+		      			proId:app.proId,
 		      			members:app.members.join(","),
 		            	user:'admin'
 		            }).then(function (response) {
@@ -349,6 +458,29 @@
 			            	return false;
 			            }
 			        });
+		      	},
+		      	proStatus:function(index, row){
+		      		this.proId = row.tid
+		      		this.statusVisible = true
+		      		//获取成员数据
+		      		axios.get('/pm/biz/pro/status', {
+		      		    params: {
+		      		      proId:row.tid		      		      
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.data){
+		      				//alert('Set status data')
+		      			}else{
+		      				//alert('Blank status data, add new status data')
+		      			}
+		      			//app.users = result.data.users
+		      			//app.members = result.data.members
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
 		      	},
 		      	//分页
 		      	changePage:function(page){
