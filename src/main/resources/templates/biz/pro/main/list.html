@@ -194,29 +194,19 @@
   	 							<el-col :span = "12">
   	 								<el-form-item label="新项目" :label-width="formLabelWidth2" prop = "newpro">
 								    	<el-select v-model="stsform.newpro" placeholder="请选择">
-										    <el-option
-										      v-for="item in yn"
-										      :key="item.value"
-										      :label="item.label"
-										      :value="item.value">
-										    </el-option>
+										    <el-option v-for = "item in yn" :label="item.view" :value="item.value" :key="item.value"></el-option>
 										</el-select>
 								    </el-form-item>
   	 							</el-col>
   	 							<el-col :span = "12">
   	 								<el-form-item label="分类" :label-width="formLabelWidth2" prop = "category">
 								    	<el-select v-model="stsform.category" placeholder="请选择">
-										    <el-option
-										      v-for="item in cs"
-										      :key="item.value"
-										      :label="item.label"
-										      :value="item.value">
-										    </el-option>
+										    <el-option v-for = "item in cs" :label="item.view" :value="item.value" :key="item.value"></el-option>
 										</el-select>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>	
-  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 						<el-row type = "flex" justify = "left" align = "middle">
   	 							<el-col :span = "12">
   	 								<el-form-item label="状态" :label-width="formLabelWidth2" prop = "state">
 								    	<el-select v-model="stsform.state" placeholder="请选择项目状态" @change="changeType">
@@ -224,9 +214,9 @@
 									  	</el-select>
 								    </el-form-item>
   	 							</el-col>
-  	 							<el-col :span = "12">
+  	 							<el-col :span = "10">
   	 								<el-form-item label="执行可能性" :label-width="formLabelWidth2" prop = "possible">
-								      <el-input v-model="stsform.possible" autocomplete="off"></el-input>
+								      <el-input v-model="stsform.possible" type = "possible" autocomplete="off"><template slot="append">%</template></el-input>
 								    </el-form-item>
   	 							</el-col>
   	 						</el-row>
@@ -253,12 +243,12 @@
   	 							</el-col>
   	 						</el-row>									    
   	 						<el-row type = "flex" justify = "left" align = "middle">
-  	 							<el-col :span = "12">
+  	 							<el-col :span = "10">
   	 								<el-form-item label="事业预算" :label-width="formLabelWidth2" prop = "budget">
 								      <el-input v-model="stsform.budget" autocomplete="off"><template slot="append">￥</template></el-input>
 								    </el-form-item>
   	 							</el-col>
-  	 							<el-col :span = "12">
+  	 							<el-col :span = "12" :offset = "2">
   	 								<el-form-item label="进行现况" :label-width="formLabelWidth2" prop = "process">
 								      <el-input v-model="stsform.process" autocomplete="off"></el-input>
 								    </el-form-item>
@@ -300,17 +290,18 @@
 						prno:''
 					},
 					stsform:{
+						id:'',
 						company:'',
-						newpro:1,
-						category:1,
+						newpro:'1',
+						category:'1',
 						state:'',
-						possible:50,
+						possible:'',
 						contractstart:'',
 						contractend:'',
 						legalorg:'',
 						legaldept:'',
 						ddicdept:'',
-						budget:0.0,
+						budget:'',
 						process:''
 					},
 					rules:{
@@ -337,22 +328,38 @@
 			          	]
 					},			
 					stsrules:{
-						
+						company:[
+							{required:true, message:'请输入客户公司!', trigger:'blur'}
+						],
+						possible:[
+							{required:true, message:'请输入执行可行性!', trigger:'blur'},
+							{type: 'number', message: '可行性必须是0 ~ 100的整数!'}
+						],
+						contractstart: [
+			            	{ required: true, message: '请选择合同开始日期', trigger: 'blur' }
+			          	],
+			          	contractend: [
+			            	{ required: true, message: '请选择合同结束日期', trigger: 'blur' }
+			          	],
+			          	legalorg:[
+							{required:true, message:'请选择法人!', trigger:'blur'}
+						],
+						legaldept:[
+							{required:true, message:'请输入客户公司主管部门!', trigger:'blur'}
+						],						
+						ddicdept: [
+			            	{ required: true, message: '请选择我司主管部门', trigger: 'blur' }
+			          	],
+			          	budget:[
+							{required:true, message:'请输入事业预算!', trigger:'blur'},
+							{type: 'number', message: '事业预算必须是数字!'}
+						],
+						process:[
+							{required:true, message:'请输入进行情况!', trigger:'blur'}
+						]
 					},
-					yn:[{
-						value:1,
-						label:'是'
-					},{
-						value:2,
-						label:'否'
-					}],
-					cs:[{
-						value:1,
-						label:'C&SI服务卖出'
-					},{
-						value:2,
-						label:'C&SI商品卖出'
-					}],
+					yn:[],
+					cs:[],
 					states:[],							//项目状态
 					proData: [],						//项目数据list
 					searchkey:'',						//搜索值
@@ -500,6 +507,7 @@
 		      		      proId:row.tid		      		      
 		      		    }
 		      		}).then(function (response) {
+		      			app.$refs['proStatusForm'].clearValidate()
 		      			var result = response.data	
 		      			if(result.data){
 		      				//alert('Set status data')
@@ -522,6 +530,34 @@
 		      		}).then(function (response) {
 		      			var result = response.data
 		      			app.states = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+	      		},
+	      		//获取是否下拉列表
+	      		getYns:function(){
+		      		axios.get('/pm/sys/enum/options', {
+		      		    params: {
+		      		      code:'D004'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.yn = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+	      		},
+	      		//获取项目分类数据
+	      		getCs:function(){
+		      		axios.get('/pm/sys/enum/options', {
+		      		    params: {
+		      		      code:'D005'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.cs = result.data
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      		    console.log(error)
@@ -558,6 +594,8 @@
 			mounted:function(){
 				//alert('Mounted!!!')
 				this.getProData()
+				this.getYns()
+				this.getCs()
 				this.getProStates()
 			}
 		});		
