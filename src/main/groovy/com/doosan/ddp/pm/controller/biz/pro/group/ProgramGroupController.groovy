@@ -77,7 +77,7 @@ class ProgramGroupController {
 		//传递参数
 		println 'Parameters : \t' + params
 		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
-		String groupProId = json.get("groupProId").asString
+		String groupProId = json.get("proId").asString
 		//删除项目组现有普通成员
 		def groupMembers = programGroupService.getProgramGroupByProId(groupProId)
 		def pmCode = ''
