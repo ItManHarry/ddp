@@ -117,7 +117,7 @@ class ProgramMainController {
 		//String user = json.get("user").asString
 		ProgramMain pro = new ProgramMain()
 		if(id) {
-			pro = programMainService.getProgramById(id);
+			pro = programMainService.getProgramById(id)
 			pro.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
 			pro.setModifyuserid(userCd)
 		}else {
@@ -143,6 +143,62 @@ class ProgramMainController {
 			group.setCreateuserid(userCd)
 			programGroupService.save(group)
 		}
+		return ServerResultJson.success()
+	}
+	
+	/**
+	 * 	保存项目状态
+	 * 	@param request
+	 * 	@param map
+	 * 	@return
+	 */
+	@PostMapping("/status/save")
+	@ResponseBody
+	def statusSave(@RequestBody String params, HttpServletRequest request, Map map){
+		//session获取用户账号&uuid
+		def userCd = request.getSession().getAttribute("currentUser")
+		//def userId = request.getSession().getAttribute("currentUserId")
+		//传递参数
+		println 'Parameters : \t' + params
+		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+		String id = json.get("id").asString
+		String programid = json.get("proId").asString
+		String company = json.get("company").asString
+		int newpro = json.get("newpro").asInt
+		int category = json.get("category").asInt
+		int state = json.get("state").asInt
+		int possible = json.get("possible").asInt
+		String contractstart = json.get("contractstart").asString
+		String contractend = json.get("contractend").asString
+		String legalorg = json.get("legalorg").asString
+		String legaldept = json.get("legaldept").asString
+		String ddicdept = json.get("ddicdept").asString
+		double budget = json.get("budget").asDouble
+		String process = json.get("process").asString
+		//String user = json.get("user").asString
+		ProgramStatus sts = new ProgramStatus()
+		if(id) {
+			sts = programStatusService.getById(id)
+			sts.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+			sts.setModifyuserid(userCd)
+		}else {
+			sts.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+			sts.setCreateuserid(userCd)
+		}
+		sts.setProgramid(programid)
+		sts.setCompany(company)
+		sts.setNewpro(newpro)
+		sts.setCategory(category)
+		sts.setState(state)
+		sts.setPossible(possible)
+		sts.setContractstart(contractstart)
+		sts.setContractend(contractend)
+		sts.setLegalorg(legalorg)
+		sts.setLegaldept(legaldept)
+		sts.setDdicdept(ddicdept)
+		sts.setBudget(budget)
+		sts.setProcess(process)
+		programStatusService.save(sts)
 		return ServerResultJson.success()
 	}
 	

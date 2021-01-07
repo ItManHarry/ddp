@@ -332,8 +332,8 @@
 							{required:true, message:'请输入客户公司!', trigger:'blur'}
 						],
 						possible:[
-							{required:true, message:'请输入执行可行性!', trigger:'blur'},
-							{type: 'number', message: '可行性必须是0 ~ 100的整数!'}
+							{required:true, message:'请输入执行可行性!', trigger:'blur'}//,
+							//{type: 'number', message: '可行性必须是0 ~ 100的整数!'}
 						],
 						contractstart: [
 			            	{ required: true, message: '请选择合同开始日期', trigger: 'blur' }
@@ -351,8 +351,8 @@
 			            	{ required: true, message: '请选择我司主管部门', trigger: 'blur' }
 			          	],
 			          	budget:[
-							{required:true, message:'请输入事业预算!', trigger:'blur'},
-							{type: 'number', message: '事业预算必须是数字!'}
+							{required:true, message:'请输入事业预算!', trigger:'blur'}//,
+							//{type: 'number', message: '事业预算必须是数字!'}
 						],
 						process:[
 							{required:true, message:'请输入进行情况!', trigger:'blur'}
@@ -565,7 +565,49 @@
 	      		},
 		      	//保存项目状态信息
 		      	saveProStatus:function(form){
-		      		
+		      		this.$refs[form].validate(function(valid) {
+			        	if (valid) {
+			        		axios.post('/pm/biz/pro/status/save',	{
+			        			proId:app.proId,
+				            	id:app.stsform.id,
+				            	company:app.stsform.company,
+				            	newpro:app.stsform.newpro,
+				            	category:app.stsform.category,
+				            	state:app.stsform.state,
+				            	possible:app.stsform.possible,
+				            	contractstart:app.stsform.contractstart,
+				            	contractend:app.stsform.contractend,
+				            	legalorg:app.stsform.legalorg,
+				            	legaldept:app.stsform.legaldept,
+				            	ddicdept:app.stsform.ddicdept,
+				            	budget:app.stsform.budget,
+				            	process:app.stsform.process,
+				            	user:'admin'
+				            }).then(function (response) {
+				            	var result = response.data
+				            	if(result.status == 0)
+				            		app.$message({
+				            			message:result.message,
+				            			type:'warning',
+				            			duration:2000,
+				            			offset:120
+				            		})	
+				            	else{		            		
+				            		app.statusVisible = false
+				            	}			            		
+				            }).catch(function (error) {
+				            	app.$message({
+			            			message:result.message,
+			            			type:'danger',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+				            });
+			        	}else{
+			            	console.log('error submit!!')
+			            	return false;
+			            }
+			        });
 		      	},
 		      	//分页
 		      	changePage:function(page){
