@@ -511,9 +511,19 @@
 		      			var result = response.data	
 		      			if(result.data){
 		      				//alert('Set status data')
-		      			}else{
-		      				//alert('Blank status data, add new status data')
-		      				app.stsform.state = '1'
+		      				app.stsform.id = result.data.tid
+			            	app.stsform.company = result.data.company
+			            	app.stsform.newpro = result.data.newpro+""
+			            	app.stsform.category = result.data.category+""
+			            	app.stsform.state = result.data.state+""
+			            	app.stsform.possible = result.data.possible
+			            	app.stsform.contractstart = result.data.contractstart
+			            	app.stsform.contractend = result.data.contractend
+			            	app.stsform.legalorg = result.data.legalorg
+			            	app.stsform.legaldept = result.data.legaldept
+			            	app.stsform.ddicdept = result.data.ddicdept
+			            	app.stsform.budget = result.data.budget
+			            	app.stsform.process = result.data.process
 		      			}
 		      		    console.log(response)
 		      		}).catch(function (error) {
