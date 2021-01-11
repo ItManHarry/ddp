@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- 项目发票信息 -->
+<html xmlns:th="http://www.thymeleaf.org">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<div th:fragment="pro_invoice()">
+ 		<el-dialog title = "项目发票信息" width = "70%" :visible.sync = "invoiceVisible" :close-on-click-modal = "false">
+          	<el-form :inline="true" :model="invcform" :rules = "invcrules" size = "mini" ref = "invcform">
+          		 <el-form-item prop = "stage">
+				    <el-select v-model="invcform.stage" placeholder="请选择发票区分">
+				  		<el-option v-for = "stage in stages" :label="stage.view" :value="stage.value"></el-option>
+				  	</el-select>
+				 </el-form-item>
+				 <el-form-item prop = "percent">
+				    <el-input v-model="invcform.percent" placeholder="支付比例"><template slot="append">%</template></el-input></el-input>
+				 </el-form-item>
+				 <el-form-item prop = "invoicedt">
+				    <el-date-picker
+				      v-model="invcform.invoicedt"
+				      type="date"
+				      placeholder="开票时间"
+				      value-format = "yyyy-MM-dd">
+				  	</el-date-picker>
+				 </el-form-item>
+				 <el-form-item>
+				    <el-button type="primary" @click="saveInvoice('invcform')" icon = "el-icon-check" size = "mini" plain round>{{ibuttonText}}</el-button>
+				    <el-button type="success" @click="resetInvoice('invcform')" icon = "el-icon-refresh-left" size = "mini" plain round>重置</el-button>
+				 </el-form-item>
+          	</el-form>
+          	<el-table :data="enumData" size = "mini" @row-click = "editEnum">
+          		<el-table-column prop="tid" label="发票信息- ID" align = "center" v-if = "false"></el-table-column>
+		      	<el-table-column prop="stage" label="区分" align = "center"></el-table-column>
+		      	<el-table-column prop="percent" label="支付比例" align = "center"></el-table-column>
+		      	<el-table-column prop="invoicedt" label="开票时间" align = "center"></el-table-column>
+		    </el-table>
+        </el-dialog>
+	</div>
+</html>

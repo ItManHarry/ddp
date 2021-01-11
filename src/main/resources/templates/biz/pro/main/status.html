@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- 项目状态窗体 -->
+<html xmlns:th="http://www.thymeleaf.org">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<div th:fragment="pro_status()">
+ 		<el-dialog title = "项目状态" width = "70%" :visible.sync = "statusVisible" @close = "statusVisible = false" :close-on-click-modal = "false">
+ 					<el-form :model="stsform" :rules = "stsrules" ref = "proStatusForm">
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="客户公司" :label-width="formLabelWidth2" prop = "company">
+					      <el-input v-model="stsform.company" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="法人" :label-width="formLabelWidth2" prop = "legalorg">
+					      <el-input v-model="stsform.legalorg" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>	
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="客户公司主管部门" :label-width="formLabelWidth2" prop = "legaldept">
+					      <el-input v-model="stsform.legaldept" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="我司主管部门" :label-width="formLabelWidth2" prop = "ddicdept">
+					      <el-input v-model="stsform.ddicdept" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="新项目" :label-width="formLabelWidth2" prop = "newpro">
+					    	<el-select v-model="stsform.newpro" placeholder="请选择">
+							    <el-option v-for = "item in yn" :label="item.view" :value="item.value" :key="item.value"></el-option>
+							</el-select>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="分类" :label-width="formLabelWidth2" prop = "category">
+					    	<el-select v-model="stsform.category" placeholder="请选择">
+							    <el-option v-for = "item in cs" :label="item.view" :value="item.value" :key="item.value"></el-option>
+							</el-select>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>	
+ 						<el-row type = "flex" justify = "left" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="状态" :label-width="formLabelWidth2" prop = "state">
+					    	<el-select v-model="stsform.state" placeholder="请选择项目状态">
+						  		<el-option v-for = "state in states" :label="state.view" :value="state.value"></el-option>
+						  	</el-select>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "10">
+ 								<el-form-item label="执行可能性" :label-width="formLabelWidth2" prop = "possible">
+					      <el-input v-model="stsform.possible" type = "possible" autocomplete="off"><template slot="append">%</template></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="合同开始日期" :label-width="formLabelWidth2" prop = "contractstart">
+						  <el-date-picker
+						      v-model="stsform.contractstart"
+						      type="date"
+						      placeholder="选择日期"
+						      value-format = "yyyy-MM-dd">
+						  </el-date-picker>
+						</el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="合同结束日期" :label-width="formLabelWidth2" prop = "contractend">
+						  <el-date-picker
+						      v-model="stsform.contractend"
+						      type="date"
+						      placeholder="选择日期"
+						      value-format = "yyyy-MM-dd">
+						  </el-date-picker>
+						</el-form-item>
+ 							</el-col>
+ 						</el-row>									    
+ 						<el-row type = "flex" justify = "left" align = "middle">
+ 							<el-col :span = "10">
+ 								<el-form-item label="事业预算" :label-width="formLabelWidth2" prop = "budget">
+					      <el-input v-model="stsform.budget" autocomplete="off"><template slot="append">￥</template></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12" :offset = "2">
+ 								<el-form-item label="进行现况" :label-width="formLabelWidth2" prop = "process">
+					      <el-input v-model="stsform.process" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>								    									
+			 </el-form>
+			 <div slot="footer">
+			    <el-button @click="statusVisible = false">取 消</el-button>
+			    <el-button type="primary" @click="saveProStatus('proStatusForm')">保存</el-button>
+			 </div>
+		</el-dialog>
+	</div>
+</html>

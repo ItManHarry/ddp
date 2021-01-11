@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<!-- 项目组成员窗体 -->
+<html xmlns:th="http://www.thymeleaf.org">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<div th:fragment="pro_group()">
+ 		<el-dialog title = "项目成员" :visible.sync = "groupVisible" :close-on-click-modal = "false">
+ 			<el-transfer
+ 				:titles="['用户选择','项目成员']"
+			    filterable	
+			    target-order = "push"					    
+			    filter-placeholder="请输入姓名"
+			    v-model="members"
+			    :data="users"
+			    @change = "saveGroup">
+			</el-transfer>
+ 		</el-dialog>
+	</div>
+</html>

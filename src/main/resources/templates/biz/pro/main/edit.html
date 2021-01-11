@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<!-- 新增 / 修改项目主信息 -->
+<html xmlns:th="http://www.thymeleaf.org">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<div th:fragment="pro_edit()">
+		<!-- 项目表单窗体 -->
+ 		<el-dialog :title = "formTitle" width = "60%" :visible.sync = "formVisible" @close = "closePro" :close-on-click-modal = "false">
+			<el-form :model="form" :rules = "rules" ref = "proForm">
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="项目编号" :label-width="formLabelWidth1">
+					      <el-input v-model="form.code" autocomplete="off" :disabled = "true" placeholder = "系统自动生成"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="项目名称" :label-width="formLabelWidth1" prop = "name">
+					      <el-input v-model="form.name" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>	
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="合同编号" :label-width="formLabelWidth1" prop = "contractno">
+					      <el-input v-model="form.contractno" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="PR编号" :label-width="formLabelWidth1" prop = "prno">
+					      <el-input v-model="form.prno" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>	
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "24">
+ 								<el-form-item label="项目描述" :label-width="formLabelWidth1" prop = "remark">
+					      <el-input type = "textarea" :rows="3" autosize v-model="form.remark" autocomplete="off"></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>		  	 						
+ 						<el-row type = "flex" justify = "center" align = "middle">
+ 							<el-col :span = "12">
+ 								<el-form-item label="开始日期" :label-width="formLabelWidth1" prop = "startdate">
+						  <el-date-picker
+						      v-model="form.startdate"
+						      type="date"
+						      placeholder="选择日期"
+						      value-format = "yyyy-MM-dd">
+						  </el-date-picker>
+						</el-form-item>
+ 							</el-col>
+ 							<el-col :span = "12">
+ 								<el-form-item label="结束日期" :label-width="formLabelWidth1" prop = "enddate">
+						  <el-date-picker
+						      v-model="form.enddate"
+						      type="date"
+						      placeholder="选择日期"
+						      value-format = "yyyy-MM-dd">
+						  </el-date-picker>
+						</el-form-item>
+ 							</el-col>
+ 						</el-row>									    
+ 						<el-row type = "flex" justify = "left" align = "middle">
+ 							<el-col :span = "10">
+ 								<el-form-item label="合同金额" :label-width="formLabelWidth1" prop = "amount">
+					      <el-input v-model="form.amount" autocomplete="off"><template slot="append">￥</template></el-input>
+					    </el-form-item>
+ 							</el-col>
+ 						</el-row>								    									
+			 </el-form>
+			 <div slot="footer">
+			    <el-button @click="closePro">取 消</el-button>
+			    <el-button type="primary" @click="savePro('proForm')">保存</el-button>
+			 </div>
+		</el-dialog>
+	</div>
+</html>
