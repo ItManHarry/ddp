@@ -26,9 +26,10 @@
 				    <el-button type="success" @click="resetInvoice('invcform')" icon = "el-icon-refresh-left" size = "mini" plain round>重置</el-button>
 				 </el-form-item>
           	</el-form>
-          	<el-table :data="enumData" size = "mini" @row-click = "editEnum">
-          		<el-table-column prop="tid" label="发票信息- ID" align = "center" v-if = "false"></el-table-column>
-		      	<el-table-column prop="stage" label="区分" align = "center"></el-table-column>
+          	<el-table :data="invcData" size = "mini" @row-click = "editInvoice">
+          		<el-table-column prop="tid" label="发票信息-ID" align = "center" v-if = "false"></el-table-column>
+		      	<el-table-column prop="stage" label="区分" align = "center" v-if = "false"></el-table-column>
+		      	<el-table-column prop="stageStr" label="区分" align = "center"></el-table-column>
 		      	<el-table-column prop="percent" label="支付比例" align = "center"></el-table-column>
 		      	<el-table-column prop="invoicedt" label="开票时间" align = "center"></el-table-column>
 		    </el-table>

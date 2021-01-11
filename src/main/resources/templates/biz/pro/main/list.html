@@ -216,6 +216,7 @@
 					cs:[],
 					states:[],							//项目状态
 					proData: [],						//项目数据list
+					invcData:[],						//项目发票数据
 					stages:[],							//项目发票区分
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
@@ -386,22 +387,88 @@
 		      		    console.log(error)
 		      		})
 		      	},
+		      	//获取项目发票信息
+		      	getInvoiceData:function(){
+		      		//获取项目发票数据
+		      		axios.get('/pm/biz/pro/invoices', {
+		      		    params: {
+		      		      proId:app.proId  		      
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.data){
+		      				//alert('Set status data')
+		      				app.invcData = result.data
+		      			}
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})	
+		      	},
 		      	//维护项目发票信息
 		      	proInvoice:function(index, row){
 		      		this.proId = row.tid
+		      		//获取项目发票数据
+		      		this.getInvoiceData()
 		      		this.invoiceVisible = true
-		      		this.invcform.stage = ''
-		      		this.invcform.percent = ''
-		      		this.invcform.invoicedt = ''
-		      	},	
+		      		//清空表单
+		      		this.resetInvoice()
+		      	},
+		      	editInvoice:function(row, column, event){
+		      		this.invcform.id = row.tid
+		      		this.invcform.stage = row.stage
+		      		this.invcform.percent = row.percent
+		      		this.invcform.invoicedt = row.invoicedt
+		      		this.ibuttonText = '修改'
+		      		this.$refs['invcform'].clearValidate()
+		      	},
+		      	//保存项目发票信息
+		      	saveInvoice:function(form){
+		      		this.$refs[form].validate(function(valid) {
+			        	if (valid) {
+			        		axios.post('/pm/biz/pro/invoice/save',	{
+			        			proId:app.proId,
+				            	id:app.invcform.id,
+				            	stage:app.invcform.stage,
+				            	percent:app.invcform.percent,
+				            	invoicedt:app.invcform.invoicedt,
+				            	user:'admin'
+				            }).then(function (response) {
+				            	var result = response.data
+				            	if(result.status == 0)
+				            		app.$message({
+				            			message:result.message,
+				            			type:'warning',
+				            			duration:2000,
+				            			offset:120
+				            		})	
+				            	else{		            		
+				            		app.resetInvoice()
+				            		app.getInvoiceData()	  
+				            	}			            		
+				            }).catch(function (error) {
+				            	app.$message({
+			            			message:result.message,
+			            			type:'danger',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+				            });
+			        	}else{
+			            	console.log('error submit!!')
+			            	return false;
+			            }
+			        });
+		      	},
 		      	//重置项目发票表单
-		      	resetInvoice:function(f){
+		      	resetInvoice:function(){
 		      		this.invcform.id = ''
 		      		this.invcform.stage = ''
 		      		this.invcform.percent = ''
 		      		this.invcform.invoicedt = ''
 		      		this.ibuttonText = '新增'
-		      		this.$refs[f].clearValidate()
+		      		this.$refs['invcform'].clearValidate()
 		      	},
 		      	//获取项目状态数据
 	      		getProStates:function(){
