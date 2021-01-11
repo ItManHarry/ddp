@@ -47,7 +47,7 @@
 						      	<el-table-column prop = "prno" label = "PR编号"></el-table-column>
 						      	<el-table-column prop = "startdate" label = "开始日期"></el-table-column>
 						      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
-						      	<el-table-column label = "操作" width = "200" align = "center">
+						      	<el-table-column label = "操作" width = "250" align = "center">
 						      		<template slot-scope="scope">
 								        <el-button
 								          size="mini"
@@ -66,6 +66,11 @@
 								          icon = "el-icon-s-flag"
 								          plain
 								          @click="proStatus(scope.$index, scope.row)"></el-button>
+								        <el-button
+								          size="mini"
+								          type="success"
+								          plain
+								          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-money"></i></el-button> 
 							      </template>
 						      	</el-table-column>
 						    </el-table>	
@@ -209,7 +214,7 @@
   	 						<el-row type = "flex" justify = "left" align = "middle">
   	 							<el-col :span = "12">
   	 								<el-form-item label="状态" :label-width="formLabelWidth2" prop = "state">
-								    	<el-select v-model="stsform.state" placeholder="请选择项目状态" @change="changeType">
+								    	<el-select v-model="stsform.state" placeholder="请选择项目状态">
 									  		<el-option v-for = "state in states" :label="state.view" :value="state.value"></el-option>
 									  	</el-select>
 								    </el-form-item>
@@ -260,6 +265,37 @@
 						    <el-button type="primary" @click="saveProStatus('proStatusForm')">保存</el-button>
 						 </div>
   	 				</el-dialog>
+  	 				<!-- 项目发票信息 -->
+			        <el-dialog title = "项目发票信息" width = "70%" :visible.sync = "invoiceVisible" :close-on-click-modal = "false">
+			          	<el-form :inline="true" :model="invcform" :rules = "invcrules" size = "mini" ref = "invcform">
+			          		 <el-form-item prop = "stage">
+							    <el-select v-model="invcform.stage" placeholder="请选择发票区分">
+							  		<el-option v-for = "stage in stages" :label="stage.view" :value="stage.value"></el-option>
+							  	</el-select>
+							 </el-form-item>
+							 <el-form-item prop = "percent">
+							    <el-input v-model="invcform.percent" placeholder="支付比例"><template slot="append">%</template></el-input></el-input>
+							 </el-form-item>
+							 <el-form-item prop = "invoicedt">
+							    <el-date-picker
+							      v-model="invcform.invoicedt"
+							      type="date"
+							      placeholder="开票时间"
+							      value-format = "yyyy-MM-dd">
+							  	</el-date-picker>
+							 </el-form-item>
+							 <el-form-item>
+							    <el-button type="primary" @click="saveInvoice('invcform')" icon = "el-icon-check" size = "mini" plain round>{{ibuttonText}}</el-button>
+							    <el-button type="success" @click="resetInvoice('invcform')" icon = "el-icon-refresh-left" size = "mini" plain round>重置</el-button>
+							 </el-form-item>
+			          	</el-form>
+			          	<el-table :data="enumData" size = "mini" @row-click = "editEnum">
+			          		<el-table-column prop="tid" label="发票信息- ID" align = "center" v-if = "false"></el-table-column>
+					      	<el-table-column prop="stage" label="区分" align = "center"></el-table-column>
+					      	<el-table-column prop="percent" label="支付比例" align = "center"></el-table-column>
+					      	<el-table-column prop="invoicedt" label="开票时间" align = "center"></el-table-column>
+					    </el-table>
+			        </el-dialog>
 		  	 	</el-main>
 		  	 </el-container>		  	 
 		</div>
@@ -272,12 +308,14 @@
 					items:10,							//每页条数
 					page: 1,							//当前页
 					height:window.screen.height * 0.55,	//表格最大高度
-					formTitle:'新增项目',					//项目窗体标题
+					formTitle:'新增项目',				//项目窗体标题
 					formVisible:false,					//项目窗体显示	
 					groupVisible:false,					//项目成员窗体
 					statusVisible:false,				//项目状态窗体
+					invoiceVisible:false,				//项目发票信息窗体
 					formLabelWidth1:'120px',
 					formLabelWidth2:'140px',
+					ibuttonText:'新增',
 					form:{
 						id:'',
 						code:'',
@@ -303,6 +341,12 @@
 						ddicdept:'',
 						budget:'',
 						process:''
+					},
+					invcform:{
+						id:'',
+						stage:'1',
+						percent:'',
+						invoicedt:''
 					},
 					rules:{
 						name:[
@@ -358,10 +402,22 @@
 							{required:true, message:'请输入进行情况!', trigger:'blur'}
 						]
 					},
+					invcrules:{
+						stage:[
+							{required:true, message:'请选择发票区分!', trigger:'blur'}
+						],
+						percent:[
+							{required:true, message:'请输入支付比例!', trigger:'blur'}
+						],
+						invoicedt:[
+							{required:true, message:'请填写开票时间!', trigger:'blur'}
+						]
+					},		
 					yn:[],
 					cs:[],
 					states:[],							//项目状态
 					proData: [],						//项目数据list
+					stages:[],							//项目发票区分
 					searchkey:'',						//搜索值
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
 					users: [],							//系统用户
@@ -531,6 +587,23 @@
 		      		    console.log(error)
 		      		})
 		      	},
+		      	//维护项目发票信息
+		      	proInvoice:function(index, row){
+		      		this.proId = row.tid
+		      		this.invoiceVisible = true
+		      		this.invcform.stage = ''
+		      		this.invcform.percent = ''
+		      		this.invcform.invoicedt = ''
+		      	},	
+		      	//重置项目发票表单
+		      	resetInvoice:function(f){
+		      		this.invcform.id = ''
+		      		this.invcform.stage = ''
+		      		this.invcform.percent = ''
+		      		this.invcform.invoicedt = ''
+		      		this.ibuttonText = '新增'
+		      		this.$refs[f].clearValidate()
+		      	},
 		      	//获取项目状态数据
 	      		getProStates:function(){
 		      		axios.get('/pm/sys/enum/options', {
@@ -554,6 +627,20 @@
 		      		}).then(function (response) {
 		      			var result = response.data
 		      			app.yn = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+	      		},
+	      		//获取是否下拉列表
+	      		getStages:function(){
+		      		axios.get('/pm/sys/enum/options', {
+		      		    params: {
+		      		      code:'D006'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.stages = result.data
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      		    console.log(error)
@@ -649,6 +736,7 @@
 				this.getYns()
 				this.getCs()
 				this.getProStates()
+				this.getStages()
 			}
 		});		
 	</script>
