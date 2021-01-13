@@ -358,7 +358,7 @@
 		      		this.proId = row.tid
 		      		this.statusVisible = true
 		      		//获取项目状态数据
-		      		axios.get('/pm/biz/pro/status', {
+		      		axios.get('/pm/biz/pro/status/info', {
 		      		    params: {
 		      		      proId:row.tid		      		      
 		      		    }
@@ -390,7 +390,7 @@
 		      	//获取项目发票信息
 		      	getInvoiceData:function(){
 		      		//获取项目发票数据
-		      		axios.get('/pm/biz/pro/invoices', {
+		      		axios.get('/pm/biz/pro/invoice/list', {
 		      		    params: {
 		      		      proId:app.proId  		      
 		      		    }

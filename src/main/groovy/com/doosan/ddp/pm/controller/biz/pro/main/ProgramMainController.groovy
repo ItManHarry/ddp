@@ -15,9 +15,7 @@ import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramStatus
 import com.doosan.ddp.pm.dao.domain.sys.user.SystemUser
 import com.doosan.ddp.pm.service.biz.pro.ProgramGroupService
-import com.doosan.ddp.pm.service.biz.pro.ProgramInvoiceService
 import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
-import com.doosan.ddp.pm.service.biz.pro.ProgramStatusService
 import com.doosan.ddp.pm.service.sys.user.SystemUserService
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -32,11 +30,6 @@ class ProgramMainController {
 	SystemUserService systemUserService
 	@Autowired
 	ProgramGroupService programGroupService
-	@Autowired
-	ProgramStatusService programStatusService
-	@Autowired
-	ProgramInvoiceService programInvoiceService
-		
 	/**
 	 *	跳转项目清单
 	 * 	@return
@@ -73,22 +66,6 @@ class ProgramMainController {
 			return ServerResultJson.success(data, count)
 		}else {
 			return ServerResultJson.success([], 0)
-		}
-	}
-	/**
-	 * 获取项目状态信息
-	 * @param proId
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@GetMapping("/status")
-	def status(String proId, HttpServletRequest request){
-		List<ProgramStatus> sts = programStatusService.getProgramStatusByProId(proId)
-		if(sts) {
-			return ServerResultJson.success(sts.get(0))
-		}else {
-			return ServerResultJson.success()
 		}
 	}
 	/**
@@ -148,130 +125,6 @@ class ProgramMainController {
 			programGroupService.save(group)
 		}
 		return ServerResultJson.success()
-	}
-	/**
-	 * 	保存项目状态
-	 * 	@param request
-	 * 	@param map
-	 * 	@return
-	 */
-	@PostMapping("/status/save")
-	@ResponseBody
-	def statusSave(@RequestBody String params, HttpServletRequest request, Map map){
-		//session获取用户账号&uuid
-		def userCd = request.getSession().getAttribute("currentUser")
-		//def userId = request.getSession().getAttribute("currentUserId")
-		//传递参数
-		println 'Parameters : \t' + params
-		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
-		String id = json.get("id").asString
-		String programid = json.get("proId").asString
-		String company = json.get("company").asString
-		int newpro = json.get("newpro").asInt
-		int category = json.get("category").asInt
-		int state = json.get("state").asInt
-		int possible = json.get("possible").asInt
-		String contractstart = json.get("contractstart").asString
-		String contractend = json.get("contractend").asString
-		String legalorg = json.get("legalorg").asString
-		String legaldept = json.get("legaldept").asString
-		String ddicdept = json.get("ddicdept").asString
-		double budget = json.get("budget").asDouble
-		String process = json.get("process").asString
-		//String user = json.get("user").asString
-		ProgramStatus sts = new ProgramStatus()
-		if(id) {
-			sts = programStatusService.getById(id)
-			sts.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			sts.setModifyuserid(userCd)
-		}else {
-			sts.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			sts.setCreateuserid(userCd)
-		}
-		sts.setProgramid(programid)
-		sts.setCompany(company)
-		sts.setNewpro(newpro)
-		sts.setCategory(category)
-		sts.setState(state)
-		sts.setPossible(possible)
-		sts.setContractstart(contractstart)
-		sts.setContractend(contractend)
-		sts.setLegalorg(legalorg)
-		sts.setLegaldept(legaldept)
-		sts.setDdicdept(ddicdept)
-		sts.setBudget(budget)
-		sts.setProcess(process)
-		programStatusService.save(sts)
-		return ServerResultJson.success()
-	}
-	/**
-	 * 	保存项目发票
-	 * 	@param request
-	 * 	@param map
-	 * 	@return
-	 */
-	@PostMapping("/invoice/save")
-	@ResponseBody
-	def invoiceSave(@RequestBody String params, HttpServletRequest request, Map map){
-		//session获取用户账号&uuid
-		def userCd = request.getSession().getAttribute("currentUser")
-		//def userId = request.getSession().getAttribute("currentUserId")
-		//传递参数
-		println 'Parameters : \t' + params
-		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
-		String id = json.get("id").asString
-		String programid = json.get("proId").asString
-		int stage = json.get("stage").asInt
-		int percent = json.get("percent").asInt
-		String invoicedt = json.get("invoicedt").asString
-		//String user = json.get("user").asString
-		ProgramInvoice invoice = new ProgramInvoice()
-		if(id) {
-			invoice = programInvoiceService.getById(id)
-			invoice.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			invoice.setModifyuserid(userCd)
-		}else {
-			invoice.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			invoice.setCreateuserid(userCd)
-		}
-		invoice.setProgramid(programid)
-		invoice.setStage(stage)
-		invoice.setPercent(percent)
-		invoice.setInvoicedt(invoicedt)
-		programInvoiceService.save(invoice)
-		return ServerResultJson.success()
-	}
-	/**
-	 * 获取项目发票信息
-	 * @param proId
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@GetMapping("/invoices")
-	def invoices(String proId, HttpServletRequest request){
-		List<ProgramInvoice> invoices = programInvoiceService.getProgramInvoiceByProId(proId)
-		invoices.each { 
-			switch(it.getStage()) {
-				case 1:
-					it.setStageStr('首付款')
-					break
-				case 2:
-					it.setStageStr('中期款')
-					break
-				case 3:
-					it.setStageStr('尾款')
-					break
-				default:
-					it.setStageStr('Null')
-					break
-			}
-		}
-		if(invoices) {
-			return ServerResultJson.success(invoices)
-		}else {
-			return ServerResultJson.success()
-		}
 	}
 	
 	static void main(String[] args) {
