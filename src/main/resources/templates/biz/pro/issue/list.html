@@ -15,17 +15,12 @@
 		  	 	</el-header>
 		  	 	<el-main>
 		  	 		<el-row type = "flex" :justify = "end" :align = "middle">
-		  	 			<el-col :span = "13" :offset = "11">
+		  	 			<el-col :span = "10" :offset = "14">
 		  	 				<el-form :inline = "true">
 		  	 					<el-form-item>
-		  	 						<el-switch							  		
-									  	v-model="searchtype"
-									  	active-text="项目名称"
-									  	inactive-text="项目编号">
-									</el-switch>
-		  	 					</el-form-item>
-		  	 					<el-form-item>
-		  	 						<el-input v-model = "searchkey"></el-input>
+		  	 						<el-select v-model="proid" placeholder="请选择项目">
+				  						<el-option v-for = "pro in prolist" :label="pro.id" :value="pro.name"></el-option>
+				  					</el-select>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
 		  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getProData">查找</el-button>
@@ -92,7 +87,7 @@
 					height:window.screen.height * 0.55,	//表格最大高度
 					formTitle:'新增Issue',				//项目窗体标题
 					formVisible:false,					//项目窗体显示
-					proId:'',							//项目UUID	
+					proid:'',							//项目UUID	
 					formLabelWidth:'120px',
 					form:{
 						id:'',
@@ -128,15 +123,29 @@
 			            	{ required: true, message: '请输入项目金额', trigger: 'blur' }
 			          	]
 					},		
-					proData: []						//项目数据list
+					prolist: []						//项目list
 				}
 			},
 			methods:{
-				
+				//获取issue项目下拉清单数据
+				getProList:function(){
+		      		axios.get('/pm/biz/pro/issue/prolist', {
+		      		    params: {
+		      		    	
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			alert(result)
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+				}
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
-				//this.getProData()
+				this.getProList()
 			}
 		});		
 	</script>
