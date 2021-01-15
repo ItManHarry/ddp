@@ -85,6 +85,11 @@ class ProgramMainServiceImp implements ProgramMainService {
 		// TODO Auto-generated method stub
 		return programMainDao.count(getSpecForPM(name, code, charger))
 	}
+	@Transactional
+	public List<ProgramMain> getProListForUser(List<String> ids) {
+		// TODO Auto-generated method stub
+		return programMainDao.findAll(getSpecForProList(ids))
+	}
 	/**
 	 * 获取所有参与的项目清单 - 项目中的每个人	 
 	 * @param name
@@ -108,6 +113,34 @@ class ProgramMainServiceImp implements ProgramMainService {
 				predicates.add(builder.like(root.get("code"), "%"+code+"%"))
 				CriteriaBuilder.In<String> ins = builder.in(root.get("tid"))
 				tids.each { 
+					ins.value(it)
+				}
+				predicates.add(ins)
+				Predicate[] predicateArray = new Predicate[predicates.size()]
+				return builder.and(predicates.toArray(predicateArray))
+			}
+		}
+		return spec
+	}
+	/**
+	 * 获取所有参与的项目list
+	 * @param tids
+	 * @return
+	 */
+	Specification<ProgramMain> getSpecForProList(List<String> tids) {
+		// TODO Auto-generated method stub
+		Specification<ProgramMain> spec = new Specification<ProgramMain>(){
+			/**
+			 * Root<ProgramMain>:根对象，用于查询对象的属性
+			 *  CriteriaQuery<?>:执行普通查询
+			 *  CriteriaBuilder:查询条件构造器,用于完成不同条件的查询
+			 *
+			 */
+			public Predicate toPredicate(Root<ProgramMain> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+				// where name like ? and gender like ?
+				List<Predicate> predicates = new ArrayList<Predicate>()
+				CriteriaBuilder.In<String> ins = builder.in(root.get("tid"))
+				tids.each {
 					ins.value(it)
 				}
 				predicates.add(ins)

@@ -63,4 +63,10 @@ interface ProgramMainService {
 	 * @return
 	 */
 	long getCountByNameAndCodeForPM(String name, String code, String charger)
+	/**
+	 * 获取所有参与的项目list
+	 * @param ids
+	 * @return
+	 */
+	List<ProgramMain> getProListForUser(List<String> ids)
 }

@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.ResponseBody
 
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramGroup
+import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
 import com.doosan.ddp.pm.service.biz.issue.ProgramIssueService
 import com.doosan.ddp.pm.service.biz.pro.ProgramGroupService
+import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
 /**
  * 项目issue事项
  */
@@ -22,6 +24,8 @@ class ProgramIssueController {
 	ProgramIssueService programIssueService
 	@Autowired
 	ProgramGroupService programGroupService
+	@Autowired
+	ProgramMainService programMainService
 	
 	/**
 	 *	跳转项目issue清单
@@ -44,6 +48,9 @@ class ProgramIssueController {
 			proIds << it.getProgramid()
 		}
 		println "Program ids are : $proIds"
-		return ServerResultJson.success([])
+		//获取所有项目
+		List<ProgramMain> pros = programMainService.getProListForUser(proIds)
+		println "Program list size is : " + pros.size()
+		return ServerResultJson.success(pros)
 	}
 }

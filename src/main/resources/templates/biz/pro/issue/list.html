@@ -19,7 +19,7 @@
 		  	 				<el-form :inline = "true">
 		  	 					<el-form-item>
 		  	 						<el-select v-model="proid" placeholder="请选择项目">
-				  						<el-option v-for = "pro in prolist" :label="pro.id" :value="pro.name"></el-option>
+				  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
 				  					</el-select>
 		  	 					</el-form-item>
 		  	 					<el-form-item>
@@ -135,7 +135,7 @@
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data	
-		      			alert(result)
+		      			app.prolist = result.data
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      			alert("error")
