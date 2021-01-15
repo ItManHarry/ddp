@@ -17,14 +17,14 @@
 		  	 		<el-row type = "flex" :justify = "end" :align = "middle">
 		  	 			<el-col :span = "10" :offset = "14">
 		  	 				<el-form :inline = "true">
-		  	 					<el-form-item>
-		  	 						<el-select v-model="proid" placeholder="请选择项目">
+		  	 					<el-form-item width = "200">
+		  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
 				  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
 				  					</el-select>
 		  	 					</el-form-item>
-		  	 					<el-form-item>
+		  	 					<!--el-form-item>
 		  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getProData">查找</el-button>
-		  	 					</el-form-item>
+		  	 					</el-form-item-->
 		  	 					<el-form-item>
 		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addPro">新增</el-button>
 		  	 					</el-form-item>
@@ -87,7 +87,7 @@
 					height:window.screen.height * 0.55,	//表格最大高度
 					formTitle:'新增Issue',				//项目窗体标题
 					formVisible:false,					//项目窗体显示
-					proid:'',							//项目UUID	
+					proId:'',							//项目UUID	
 					formLabelWidth:'120px',
 					form:{
 						id:'',
@@ -141,6 +141,9 @@
 		      			alert("error")
 		      		    console.log(error)
 		      		})
+				},
+				changePro:function(){
+					//alert(this.proId)
 				}
 			},
 			mounted:function(){
