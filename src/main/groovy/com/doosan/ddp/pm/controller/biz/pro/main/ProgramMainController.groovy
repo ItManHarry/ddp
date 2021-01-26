@@ -131,5 +131,9 @@ class ProgramMainController {
 		Random rand = new Random()
 		String proNo = "PRO"+ new SimpleDateFormat("yyyyMMdd").format(new Date())+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)+rand.nextInt(10)
 		println "Program code is : $proNo"
+		String ad = "guoqian.cheng"
+		println "Replace : " + ad.replace(".", "_")
+		ad = "China HR.tm"
+		println "Space : " + ad.replace(" ", "").replace(".", "_")
 	}
 }

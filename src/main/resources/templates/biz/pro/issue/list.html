@@ -4,79 +4,134 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>项目管理系统 - Issue事项</title>
+	<!--link rel = "stylesheet" th:href = "@{/static/quill/css/quill.core.css}" media="screen"/>
+	<link rel = "stylesheet" th:href = "@{/static/quill/css/quill.snow.css}" media="screen"/>
+	<link rel = "stylesheet" th:href = "@{/static/quill/css/quill.bubble.css}" media="screen"/-->
 </head>
 <body>
 	<!-- 引入公共js文件 -->
-	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
-		<div id = "app">
-		  	 <el-container>
-		  	 	<el-header>
-					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
-		  	 	</el-header>
-		  	 	<el-main>
-		  	 		<el-row type = "flex" :justify = "end" :align = "middle">
-		  	 			<el-col :span = "10" :offset = "14">
-		  	 				<el-form :inline = "true">
-		  	 					<el-form-item width = "200">
-		  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
-				  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
-				  					</el-select>
-		  	 					</el-form-item>
-		  	 					<!--el-form-item>
-		  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getProData">查找</el-button>
-		  	 					</el-form-item-->
-		  	 					<el-form-item>
-		  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addPro">新增</el-button>
-		  	 					</el-form-item>
-		  	 				</el-form>		  	 				
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<el-row>
-		  	 			<el-col :span = "24">
-		  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
-		  	 					<!-- 使用 v-if 隐藏列 -->
-						      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "code" label = "项目编号"></el-table-column>
-						      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
-						      	<el-table-column prop = "contractno" label = "合同编号"></el-table-column>
-						      	<el-table-column prop = "prno" label = "PR编号"></el-table-column>
-						      	<el-table-column prop = "startdate" label = "开始日期"></el-table-column>
-						      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
-						      	<el-table-column label = "操作" width = "250" align = "center">
-						      		<template slot-scope="scope">
-								        <el-button
-								          size="mini"
-								          type = "primary"
-								          icon = "el-icon-edit"
-								          plain
-								          @click="editPro(scope.$index, scope.row)"></el-button>
-								        <el-button
-								          size="mini"
-								          type="success"
-								          plain
-								          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-list"></i></el-button> 
-							      </template>
-						      	</el-table-column>
-						    </el-table>	
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<el-row type = "flex" justify = "end" align = "bottom">
-		  	 			<el-col :span = "24">
-		  	 				<el-pagination 
-		  	 					layout="prev, pager, next" 
-		  	 					:total="total" 
-		  	 					:page-size="items"
-		  	 					@current-change = "changePage"
-		  	 					small >
-		  	 				</el-pagination>
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<!-- issue新增/修改 -->
-		  	 		<div th:include="/biz/pro/main/edit::pro_edit()"></div>
-		  	 	</el-main>
-		  	 </el-container>		  	 
-		</div>
+	<div th:replace="commons/js-elementui::common_js(~{::script})">
+		<!--script type = "text/javascript" th:src = "@{/static/quill/js/quill.js}" charset="UTF-8"></script>
+		<script type = "text/javascript" th:src = "@{/static/quill/js/vue-quill-editor.js}" charset="UTF-8"></script-->
+		<script type = "text/javascript" th:src = "@{/static/ckeditor/ckeditor.js}" charset="UTF-8"></script>
+	</div>
+	<div id = "app">
+	  	 <el-container>
+	  	 	<el-header>
+				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+	  	 	</el-header>
+	  	 	<el-main>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "10" :offset = "14">
+	  	 				<el-form :inline = "true">
+	  	 					<el-form-item width = "200">
+	  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
+			  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
+			  					</el-select>
+	  	 					</el-form-item>
+	  	 					<!--el-form-item>
+	  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getProData">查找</el-button>
+	  	 					</el-form-item-->
+	  	 					<el-form-item>
+	  	 						<el-button icon = "el-icon-plus" round plain type = "primary" @click = "addPro">新增</el-button>
+	  	 					</el-form-item>
+	  	 				</el-form>		  	 				
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row>
+	  	 			<el-col :span = "24">
+	  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
+	  	 					<!-- 使用 v-if 隐藏列 -->
+					      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "code" label = "项目编号"></el-table-column>
+					      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
+					      	<el-table-column prop = "contractno" label = "合同编号"></el-table-column>
+					      	<el-table-column prop = "prno" label = "PR编号"></el-table-column>
+					      	<el-table-column prop = "startdate" label = "开始日期"></el-table-column>
+					      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
+					      	<el-table-column label = "操作" width = "250" align = "center">
+					      		<template slot-scope="scope">
+							        <el-button
+							          size="mini"
+							          type = "primary"
+							          icon = "el-icon-edit"
+							          plain
+							          @click="editPro(scope.$index, scope.row)"></el-button>
+							        <el-button
+							          size="mini"
+							          type="success"
+							          plain
+							          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-list"></i></el-button> 
+						      </template>
+					      	</el-table-column>
+					    </el-table>	
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" justify = "end" align = "bottom">
+	  	 			<el-col :span = "24">
+	  	 				<el-pagination 
+	  	 					layout="prev, pager, next" 
+	  	 					:total="total" 
+	  	 					:page-size="items"
+	  	 					@current-change = "changePage"
+	  	 					small >
+	  	 				</el-pagination>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<!-- issue新增/修改 -->
+	  	 		<div th:include="/biz/pro/issue/edit::issue_edit()"></div>
+	  	 		<el-row type = "flex" justify = "end" align = "bottom">
+	  	 			<el-col :span = "24">
+	  	 				<!--div class="quillEditor">
+	  	 					<quill-editor
+						      v-model="quillEidtorValue"
+						      ref="quillEditor"
+						      :options="editorOption"
+						      @blur="onEditorBlur($event)"
+						      @focus="onEditorFocus($event)"
+						      @change="onEditorChange($event)"
+						    ></quill-editor>
+	  	 				</div-->
+	  	 				<div id="editor">
+							<h2>The three greatest things you learn from traveling</h2>
+				
+							<p>Like all the great things on earth traveling teaches us by example. Here are some of the most precious lessons I’ve learned over the years of traveling.</p>
+				
+							<h3>Appreciation of diversity</h3>
+				
+							<p>Getting used to an entirely different culture can be challenging. While it’s also nice to learn about cultures online or from books, nothing comes close to experiencing <a href="https://en.wikipedia.org/wiki/Cultural_diversity">cultural diversity</a> in person. You learn to appreciate each and every single one of the differences while you become more culturally fluid.</p>
+				
+							<figure class="image image-style-side"><img src="sample/img/umbrellas.jpg" alt="Three Monks walking on ancient temple.">
+								<figcaption>Leaving your comfort zone might lead you to such beautiful sceneries like this one.</figcaption>
+							</figure>
+				
+							<h3>Confidence</h3>
+				
+							<p>Going to a new place can be quite terrifying. While change and uncertainty makes us scared, traveling teaches us how ridiculous it is to be afraid of something before it happens. The moment you face your fear and see there was nothing to be afraid of, is the moment you discover bliss.</p>
+						</div>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 	</el-main>
+	  	 </el-container>	  	  		  	 
+	</div>
+	
 	<script>
+		ClassicEditor.create( document.querySelector( '#editor' ), {
+		    toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+	        heading: {
+	            options: [
+	                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+	                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+	                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+	            ]
+	        }
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
 		var app = new Vue({
 			el:"#app",
 			data:function(){	
@@ -89,6 +144,12 @@
 					formVisible:false,					//项目窗体显示
 					proId:'',							//项目UUID	
 					formLabelWidth:'120px',
+					quillEidtorValue: "<p>hello quillEditor!!</p>", //默认富文本内容
+			      	editorOption: {
+			        	modules: { imageDrop: true }, //开启拖拽
+			        	imageResize: {}, //图片大小可调
+			        	theme: "snow" //默认主题
+			      	},
 					form:{
 						id:'',
 						code:'',
@@ -126,6 +187,11 @@
 					prolist: []						//项目list
 				}
 			},
+			computed: {
+				editor() {
+			      return this.$refs.quillEditor.quill
+			  	}
+			},
 			methods:{
 				//获取issue项目下拉清单数据
 				getProList:function(){
@@ -144,7 +210,23 @@
 				},
 				changePro:function(){
 					//alert(this.proId)
-				}
+				},
+				onEditorReady:function(){
+					
+				}, // 准备编辑器
+			    onEditorBlur:function() {
+			    	
+			    }, // 失去焦点事件
+			    onEditorFocus:function(val, editor) {
+			      // console.log(val); // 富文本获得焦点时的内容
+			      // editor.enable(false); // 在获取焦点的时候禁用
+			    }, // 获得焦点事件
+			    onEditorChange:function() {
+			    	
+			    }, // 内容改变事件
+			    saveQuillEditorValue: function(event) {
+			      alert(this.quillEidtorValue)
+			    }
 			},
 			mounted:function(){
 				//alert('Mounted!!!')
