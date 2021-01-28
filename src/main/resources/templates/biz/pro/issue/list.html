@@ -95,7 +95,7 @@
 					formTitle:'新增Issue',				//项目窗体标题
 					formVisible: false,					//项目窗体显示
 					proId: '',							//项目UUID	
-					formLabelWidth:'120px',
+					formLabelWidth:'150px',
 					form:{
 						id:'',
 						issuetype:'1',
@@ -103,9 +103,8 @@
 						issueremark:'',
 						state:'1',
 						handler:'',
-						amount:'',
-						contractno:'',
-						prno:''
+						startdate:'',
+						finishdate:''
 					},
 					rules:{
 						issuetype:[
@@ -123,11 +122,11 @@
 						handler: [
 			            	{ required: true, message: '请选择处理人员!', trigger: 'blur' }
 			          	],
-			          	enddate: [
-			            	{ required: true, message: '请选择项目结束日期', trigger: 'blur' }
+			          	startdate: [
+			            	{ required: true, message: '请选择Issue处理开始日期', trigger: 'blur' }
 			          	],
-			          	amount: [
-			            	{ required: true, message: '请输入项目金额', trigger: 'blur' }
+			          	finishdate: [
+			            	{ required: true, message: '请选择Issue处理结束日期', trigger: 'blur' }
 			          	]
 					},		
 					prolist: [],		//项目list
@@ -138,24 +137,35 @@
 				}
 			},
 			methods:{
+				//重置form
+				resetFormValues:function(){
+					this.form.id = ''
+					this.form.issuetype = '1'
+					this.form.issuegrade = '1'
+					this.form.issueremark = ''
+					this.form.state = '1'
+					this.form.handler = ''
+					this.form.startdate = ''
+					this.form.finishdate = ''
+				},
 				changePro:function(){
 					//alert(this.proId)
-					//重新获取项目组人员清单
-					this.getGroupMember(this.proId)
 					//重新获取issue清单
 					
 				},
 				//关闭issue维护窗体
 				closeIssue:function(){					
 					this.formVisible = false
-					//this.resetFormValues()
+					this.resetFormValues()
 				},
 				//新增issue事项
-				addIssue:function(f){					
+				addIssue:function(f){
+					//重新获取项目组人员清单
+					this.getGroupMember(this.proId)
 		      		this.formTitle = '新增Issue'
 					this.formVisible = true
 					this.$refs['issueForm'].resetFields()
-					//this.resetFormValues()
+					this.resetFormValues()
 				},
 				//获取issue项目下拉清单数据
 				getProList:function(){
@@ -167,7 +177,7 @@
 		      			var result = response.data	
 		      			app.prolist = result.data
 		      			//赋默认值
-		      			app.proId = app.prolist[0]
+		      			app.proId = app.prolist.length == 0 ? "" : app.prolist[0].tid
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      			alert("error")
@@ -224,7 +234,7 @@
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
-		      			alert(result.data)
+		      			//alert(result.data)
 		      			app.gm = result.data
 		      		    console.log(response)
 		      		}).catch(function (error) {
