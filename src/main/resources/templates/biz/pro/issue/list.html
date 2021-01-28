@@ -91,7 +91,7 @@
 					total:10,							//记录总条数
 					items:10,							//每页条数
 					page: 1,							//当前页
-					height: window.screen.height * 0.55,	//表格最大高度
+					height: window.screen.height * 0.55,//表格最大高度
 					formTitle:'新增Issue',				//项目窗体标题
 					formVisible: false,					//项目窗体显示
 					proId: '',							//项目UUID	
@@ -133,12 +133,15 @@
 					prolist: [],		//项目list
 					types:[],		//issue类型
 					grades:[],		//issue等级
-					states:[]		//issue状态
+					states:[],		//issue状态
+					gm:[]			//项目组人员
 				}
 			},
 			methods:{
 				changePro:function(){
 					//alert(this.proId)
+					//重新获取项目组人员清单
+					this.getGroupMember(this.proId)
 					//重新获取issue清单
 					
 				},
@@ -163,6 +166,8 @@
 		      		}).then(function (response) {
 		      			var result = response.data	
 		      			app.prolist = result.data
+		      			//赋默认值
+		      			app.proId = app.prolist[0]
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      			alert("error")
@@ -208,6 +213,22 @@
 		      			app.states = result.data
 		      		    console.log(response)
 		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+	      		},
+	      		getGroupMember:function(){
+	      			//alert('App pro id is :'+app.proId)
+	      			axios.get('/pm/biz/pro/issue/gm', {
+		      		    params: {
+		      		    	proId:app.proId
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			alert(result.data)
+		      			app.gm = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
 		      		    console.log(error)
 		      		})
 	      		}

@@ -21,7 +21,7 @@ class ProgramIssue extends TableEntityBaseModel {
 	//描述(存储富文本格式或者富文本路径)
 	@Column(name="issueremark", length=500)
 	String issueremark
-	//处理人员(存储用户uuid)
+	//处理人员(存储用户code)
 	@Column(name="handler", length=40)
 	String handler
 	//处理状态（1：待确认  2：处理中 3：处理完成 4：已取消 5 : 已关闭 6 ：Reopen）

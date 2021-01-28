@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramGroup
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
+import com.doosan.ddp.pm.dao.domain.sys.user.SystemUser
 import com.doosan.ddp.pm.service.biz.issue.ProgramIssueService
 import com.doosan.ddp.pm.service.biz.pro.ProgramGroupService
 import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
+import com.doosan.ddp.pm.service.sys.user.SystemUserService
 /**
  * 项目issue事项
  */
@@ -26,6 +28,8 @@ class ProgramIssueController {
 	ProgramGroupService programGroupService
 	@Autowired
 	ProgramMainService programMainService
+	@Autowired
+	SystemUserService systemUserService
 	
 	/**
 	 *	跳转项目issue清单
@@ -53,4 +57,25 @@ class ProgramIssueController {
 		println "Program list size is : " + pros.size()
 		return ServerResultJson.success(pros)
 	}
+	@ResponseBody
+	@GetMapping("/gm")
+	def getGroupMembers(String proId, HttpServletRequest request) {
+		//session获取用户账号
+		def userId = request.getSession().getAttribute("currentUser")
+		List<ProgramGroup> groups = programGroupService.getProgramGroupByProId(proId)
+		List<SystemUser> users = systemUserService.getAll()
+		def um = [:]
+		users.each { 
+			um.put(it.getCode(), it.getName())			
+		}
+		def ul = [], user = [:]
+		groups.each { 
+			user = [:]
+			user.put("code", it.getUserid())
+			user.put("name", um.get(it.getUserid()))
+			ul << user
+		}
+		return ServerResultJson.success(ul)
+	}
+	
 }

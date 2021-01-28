@@ -25,7 +25,9 @@
 				<el-row type = "flex" justify = "center" align = "middle">
 					<el-col :span = "12">
 						<el-form-item label="处理人员" :label-width="formLabelWidth" prop = "handler">
-		      				<el-input v-model="form.handler" autocomplete="off"></el-input>
+		      				<el-select v-model="form.handler" placeholder="请选择">
+							    <el-option v-for = "m in gm" :label="m.name" :value="m.code" :key="m.code"></el-option>
+							</el-select>
 		    			</el-form-item>
 					</el-col>
 					<el-col :span = "12">
