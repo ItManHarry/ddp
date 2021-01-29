@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.controller.sys.dict.EnumerationController
+import com.doosan.ddp.pm.dao.domain.biz.issue.IssueHandleRecord
 import com.doosan.ddp.pm.dao.domain.biz.issue.ProgramIssue
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramGroup
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
 import com.doosan.ddp.pm.dao.domain.sys.user.SystemUser
+import com.doosan.ddp.pm.service.biz.issue.IssueHandleService
 import com.doosan.ddp.pm.service.biz.issue.ProgramIssueService
 import com.doosan.ddp.pm.service.biz.pro.ProgramGroupService
 import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
@@ -38,6 +40,8 @@ class ProgramIssueController {
 	SystemUserService systemUserService
 	@Autowired
 	EnumerationController enumerationController
+	@Autowired
+	IssueHandleService issueHandleService
 	
 	/**
 	 *	跳转项目issue清单
@@ -109,6 +113,14 @@ class ProgramIssueController {
 		issue.setState(state)
 		issue.setFinishdate(finishdate)
 		programIssueService.save(issue)
+		//新增issue处理履历
+		IssueHandleRecord record = new IssueHandleRecord()
+		record.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+		record.setCreateuserid(userCd)
+		record.setIssueid(issue.getTid())
+		def stateMap = enumerationController.getOptions('D009')
+		record.setState(stateMap.getAt(state+""))
+		issueHandleService.save(record)
 		return ServerResultJson.success()
 	}
 	/**
