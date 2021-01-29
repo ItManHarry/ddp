@@ -8,14 +8,14 @@
 			<el-form :model="form" :rules = "rules" ref = "issueForm">
 				<el-row type = "flex" justify = "center" align = "middle">
 					<el-col :span = "12">
-						<el-form-item label="Issue类型" :label-width="formLabelWidth" prop = "issuetype">
+						<el-form-item label="类型" :label-width="formLabelWidth" prop = "issuetype">
 		      				<el-select v-model="form.issuetype" placeholder="请选择">
 							    <el-option v-for = "type in types" :label="type.view" :value="type.value" :key="type.value"></el-option>
 							</el-select>
 		    			</el-form-item>
 					</el-col>
 					<el-col :span = "12">
-						<el-form-item label="Issue等级" :label-width="formLabelWidth" prop = "issuegrade">
+						<el-form-item label="紧急度" :label-width="formLabelWidth" prop = "issuegrade">
 		      				<el-select v-model="form.issuegrade" placeholder="请选择">
 							    <el-option v-for = "grade in grades" :label="grade.view" :value="grade.value" :key="grade.value"></el-option>
 							</el-select>
@@ -31,7 +31,7 @@
 		    			</el-form-item>
 					</el-col>
 					<el-col :span = "12">
-						<el-form-item label="Issue状态" :label-width="formLabelWidth" prop = "state">
+						<el-form-item label="处理状态" :label-width="formLabelWidth" prop = "state">
 		      				<el-select v-model="form.state" placeholder="请选择">
 							    <el-option v-for = "state in states" :label="state.view" :value="state.value" :key="state.value"></el-option>
 							</el-select>
@@ -40,13 +40,13 @@
 				</el-row>	
 				<el-row type = "flex" justify = "center" align = "middle">
 					<el-col :span = "24">
-						<el-form-item label="Issue描述" :label-width="formLabelWidth" prop = "issueremark">
+						<el-form-item label="描述" :label-width="formLabelWidth" prop = "issueremark">
 		      				<el-input type = "textarea" :rows="5" autosize v-model="form.issueremark" autocomplete="off"></el-input>
 		    			</el-form-item>
 					</el-col>
 				</el-row>		  	 						
 				<el-row type = "flex" justify = "center" align = "middle">
-					<el-col :span = "12">
+					<!--el-col :span = "12">
 						<el-form-item label="Issue处理开始日期" :label-width="formLabelWidth" prop = "startdate">
 						  <el-date-picker
 						      v-model="form.startdate"
@@ -55,9 +55,9 @@
 						      value-format = "yyyy-MM-dd">
 						  </el-date-picker>
 						</el-form-item>
-					</el-col>
-					<el-col :span = "12">
-						<el-form-item label="Issue处理结束日期" :label-width="formLabelWidth" prop = "finishdate">
+					</el-col-->
+					<el-col :span = "24">
+						<el-form-item label="邀请完成日期" :label-width="formLabelWidth" prop = "finishdate">
 						  <el-date-picker
 						      v-model="form.finishdate"
 						      type="date"

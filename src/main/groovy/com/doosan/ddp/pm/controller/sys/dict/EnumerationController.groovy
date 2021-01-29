@@ -87,4 +87,18 @@ class EnumerationController {
 		systemEnumerationService.save(em)
 		return ServerResultJson.success()
 	}
+	/**
+	 * 根据字典ID获取所有的枚举值，返回枚举map
+	 * @param code
+	 * @return
+	 */
+	def getOptions(String code){
+		SystemDictionary dict = systemDictionaryService.getDictByCode(code)
+		def data = systemEnumerationService.getByDictionary(dict.getTid())
+		def map = [:]
+		data.each { 
+			map.put(it.getValue(), it.getView())
+		}
+		return map
+	}
 }

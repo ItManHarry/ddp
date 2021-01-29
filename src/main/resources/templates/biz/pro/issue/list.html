@@ -40,15 +40,19 @@
 	  	 		</el-row>
 	  	 		<el-row>
 	  	 			<el-col :span = "24">
-	  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
+	  	 				<el-table :data="issueData" style="width:100%;" :max-height = "height">
 	  	 					<!-- 使用 v-if 隐藏列 -->
 					      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
-					      	<el-table-column prop = "code" label = "项目所属"></el-table-column>
-					      	<el-table-column prop = "name" label = "Issue类型"></el-table-column>
-					      	<el-table-column prop = "contractno" label = "紧急度"></el-table-column>
-					      	<el-table-column prop = "prno" label = "处理人员"></el-table-column>
-					      	<el-table-column prop = "startdate" label = "Issue状态"></el-table-column>
-					      	<el-table-column label = "操作" width = "250" align = "center">
+					      	<el-table-column prop = "programid" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "program" label = "项目所属"></el-table-column>
+					      	<el-table-column prop = "issuetype" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "type" label = "Issue类型"></el-table-column>
+					      	<el-table-column prop = "issuegrade" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "grade" label = "紧急度"></el-table-column>
+					      	<el-table-column prop = "handler" label = "处理人员"></el-table-column>
+					      	<el-table-column prop = "state" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "stateStr" label = "Issue状态"></el-table-column>
+					      	<el-table-column label = "操作" width = "150" align = "center">
 					      		<template slot-scope="scope">
 							        <el-button
 							          size="mini"
@@ -103,7 +107,7 @@
 						issueremark:'',
 						state:'1',
 						handler:'',
-						startdate:'',
+						//startdate:'',
 						finishdate:''
 					},
 					rules:{
@@ -122,14 +126,15 @@
 						handler: [
 			            	{ required: true, message: '请选择处理人员!', trigger: 'blur' }
 			          	],
-			          	startdate: [
-			            	{ required: true, message: '请选择Issue处理开始日期', trigger: 'blur' }
-			          	],
+			          	//startdate: [
+			            //	{ required: true, message: '请选择Issue处理开始日期', trigger: 'blur' }
+			          	//],
 			          	finishdate: [
-			            	{ required: true, message: '请选择Issue处理结束日期', trigger: 'blur' }
+			            	{ required: true, message: '请选择邀请完成日期!', trigger: 'blur' }
 			          	]
 					},		
-					prolist: [],		//项目list
+					prolist: [],	//项目list
+					issueData:[],	//项目issue list
 					types:[],		//issue类型
 					grades:[],		//issue等级
 					states:[],		//issue状态
@@ -151,7 +156,7 @@
 				changePro:function(){
 					//alert(this.proId)
 					//重新获取issue清单
-					
+					this.getIssueData()
 				},
 				//关闭issue维护窗体
 				closeIssue:function(){					
@@ -167,6 +172,64 @@
 					this.$refs['issueForm'].resetFields()
 					this.resetFormValues()
 				},
+				//获取issue清单数据
+		      	getIssueData:function(){
+		      		axios.get('/pm/biz/pro/issue/query', {
+		      		    params: {
+		      		      page:app.page,
+		      		      limit:app.items,
+		      		      proId:app.proId
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.issueData = result.data
+		      			app.total = result.number
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	},
+				//执行保存项目
+				saveIssue:function(form) {
+			        this.$refs[form].validate(function(valid) {
+			        	if (valid) {
+			        		axios.post('/pm/biz/pro/issue/save',	{
+				            	id:app.form.id,
+				            	programid:app.proId,
+				            	issuetype:app.form.issuetype,
+				            	issuegrade:app.form.issuegrade,
+				            	issueremark:app.form.issueremark,
+				            	handler:app.form.handler,
+				            	state:app.form.state,
+				            	finishdate:app.form.finishdate,
+				            	user:'admin'
+				            }).then(function (response) {
+				            	var result = response.data
+				            	if(result.status == 0)
+				            		app.$message({
+				            			message:result.message,
+				            			type:'warning',
+				            			duration:2000,
+				            			offset:120
+				            		})	
+				            	else{		            		
+				            		app.formVisible = false
+				            		//app.getProData()		            		
+				            	}			            		
+				            }).catch(function (error) {
+				            	app.$message({
+			            			message:result.message,
+			            			type:'danger',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+				            });
+			        	}else{
+			            	console.log('error submit!!')
+			            	return false;
+			            }
+			        });
+		      	},
 				//获取issue项目下拉清单数据
 				getProList:function(){
 		      		axios.get('/pm/biz/pro/issue/prolist', {
@@ -178,6 +241,8 @@
 		      			app.prolist = result.data
 		      			//赋默认值
 		      			app.proId = app.prolist.length == 0 ? "" : app.prolist[0].tid
+						//获取issue清单数据
+						app.getIssueData()
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      			alert("error")

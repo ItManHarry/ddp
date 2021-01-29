@@ -2,6 +2,8 @@ package com.doosan.ddp.pm.dao.domain.biz.issue
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Table
+import javax.persistence.Transient
+
 import com.doosan.ddp.pm.dao.domain.base.TableEntityBaseModel
 /**
  * 项目issue信息
@@ -12,18 +14,26 @@ class ProgramIssue extends TableEntityBaseModel {
 	//所属项目(项目uuid)
 	@Column(name="programid", length=40)
 	String programid
+	@Transient
+	String program
 	//类型（1：Bug   2：改善）
 	@Column(name="issuetype")
 	int issuetype
+	@Transient
+	String type
 	//issue等级（1：低   2：中   3：高）
 	@Column(name="issuegrade")
-	int issuegrade	
+	int issuegrade
+	@Transient
+	String grade
 	//描述(存储富文本格式或者富文本路径)
 	@Column(name="issueremark", length=500)
 	String issueremark
 	//处理人员(存储用户code)
 	@Column(name="handler", length=40)
 	String handler
+	@Transient
+	String handlerNm
 	//处理状态（1：待确认  2：处理中 3：处理完成 4：已取消 5 : 已关闭 6 ：Reopen）
 	/**
 	 *	状态逻辑如下：
@@ -34,6 +44,8 @@ class ProgramIssue extends TableEntityBaseModel {
 	 */
 	@Column(name="state")
 	int state
+	@Transient
+	String stateStr
 	//issue处理开始日期
 	@Column(name="startdate", length=20)
 	String startdate
