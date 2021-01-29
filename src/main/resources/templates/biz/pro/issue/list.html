@@ -49,22 +49,23 @@
 					      	<el-table-column prop = "type" label = "Issue类型"></el-table-column>
 					      	<el-table-column prop = "issuegrade" v-if = "false"></el-table-column>
 					      	<el-table-column prop = "grade" label = "紧急度"></el-table-column>
-					      	<el-table-column prop = "handler" label = "处理人员"></el-table-column>
+					      	<el-table-column prop = "handler" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "handlerNm" label = "处理人员"></el-table-column>
 					      	<el-table-column prop = "state" v-if = "false"></el-table-column>
 					      	<el-table-column prop = "stateStr" label = "Issue状态"></el-table-column>
-					      	<el-table-column label = "操作" width = "150" align = "center">
+					      	<el-table-column label = "操作" width = "100" align = "center">
 					      		<template slot-scope="scope">
 							        <el-button
 							          size="mini"
 							          type = "primary"
 							          icon = "el-icon-edit"
 							          plain
-							          @click="editPro(scope.$index, scope.row)"></el-button>
-							        <el-button
+							          @click="editIssue(scope.$index, scope.row)"></el-button>
+							        <!--el-button
 							          size="mini"
 							          type="success"
 							          plain
-							          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-list"></i></el-button> 
+							          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-list"></i></el-button--> 
 						      </template>
 					      	</el-table-column>
 					    </el-table>	
@@ -172,6 +173,21 @@
 					this.$refs['issueForm'].resetFields()
 					this.resetFormValues()
 				},
+				//编辑issue信息
+		      	editIssue:function(index, row){
+		      		this.getGroupMember(this.proId)
+		      		this.formVisible = true
+		      		this.formTitle = '修改Issue'
+		      		this.form.id = row.tid
+		      		this.form.issuetype = row.issuetype+''
+					this.form.issuegrade = row.issuegrade+''
+					this.form.issueremark = row.issueremark
+					this.form.state = row.state+''
+					this.form.handler = row.handler
+					this.form.startdate = row.startdate
+					this.form.finishdate = row.finishdate
+		      		this.$refs['issueForm'].clearValidate()
+		      	},
 				//获取issue清单数据
 		      	getIssueData:function(){
 		      		axios.get('/pm/biz/pro/issue/query', {
@@ -214,7 +230,7 @@
 				            		})	
 				            	else{		            		
 				            		app.formVisible = false
-				            		//app.getProData()		            		
+				            		app.getIssueData()	            		
 				            	}			            		
 				            }).catch(function (error) {
 				            	app.$message({

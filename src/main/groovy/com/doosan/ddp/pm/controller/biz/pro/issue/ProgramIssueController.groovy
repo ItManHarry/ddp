@@ -64,19 +64,7 @@ class ProgramIssueController {
 	def getGroupMembers(String proId, HttpServletRequest request) {
 		//session获取用户账号
 		def userId = request.getSession().getAttribute("currentUser")
-		List<ProgramGroup> groups = programGroupService.getProgramGroupByProId(proId)
-		List<SystemUser> users = systemUserService.getAll()
-		def um = [:]
-		users.each { 
-			um.put(it.getCode(), it.getName())			
-		}
-		def ul = [], user = [:]
-		groups.each { 
-			user = [:]
-			user.put("code", it.getUserid())
-			user.put("name", um.get(it.getUserid()))
-			ul << user
-		}
+		def ul = getUsers(proId)
 		return ServerResultJson.success(ul)
 	}
 	/**
@@ -141,6 +129,12 @@ class ProgramIssueController {
 		pros.each { 
 			proMap.put(it.getTid(), it.getName())
 		}
+		//获取用户清单
+		def ul = getUsers(proId)
+		def userMap = [:]
+		ul.each { 
+			userMap.put(it.getAt("code"), it.getAt("name"))
+		}
 		def count = programIssueService.getProgramIssuesById(proId).size()
 		def data = programIssueService.getProgramIssuesById(proId)
 		def typeMap = enumerationController.getOptions('D007')
@@ -151,6 +145,7 @@ class ProgramIssueController {
 			it.setType(typeMap.getAt(it.getIssuetype()+""))
 			it.setGrade(gradeMap.getAt(it.getIssuegrade()+""))
 			it.setStateStr(stateMap.getAt(it.getState()+""))
+			it.setHandlerNm(userMap.get(it.getHandler()))
 		}
 		return ServerResultJson.success(data, count)
 	}
@@ -169,5 +164,26 @@ class ProgramIssueController {
 		//获取所有项目
 		List<ProgramMain> pros = programMainService.getProListForUser(proIds)
 		return pros
+	}
+	/**
+	 * 根据项目ID获取项目成员
+	 * @param proId
+	 * @return
+	 */
+	def getUsers(String proId) {
+		List<ProgramGroup> groups = programGroupService.getProgramGroupByProId(proId)
+		List<SystemUser> users = systemUserService.getAll()
+		def um = [:]
+		users.each { 
+			um.put(it.getCode(), it.getName())			
+		}
+		def ul = [], user = [:]
+		groups.each { 
+			user = [:]
+			user.put("code", it.getUserid())
+			user.put("name", um.get(it.getUserid()))
+			ul << user
+		}
+		return ul
 	}
 }
