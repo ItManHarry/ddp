@@ -49,28 +49,40 @@
 						      	<el-table-column prop = "enddate" label = "结束日期"></el-table-column>
 						      	<el-table-column label = "操作" width = "250" align = "center">
 						      		<template slot-scope="scope">
-								        <el-button
-								          size="mini"
-								          type = "primary"
-								          icon = "el-icon-edit"
-								          plain
-								          @click="editPro(scope.$index, scope.row)"></el-button>
-								        <el-button
-								          size="mini"
-								          type="success"
-								          plain
-								          @click="groupUsers(scope.$index, scope.row)"><i class = "fa fa-users"></i></el-button>
-								       <el-button
-								          size="mini"
-								          type="warning"
-								          icon = "el-icon-s-flag"
-								          plain
-								          @click="proStatus(scope.$index, scope.row)"></el-button>
-								        <el-button
-								          size="mini"
-								          type="success"
-								          plain
-								          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-money"></i></el-button> 
+						      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type = "primary"
+									          icon = "el-icon-edit"
+									          plain
+									          @click="editPro(scope.$index, scope.row)">
+									        </el-button>
+								        </el-tooltip>
+								        <el-tooltip style="margin:4px;" effect="light" content="成员管理" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type="success"
+									          plain
+									          @click="groupUsers(scope.$index, scope.row)"><i class = "fa fa-users"></i>
+									      	</el-button>
+									    </el-tooltip>
+									    <el-tooltip style="margin:4px;" effect="light" content="状态管理" placement="bottom-start">
+										      <el-button
+										          size="mini"
+										          type="warning"
+										          icon = "el-icon-s-flag"
+										          plain
+										          @click="proStatus(scope.$index, scope.row)">
+										       </el-button>
+										</el-tooltip>
+										<el-tooltip style="margin:4px;" effect="light" content="发票管理" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type="success"
+									          plain
+									          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-money"></i>
+									        </el-button>
+									     </el-tooltip> 
 							      </template>
 						      	</el-table-column>
 						    </el-table>	

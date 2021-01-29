@@ -45,18 +45,24 @@
 						      	<el-table-column prop = "name" label = "字典名称"></el-table-column>
 						      	<el-table-column label = "操作" width = "200" align = "center">
 						      		<template slot-scope="scope">
-								        <el-button
-								          size="mini"
-								          type = "primary"
-								          icon = "el-icon-edit"
-								          plain
-								          @click="editDict(scope.$index, scope.row)"></el-button>
-								        <el-button
-								          size="mini"
-								          type="success"
-								          icon = "el-icon-s-grid"
-								          plain
-								          @click="enums(scope.$index, scope.row)"></el-button>
+						      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type = "primary"
+									          icon = "el-icon-edit"
+									          plain
+									          @click="editDict(scope.$index, scope.row)">
+									        </el-button>
+								        </el-tooltip>
+								        <el-tooltip style="margin:4px;" effect="light" content="枚举维护" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type="success"
+									          icon = "el-icon-s-grid"
+									          plain
+									          @click="enums(scope.$index, scope.row)">
+									       	</el-button>
+									     </el-tooltip>
 							      </template>
 						      	</el-table-column>
 						    </el-table>	

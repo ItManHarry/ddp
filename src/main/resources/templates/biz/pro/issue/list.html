@@ -55,12 +55,15 @@
 					      	<el-table-column prop = "stateStr" label = "Issue状态"></el-table-column>
 					      	<el-table-column label = "操作" width = "100" align = "center">
 					      		<template slot-scope="scope">
-							        <el-button
-							          size="mini"
-							          type = "primary"
-							          icon = "el-icon-edit"
-							          plain
-							          @click="editIssue(scope.$index, scope.row)"></el-button>
+					      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-edit"
+								          plain
+								          @click="editIssue(scope.$index, scope.row)">
+								        </el-button>
+								      </el-tooltip>
 							        <!--el-button
 							          size="mini"
 							          type="success"
