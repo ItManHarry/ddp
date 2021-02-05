@@ -27,4 +27,9 @@ interface SystemMenuService {
 	 * @return
 	 */
 	SystemMenu getMenuById(String id)
+	/**
+	 * 获取所有的菜单
+	 * @return
+	 */
+	List<SystemMenu> getAll()
 }

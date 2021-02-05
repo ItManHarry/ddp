@@ -40,4 +40,8 @@ class SystemMenuServiceImp implements SystemMenuService {
 		// TODO Auto-generated method stub
 		return systemMenuDao.getOne(id)
 	}
+	@Override
+	List<SystemMenu> getAll(){
+		return systemMenuDao.findAll()
+	}
 }

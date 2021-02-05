@@ -5,18 +5,34 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.sys.menu.SystemMenu
 import com.doosan.ddp.pm.service.sys.menu.SystemMenuService
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 @Controller
 @RequestMapping("/pm/sys/menu")
 class SystemMenuController {
 	
+	final String WEB_URL = "sys/menu"
 	@Autowired
 	SystemMenuService systemMenuService
 	
+	/**
+	 *	 跳转菜单清单
+	 * 	@return
+	 */
+	@RequestMapping("/list")
+	def list(HttpServletRequest request, Map map) {
+		if(systemMenuService.getCount())
+			map.put("total", systemMenuService.getCount().intValue())
+		else
+			map.put("total", 0)
+		return WEB_URL + "/list"
+	}
 	/**
 	 * 	分页获取菜单数据
 	 * 	@param page
@@ -29,7 +45,7 @@ class SystemMenuController {
 		def count = systemMenuService.getCount() ? systemMenuService.getCount().intValue() : 0
 		def data = systemMenuService.getAllByPages(page, limit)
 		data.each {
-			if(it.getStatus() == 0)
+			if(it.getStatus() == 2)
 				it.setStsStr("停用")
 			else
 				it.setStsStr("在用")
@@ -45,24 +61,28 @@ class SystemMenuController {
 	 */
 	@PostMapping("/save")
 	@ResponseBody
-	def save(HttpServletRequest request, Map map){
+	def save(@RequestBody String params, HttpServletRequest request, Map map){
 		//session获取用户账号
-		//def userId = request.getSession().getAttribute("currentUser")
-		//参数传递用户账号
-		def userId = request.getParameter("userId")
+		def user = request.getSession().getAttribute("currentUser")
+		//传递参数值
+		println 'Parameters : \t' + params
+		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+		String id = json.get("id").asString
+		String menuname = json.get("menuname").asString
+		String url = json.get("url").asString
+		int status = json.get("status").asInt
 		SystemMenu menu = new SystemMenu()
-		String id = request.getParameter("id")
 		if(id) {
 			menu = systemMenuService.getMenuById(id);
 			menu.setModifytime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			menu.setModifyuserid(userId)
+			menu.setModifyuserid(user)
 		}else {
 			menu.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
-			menu.setCreateuserid(userId)
+			menu.setCreateuserid(user)
 		}
-		menu.setStatus(1)
-		menu.setUrl(request.getParameter("url"))
-		menu.setMenuname(request.getParameter("menuname"))
+		menu.setStatus(status)
+		menu.setUrl(url)
+		menu.setMenuname(menuname)
 		systemMenuService.save(menu)
 		return ServerResultJson.success()
 	}

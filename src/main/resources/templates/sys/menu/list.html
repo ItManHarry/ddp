@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - 系统菜单维护</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+		<div id = "app">
+		  	 <el-container>
+		  	 	<el-header>
+					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+		  	 	</el-header>
+		  	 	<el-main>
+		  	 		<el-row type = "flex" justify = "center" align = "middle">
+		  	 			<!--el-col :span = "4">
+		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
+		  	 			</el-col-->
+		  	 			<el-col :span = "2" :offset = "22">
+		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addMenu('menuForm')" size = "small">新增</el-button>
+		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeMenu" :close-on-click-modal = "false">
+		  	 					<el-form :model="form" :rules = "rules" ref = "menuForm">
+								    <el-form-item label="菜单名称" :label-width="formLabelWidth" prop = "menuname">
+								      <el-input v-model="form.menuname" autocomplete="off"></el-input>
+								    </el-form-item>
+								    <el-form-item label="URL地址" :label-width="formLabelWidth" prop = "url">
+								      <el-input v-model="form.url" autocomplete="off"></el-input>
+								    </el-form-item>
+								 </el-form>
+								 <div slot="footer" class="dialog-footer">
+								    <el-button @click="closeMenu">取 消</el-button>
+								    <el-button type="primary" @click="saveMenu('menuForm')">保存</el-button>
+								 </div>
+		  	 				</el-dialog>
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 		<el-row>
+		  	 			<el-col :span = "24">
+		  	 				<el-table :data="menuData" style="width:100%;" :max-height = "height">
+		  	 					<!-- 使用 v-if 隐藏列 -->
+						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "menuname" label = "菜单名称"></el-table-column>
+						      	<el-table-column prop = "url" label = "URL地址"></el-table-column>
+						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
+						      	<el-table-column label = "操作" width = "200" align = "center">
+						      		<template slot-scope="scope">
+						      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type = "primary"
+									          icon = "el-icon-edit"
+									          plain
+									          :disabled = "scope.row.stsStr == '停用'"
+									          @click="editMenu(scope.$index, scope.row)">
+									         </el-button>
+									    </el-tooltip>
+									    <el-tooltip style="margin:4px;" effect="light" content="停用" placement="bottom-start">
+								        	<el-button
+									          size="mini"
+									          type="warning"
+									          icon = "el-icon-close"
+									          plain
+									          :disabled = "scope.row.stsStr == '停用'"
+									          @click="unuseMenu(scope.$index, scope.row)">
+									        </el-button>
+									    </el-tooltip>
+									    <el-tooltip style="margin:4px;" effect="light" content="启用" placement="bottom-start">
+									        <el-button
+									          size="mini"
+									          type="success"
+									          icon = "el-icon-check"
+									          plain
+									          :disabled = "scope.row.stsStr == '在用'"
+									          @click="reuseMenu(scope.$index, scope.row)">
+									        </el-button>
+									     </el-tooltip>
+							      </template>
+						      	</el-table-column>
+						    </el-table>	
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 		<el-row type = "flex" justify = "end" align = "bottom">
+		  	 			<el-col :span = "24">
+		  	 				<el-pagination 
+		  	 					layout="prev, pager, next" 
+		  	 					:total="total" 
+		  	 					:page-size="items"
+		  	 					@current-change = "changePage"
+		  	 					small >
+		  	 				</el-pagination>
+		  	 			</el-col>
+		  	 		</el-row>	
+		  	 	</el-main>
+		  	 </el-container>		  	 
+		</div>
+	<script>
+		var app = new Vue({
+			el:"#app",
+			data:function(){				
+				return{
+					total:10,							//记录总条数
+					items:10,							//每页条数
+					page: 1,							//当前页
+					height:window.screen.height * 0.55,	//表格最大高度
+					formTitle:'新增菜单',					//菜单窗体标题
+					formVisible:false,					//菜单窗体显示	
+					formLabelWidth:'120px',
+					form:{
+						id:'',
+						menuname:'',
+						url:'',
+						status:1
+					},
+					rules:{
+						menuname:[
+							{required:true, message:'请输入菜单名称!', trigger:'blur'}
+						],
+						url:[
+							{required:true, message:'请输入菜单URL地址!', trigger:'blur'}
+						]
+					},					
+					menuData: []						//菜单数据list
+				}
+			},
+			methods:{
+				//关闭菜单维护窗体
+				closeMenu:function(){
+					this.formVisible = false
+					this.form.id = ''
+					this.form.menuname = ''
+					this.form.url = ''
+				},
+				//新增菜单信息
+				addMenu:function(f){
+		      		this.formTitle = '新增菜单'
+					this.formVisible = true
+					this.$refs[f].resetFields()
+					this.form.id = ''
+					this.form.menuname = ''
+					this.form.url = ''
+					this.form.status = 1
+				},
+				//编辑菜单信息
+		      	editMenu:function(index, row){
+		      		//alert(row.tid)
+		      		this.formVisible = true
+		      		this.formTitle = '修改菜单'
+	      			this.form.id = row.tid
+		      		this.form.menuname = row.menuname
+		      		this.form.url = row.url
+		      		this.form.status = row.stsStr == '在用' ? 1 : 2
+		      		this.$refs['menuForm'].clearValidate()
+		      	},
+		      	//停用菜单
+		      	unuseMenu:function(index, row){
+		      		this.form.id = row.tid
+		      		this.form.menuname = row.menuname
+		      		this.form.url = row.url
+		      		this.form.status = 2
+		      		this.doSaveMenu()
+		      	},
+		      	//启用菜单
+		      	reuseMenu:function(index, row){
+		      		this.form.id = row.tid
+		      		this.form.menuname = row.menuname
+		      		this.form.url = row.url
+		      		this.form.status = 1
+		      		this.doSaveMenu()
+		      	},
+				//执行菜单信息
+				saveMenu:function(form) {
+			        this.$refs[form].validate(function(valid) {
+			          if (valid) {
+			            app.doSaveMenu()		            
+			          } else {
+			            console.log('error submit!!')
+			            return false;
+			          }
+			        });
+		      	},
+		      	//执行保存
+		      	doSaveMenu:function(){
+		      		axios.post('/pm/sys/menu/save', {
+		            	id:app.form.id,
+		            	menuname:app.form.menuname,
+		            	url:app.form.url,
+		            	status:app.form.status,
+		            	user:'admin'
+		            }).then(function (response) {
+		            	var result = response.data
+		            	if(result.status == 0)
+		            		app.$message({
+		            			message:result.message,
+		            			type:'warning',
+		            			duration:2000,
+		            			offset:120
+		            		})	
+		            	else{
+		            		app.formVisible = false
+		            		app.getMenuData()
+		            	}			            		
+		            }).catch(function (error) {
+		            	alert(error)
+		            });
+		      	},
+		      	//分页
+		      	changePage:function(page){
+		      		this.page = page
+		      		this.getMenuData()
+		      	},
+		      	//获取菜单清单数据
+		      	getMenuData:function(){
+		      		axios.get('/pm/sys/menu/all', {
+		      		    params: {
+		      		      page:app.page,
+		      		      limit:app.items
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.menuData = result.data
+		      			app.total = result.number
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	}
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+				this.getMenuData()
+			}
+		});		
+	</script>
+</body>
+</html>
