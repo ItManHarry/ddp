@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<div th:fragment="common_naveu()" id = "system_naveu">
- 		<el-row align = "bottom" justify = "end" type = "flex" style = "border-bottom:1px solid #ddd;padding-bottom:15px;">
+ 		<el-row align = "bottom" justify = "end" type = "flex" style = "border-bottom:1px solid #ddd;padding-bottom:15px;" id = "nav">
  			<el-col :span = "6">
  				<el-image src="/static/images/logoes/head_logo.png" :fit="fill"></el-image>
  				&nbsp;&nbsp;<span style = "font-size:20px;color:#888;">项目管理系统</span>
@@ -19,5 +19,5 @@
  				</el-tooltip>
  			</el-col>
  		</el-row>
-	</div>
+	</div>	
 </html>
