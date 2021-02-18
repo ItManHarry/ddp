@@ -2,9 +2,16 @@
 <!-- 子导航 左侧导航栏 -->
 <html xmlns:th="http://www.thymeleaf.org">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<!-- 传入参数 : 1. current_position 当前位置  -->
-	<div th:fragment="left_nav(current_position)">
-		<a href = "#" id = "more" class = "btn btn-outline-secondary"><i class="fa fa-list" aria-hidden="true"></i></a>&nbsp;&nbsp;
-		<i class="fa fa-coffee text-secondary" aria-hidden="true"></i>&nbsp;&nbsp;<span class = "text-secondary" th:text = "${current_position}"></span>
+	<div th:fragment="left_nav()">
+		<el-tooltip style="margin:4px;" effect="light" placement="bottom-start">
+			<div slot="content">
+				<el-link :underline="false" href = "/pm/web/work"><i class = "fa fa-home"></i>&nbsp;&nbsp;项目管理</el-link>
+				<hr>
+				<el-link :underline="false" href = "/pm/web/logout"><i class = "fa fa-sign-out"></i>&nbsp;&nbsp;Issue管理</el-link>
+				<hr>
+				<el-link :underline="false" href = "/pm/web/logout"><i class = "fa fa-sign-out"></i>&nbsp;&nbsp;系统管理</el-link>
+			</div>
+			<el-button icon="el-icon-menu"></el-button>
+		</el-tooltip>
 	</div>
 </html>

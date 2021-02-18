@@ -35,70 +35,21 @@
 </head>
 <body>
 	<!-- 引入公共js文件 -->
-	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
-		<div id = "app">
-		  	 <el-container>
-		  	 	<el-header>
-					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
-		  	 	</el-header>
-		  	 	<el-main>
-			  	 	<el-row>
-			  	 		<el-col :span = "8">
-			  	 			<div  class="grid-content bg-purple">
-			  	 				<el-button icon = "el-icon-edit" circle></el-button>
-								<el-button icon = "el-icon-share" round></el-button>
-								<el-button type = "warning" icon = "el-icon-delete" plain></el-button>
-								<el-button icon = "el-icon-user"></el-button>
-			  	 			</div>
-			  	 		</el-col>
-			  	 		<el-col :span = "8">
-			  	 			<div class="grid-content bg-purple-light">
-			  	 				<el-button @click="visible = true" type = "primary">Button</el-button>
-							    <el-dialog :visible.sync="visible" title="Hello world">
-							      <p>Try Element</p>
-							    </el-dialog>
-			  	 			</div>
-			  	 		</el-col>
-			  	 		<el-col :span = "8">
-			  	 			<div  class="grid-content bg-purple">
-			  	 				<el-select v-model="value" filterable placeholder="请选择">
-							    	<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value"></el-option>
-							  	</el-select>
-			  	 			</div>
-			  	 		</el-col>
-			  	 	</el-row>
-		  	 	</el-main>
-		  	 </el-container>		  	 
-		</div>
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>		
+	<el-container id = "home">
+		<el-header style = "margin-bottom:10px;">
+			<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+		</el-header>
+		<el-container>
+		      
+		</el-container>		  	 	
+	</el-container>
 	<script>
 		var vm = new Vue({
-			el:"#app",
+			el:"#home",
 			data:function(){				
 				return {
-					visible:false,
-					options: [{
-			          value: '选项1',
-			          label: '黄金糕'
-			        }, {
-			          value: '选项2',
-			          label: '双皮奶'
-			        }, {
-			          value: '选项3',
-			          label: '蚵仔煎'
-			        }, {
-			          value: '选项4',
-			          label: '龙须面'
-			        }, {
-			          value: '选项5',
-			          label: '北京烤鸭'
-			        }, {
-			          value: '选项6',
-			          label: '九九鸭脖'
-			        }, {
-			          value: '选项7',
-			          label: '全鸭汤'
-			        }],
-			        value:''
+					
 				}
 			},
 			methods:{

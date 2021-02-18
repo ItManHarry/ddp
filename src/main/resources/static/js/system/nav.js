@@ -1,28 +1,20 @@
-$(function(){
-	//根据模块ID加载授权菜单
-	$.ajax({
-		url:'/web/system/menu/mms',
-		type:"get",
-		data:{module:module},
-		dataType:'json',
-		success:function(r){
-			var urls = ''
-			for(var i = 0; i < r.data.length; i++){
-				if(i != r.data.length - 1)
-					urls += "<a href = '"+r.data[i].url+"?module="+module+"' class = 'btn btn-link text-secondary'><i class = 'fa fa-angle-double-right'></i>&nbsp;&nbsp;"+r.data[i].name+"</a><br>"
-				else
-					urls += "<a href = '"+r.data[i].url+"?module="+module+"' class = 'btn btn-link text-secondary'><i class = 'fa fa-angle-double-right'></i>&nbsp;&nbsp;"+r.data[i].name+"</a>"
-			}
-			$("#more").popover({
-				trigger:"focus",
-				html:true,
-				placement:"bottom",
-				container:"body",
-				content:urls
-			});
-		},
-		error:function(){
-			
-		}
+function getMenus(callback){
+	//获取系统权限
+	axios.get('/pm/biz/pro/group/members', {
+	    params: {
+	      proId:'111'		      		      
+	    }
+	}).then(function (response) {
+		//alert('Get system menus successfully!!!')
+		menus = [
+			{name:'1',id:1},
+			{name:'2',id:2},
+			{name:'3',id:3},
+			{name:'4',id:4}
+		]
+		callback(menus)
+	}).catch(function (error) {
+		alert("error")
+	    console.log(error)
 	})
-})
+}

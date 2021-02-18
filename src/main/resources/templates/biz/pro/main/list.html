@@ -7,7 +7,10 @@
 </head>
 <body>
 	<!-- 引入公共js文件 -->
-	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+	<div th:replace="commons/js-elementui::common_js(~{::script})">
+		<!--加载页面自己的js-->
+		<script type = "text/javascript" th:src = "@{/static/js/system/nav.js}" charset="UTF-8"></script>
+	</div>
 		<div id = "app">
 		  	 <el-container>
 		  	 	<el-header>
@@ -15,7 +18,14 @@
 		  	 	</el-header>
 		  	 	<el-main>
 		  	 		<el-row type = "flex" :justify = "end" :align = "middle">
-		  	 			<el-col :span = "13" :offset = "11">
+		  	 			<el-col :span = "2">
+		  	 				<!-- 引入左侧导航栏 -->
+							<div th:include="commons/subnav::left_nav()"></div>
+		  	 			</el-col>
+		  	 			<el-col :span = "13" :offset = "9">
+		  	 				<!--el-select v-model="menu" placeholder="请选择菜单"  style = "width:300px">
+			  					<el-option v-for = "m in menus" :label="m.name" :value="m.id"></el-option>
+			  				</el-select-->
 		  	 				<el-form :inline = "true">
 		  	 					<el-form-item>
 		  	 						<el-switch							  		
@@ -116,7 +126,7 @@
 			data:function(){	
 				return{
 					total:10,							//记录总条数
-					items:10,							//每页条数
+					items:5,							//每页条数
 					page: 1,							//当前页
 					height:window.screen.height * 0.55,	//表格最大高度
 					formTitle:'新增项目',				//项目窗体标题
@@ -234,7 +244,9 @@
 					searchtype:true,					//是否按照姓名查找,默认为true,false为按照code查找
 					users: [],							//系统用户
 			        members: [],						//项目组人员,
-			        proId:''							//项目UUID	
+			        proId:'',							//项目UUID	
+			        menus:[],
+			        menu:0
 				}
 			},
 			methods:{
@@ -606,6 +618,10 @@
 		      		}).catch(function (error) {
 		      		    console.log(error)
 		      		})
+		      	},
+		      	callback:function(menus){
+		      		//alert('Call back function ...')
+		      		this.menus = menus
 		      	}
 			},
 			mounted:function(){
@@ -615,6 +631,7 @@
 				this.getCs()
 				this.getProStates()
 				this.getStages()
+				getMenus(this.callback)				
 			}
 		});		
 	</script>
