@@ -1,30 +1,20 @@
-$(function(){	
-	//$('[data-toggle="tooltip"]').tooltip();
-	$('#logout').popover({
-		trigger:"focus",
-		html:true,
-		title:"You want to ?"
-	});	
-})
 /**
- * 显示关闭模式窗体
- * @param id		模式窗体id
- * @param flag		1：显示 0：关闭
+ * 获取系统下拉选项
+ * @param code - 字典代码
+ * @param callback - 回调函数
  * @returns
  */
-function modalSwitch(id, flag){
-	if(flag == 1)
-		$("#"+id).modal('show');
-	else
-		$("#"+id).modal('hide');
-}
-/**
- * 关闭所有的弹出框
- * @returns
- */
-function hidePops(){
-	$("[data-toggle='popover']").popover("hide");	
-}
-function test(){
-	alert('For test')
+function getSelectItems(code, callback){
+	alert('do select item function...')
+	axios.get('/pm/sys/enum/options', {
+	    params: {
+	      code:'D004'
+	    }
+	}).then(function (response) {
+		var result = response.data
+		alert('Get items ok...')
+		callback(result.data)
+	}).catch(function (error) {
+	    console.log(error)
+	})
 }

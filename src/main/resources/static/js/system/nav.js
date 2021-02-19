@@ -1,4 +1,5 @@
 function getMenus(callback){
+	alert('get menus...')
 	//获取系统权限
 	axios.get('/pm/biz/pro/group/members', {
 	    params: {
@@ -6,6 +7,9 @@ function getMenus(callback){
 	    }
 	}).then(function (response) {
 		//alert('Get system menus successfully!!!')
+//		var result = response.data
+//		alert('Get items ok...')
+//		alert(result.data)
 		menus = [
 			{name:'1',id:1},
 			{name:'2',id:2},
