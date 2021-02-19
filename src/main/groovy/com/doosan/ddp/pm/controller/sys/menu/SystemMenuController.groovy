@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.dao.domain.sys.menu.SystemMenu
+import com.doosan.ddp.pm.service.sys.auth.SystemAuthService
 import com.doosan.ddp.pm.service.sys.menu.SystemMenuService
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -20,6 +21,8 @@ class SystemMenuController {
 	final String WEB_URL = "sys/menu"
 	@Autowired
 	SystemMenuService systemMenuService
+	@Autowired
+	SystemAuthService systemAuthService
 	
 	/**
 	 *	 跳转菜单清单
@@ -85,5 +88,31 @@ class SystemMenuController {
 		menu.setMenuname(menuname)
 		systemMenuService.save(menu)
 		return ServerResultJson.success()
+	}
+	
+	/**
+	 * 	获取所有菜单数据
+	 * 	@return
+	 */
+	@ResponseBody
+	@GetMapping("/items")
+	def items(String roleid){
+		def menus = systemMenuService.getAll()
+		menus.each {
+			if(it.getStatus() == 2)
+				it.setStsStr("停用")
+			else
+				it.setStsStr("在用")
+		}
+		def authed = systemAuthService.getByRoleId(roleid)
+		def authedMenu = []
+		authed.each{
+			//authedMenu << systemMenuService.getMenuById(it.getMenuid())
+			authedMenu << it.getMenuid()
+		}
+		def data = [:]
+		data.put("menus", menus)			//所有的菜单
+		data.put("authed", authedMenu)		//已授权菜单
+		return ServerResultJson.success(data)
 	}
 }

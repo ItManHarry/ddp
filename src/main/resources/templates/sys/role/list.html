@@ -8,226 +8,112 @@
 <body>
 	<!-- 引入公共js文件 -->
 	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
-		<div id = "app">
-		  	 <el-container>
-		  	 	<el-header>
-					<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
-		  	 	</el-header>
-		  	 	<el-main>
-		  	 		<el-row type = "flex" justify = "center" align = "middle">
-		  	 			<!--el-col :span = "4">
-		  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
-		  	 			</el-col-->
-		  	 			<el-col :span = "2" :offset = "22">
-		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addRole('roleForm')" size = "small">新增</el-button>
-		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeRole" :close-on-click-modal = "false">
-		  	 					<el-form :model="form" :rules = "rules" ref = "roleForm">
-								    <el-form-item label="角色名称" :label-width="formLabelWidth" prop = "rolename">
-								      <el-input v-model="form.rolename" autocomplete="off"></el-input>
-								    </el-form-item>
-								 </el-form>
-								 <div slot="footer" class="dialog-footer">
-								    <el-button @click="closeRole">取 消</el-button>
-								    <el-button type="primary" @click="saveRole('roleForm')">保存</el-button>
-								 </div>
-		  	 				</el-dialog>
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<el-row>
-		  	 			<el-col :span = "24">
-		  	 				<el-table :data="roleData" style="width:100%;" :max-height = "height">
-		  	 					<!-- 使用 v-if 隐藏列 -->
-						      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
-						      	<el-table-column prop = "rolename" label = "角色名称"></el-table-column>
-						      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
-						      	<el-table-column label = "操作" width = "300">
-						      		<template slot-scope="scope">
-						      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
-									        <el-button
-									          size="mini"
-									          type = "primary"
-									          icon = "el-icon-edit"
-									          plain
-									          :disabled = "scope.row.stsStr == '停用'"
-									          @click="editRole(scope.$index, scope.row)">
-									         </el-button>
-									    </el-tooltip>
-									    <el-tooltip style="margin:4px;" effect="light" content="菜单权限" placement="bottom-start">
-									        <el-button
-									          size="mini"
-									          type = "primary"
-									          icon = "el-icon-menu"
-									          plain
-									          :disabled = "scope.row.stsStr == '停用'"
-									          @click="roleMenu(scope.$index, scope.row)">
-									        </el-button>
-									    </el-tooltip>
-									    <el-tooltip style="margin:4px;" effect="light" content="停用" placement="bottom-start">
-									        <el-button
-									          size="mini"
-									          type="warning"
-									          icon = "el-icon-close"
-									          plain
-									          :disabled = "scope.row.stsStr == '停用'"
-									          @click="unuseRole(scope.$index, scope.row)">
-									        </el-button>
-									    </el-tooltip>
-									    <el-tooltip style="margin:4px;" effect="light" content="启用" placement="bottom-start">
-									        <el-button
-									          size="mini"
-									          type="success"
-									          icon = "el-icon-check"
-									          plain
-									          :disabled = "scope.row.stsStr == '在用'"
-									          @click="reuseRole(scope.$index, scope.row)">
-									        </el-button>
-									    </el-tooltip>
-							      </template>
-						      	</el-table-column>
-						    </el-table>	
-		  	 			</el-col>
-		  	 		</el-row>
-		  	 		<el-row type = "flex" justify = "end" align = "bottom">
-		  	 			<el-col :span = "24">
-		  	 				<el-pagination 
-		  	 					layout="prev, pager, next" 
-		  	 					:total="total" 
-		  	 					:page-size="items"
-		  	 					@current-change = "changePage"
-		  	 					small >
-		  	 				</el-pagination>
-		  	 			</el-col>
-		  	 		</el-row>	
-		  	 	</el-main>
-		  	 </el-container>		  	 
-		</div>
-	<script>
-		var app = new Vue({
-			el:"#app",
-			data:function(){				
-				return{
-					total:10,							//记录总条数
-					items:10,							//每页条数
-					page: 1,							//当前页
-					height:window.screen.height * 0.55,	//表格最大高度
-					formTitle:'新增角色',					//角色窗体标题
-					formVisible:false,					//角色窗体显示	
-					formLabelWidth:'120px',
-					form:{
-						id:'',
-						rolename:'',
-						status:1
-					},
-					rules:{
-						rolename:[
-							{required:true, message:'请输入角色名称!', trigger:'blur'}
-						]
-					},					
-					roleData: []						//角色数据list
-				}
-			},
-			methods:{
-				//关闭角色维护窗体
-				closeRole:function(){
-					this.formVisible = false
-					this.form.id = ''
-					this.form.rolename = ''
-				},
-				//新增角色信息
-				addRole:function(f){
-		      		this.formTitle = '新增角色'
-					this.formVisible = true
-					this.$refs[f].resetFields()
-					this.form.id = ''
-					this.form.rolename = ''
-					this.form.status = 1
-				},
-				//编辑角色信息
-		      	editRole:function(index, row){
-		      		//alert(row.tid)
-		      		this.formVisible = true
-		      		this.formTitle = '修改角色'
-	      			this.form.id = row.tid
-		      		this.form.rolename = row.rolename
-		      		this.form.status = row.stsStr == '在用' ? 1 : 2
-		      		this.$refs['roleForm'].clearValidate()
-		      	},
-		      	//停用角色
-		      	unuseRole:function(index, row){
-		      		this.form.id = row.tid
-		      		this.form.rolename = row.rolename
-		      		this.form.status = 2
-		      		this.doSaveRole()
-		      	},
-		      	//启用角色
-		      	reuseRole:function(index, row){
-		      		this.form.id = row.tid
-		      		this.form.rolename = row.rolename
-		      		this.form.status = 1
-		      		this.doSaveRole()
-		      	},
-				//执行保存角色信息
-				saveRole:function(form) {
-			        this.$refs[form].validate(function(valid) {
-			          if (valid) {
-			            app.doSaveRole()		            
-			          } else {
-			            console.log('error submit!!')
-			            return false;
-			          }
-			        });
-		      	},
-		      	//执行保存
-		      	doSaveRole:function(){
-		      		axios.post('/pm/sys/role/save', {
-		            	id:app.form.id,
-		            	rolename:app.form.rolename,
-		            	status:app.form.status,
-		            	user:'admin'
-		            }).then(function (response) {
-		            	var result = response.data
-		            	if(result.status == 0)
-		            		app.$message({
-		            			message:result.message,
-		            			type:'warning',
-		            			duration:2000,
-		            			offset:120
-		            		})	
-		            	else{
-		            		app.formVisible = false
-		            		app.getOrgData()
-		            	}			            		
-		            }).catch(function (error) {
-		            	alert(error)
-		            });
-		      	},
-		      	//分页
-		      	changePage:function(page){
-		      		this.page = page
-		      		this.getOrgData()
-		      	},
-		      	//获取角色清单数据
-		      	getOrgData:function(){
-		      		axios.get('/pm/sys/role/all', {
-		      		    params: {
-		      		      page:app.page,
-		      		      limit:app.items
-		      		    }
-		      		}).then(function (response) {
-		      			var result = response.data
-		      			app.roleData = result.data
-		      			app.total = result.number
-		      		    console.log(response)
-		      		}).catch(function (error) {
-		      		    console.log(error)
-		      		})
-		      	}
-			},
-			mounted:function(){
-				//alert('Mounted!!!')
-				this.getOrgData()
-			}
-		});		
-	</script>
+	<div id = "app">
+	  	 <el-container>
+	  	 	<el-header>
+				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+	  	 	</el-header>
+	  	 	<el-main>
+	  	 		<el-row type = "flex" justify = "center" align = "middle">
+	  	 			<!--el-col :span = "4">
+	  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
+	  	 			</el-col-->
+	  	 			<el-col :span = "2" :offset = "22">
+	  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addRole('roleForm')" size = "small">新增</el-button>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row>
+	  	 			<el-col :span = "24">
+	  	 				<el-table :data="roleData" style="width:100%;" :max-height = "height">
+	  	 					<!-- 使用 v-if 隐藏列 -->
+					      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "rolename" label = "角色名称"></el-table-column>
+					      	<el-table-column prop = "stsStr" label = "系统状态"></el-table-column>
+					      	<el-table-column label = "操作" width = "300">
+					      		<template slot-scope="scope">
+					      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-edit"
+								          plain
+								          :disabled = "scope.row.stsStr == '停用'"
+								          @click="editRole(scope.$index, scope.row)">
+								         </el-button>
+								    </el-tooltip>
+								    <el-tooltip style="margin:4px;" effect="light" content="菜单权限" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-menu"
+								          plain
+								          :disabled = "scope.row.stsStr == '停用'"
+								          @click="roleMenu(scope.$index, scope.row)">
+								        </el-button>
+								    </el-tooltip>
+								    <el-tooltip style="margin:4px;" effect="light" content="停用" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type="warning"
+								          icon = "el-icon-close"
+								          plain
+								          :disabled = "scope.row.stsStr == '停用'"
+								          @click="unuseRole(scope.$index, scope.row)">
+								        </el-button>
+								    </el-tooltip>
+								    <el-tooltip style="margin:4px;" effect="light" content="启用" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type="success"
+								          icon = "el-icon-check"
+								          plain
+								          :disabled = "scope.row.stsStr == '在用'"
+								          @click="reuseRole(scope.$index, scope.row)">
+								        </el-button>
+								    </el-tooltip>
+						      </template>
+					      	</el-table-column>
+					    </el-table>	
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" justify = "end" align = "bottom">
+	  	 			<el-col :span = "24">
+	  	 				<el-pagination 
+	  	 					layout="prev, pager, next" 
+	  	 					:total="total" 
+	  	 					:page-size="items"
+	  	 					@current-change = "changePage"
+	  	 					small >
+	  	 				</el-pagination>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<!-- 角色维护窗体 -->
+	  	 		<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeRole" :close-on-click-modal = "false">
+ 					<el-form :model="form" :rules = "rules" ref = "roleForm">
+					    <el-form-item label="角色名称" :label-width="formLabelWidth" prop = "rolename">
+					      <el-input v-model="form.rolename" autocomplete="off"></el-input>
+					    </el-form-item>
+				 	</el-form>
+				 	<div slot="footer" class="dialog-footer">
+				    	<el-button @click="closeRole">取 消</el-button>
+				    	<el-button type="primary" @click="saveRole('roleForm')">保存</el-button>
+				 	</div>
+ 				</el-dialog>	
+ 				<el-dialog title = "权限维护" :visible.sync = "menuVisible" :close-on-click-modal = "false">
+ 					<el-table :data="menuData" style="width:100%;" :max-height = "height" @selection-change="handleSelectionChange">
+ 					 	<el-table-column type="selection" width="55"></el-table-column>
+  	 					<!-- 使用 v-if 隐藏列 -->
+				      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
+				      	<el-table-column prop = "menuname" label = "菜单名称"></el-table-column>
+				    </el-table>	
+				 	<div slot="footer" class="dialog-footer">
+				    	<el-button @click="menuVisible=!menuVisible">取 消</el-button>
+				    	<el-button type="primary" @click="saveAuth()">保存</el-button>
+				 	</div>
+ 				</el-dialog>	
+	  	 	</el-main>
+	  	 </el-container>		  	 
+	</div>
+	<script type = "text/javascript" th:src = "@{/static/js/sys/role/app.js}" charset="UTF-8"></script>
 </body>
 </html>

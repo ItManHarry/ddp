@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
+import com.doosan.ddp.pm.dao.domain.sys.auth.SystemAuth
 import com.doosan.ddp.pm.dao.domain.sys.role.SystemRole
+import com.doosan.ddp.pm.service.sys.auth.SystemAuthService
 import com.doosan.ddp.pm.service.sys.role.SystemRoleService
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -20,6 +22,8 @@ class SystemRoleController {
 	final String WEB_URL = "sys/role"
 	@Autowired
 	SystemRoleService systemRoleService
+	@Autowired
+	SystemAuthService systemAuthService
 	
 	/**
 	 * 	跳转角色清单
@@ -80,6 +84,34 @@ class SystemRoleController {
 		return ServerResultJson.success(data)
 	}
 	
+	/**
+	 * 	保存系统授权
+	 * 	@param request
+	 * 	@param map
+	 * 	@return
+	 */
+	@PostMapping("/auth")
+	@ResponseBody
+	def auth(@RequestBody String params, HttpServletRequest request, Map map){
+		//session获取用户账号
+		def user = request.getSession().getAttribute("currentUser")
+		//传递参数值
+		println 'Parameters : \t' + params
+		JsonObject json = JsonParser.parseString(params).getAsJsonObject()
+		String role = json.get("role").asString
+		String menus = json.get("menus").asString
+		//首先执行删除已赋权限
+		systemAuthService.batchDeleteByRoleId(role)
+		//执行保存新权限
+		def menuIds = menus.split(",")
+		menuIds.each { 
+			SystemAuth auth = new SystemAuth(roleid:role,menuid:it)
+			auth.setCreatetime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()))
+			auth.setCreateuserid(user)
+			systemAuthService.save(auth)
+		}
+		return ServerResultJson.success()
+	}
 	/**
 	 * 	保存系统角色
 	 * 	@param request
