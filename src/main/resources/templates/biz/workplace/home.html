@@ -4,34 +4,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>项目管理系统</title>
-	<style>
-	  	.el-row {
-	    margin-bottom: 20px;
-	    &:last-child {
-	      margin-bottom: 0;
-	    }
-	  }
-	  .el-col {
-	    border-radius: 4px;
-	  }
-	  .bg-purple-dark {
-	    background: #99a9bf;
-	  }
-	  .bg-purple {
-	    background: #d3dce6;
-	  }
-	  .bg-purple-light {
-	    background: #e5e9f2;
-	  }
-	  .grid-content {
-	    border-radius: 4px;
-	    min-height: 36px;
-	  }
-	  .row-bg {
-	    padding: 10px 0;
-	    background-color: #f9fafc;
-	  }
-</style>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
@@ -40,13 +12,21 @@
 		<el-header style = "margin-bottom:10px;">
 			<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
 		</el-header>
-		<el-container>
-		      
-		</el-container>		  	 	
+		<el-main>
+			<el-row type = "flex" :justify = "end" :align = "middle">
+  	 			<el-col :span = "2">
+ 	 				<!-- 引入左侧导航栏 -->
+					<system-menu></system-menu>
+  	 			</el-col>
+	  	 	</el-row>
+		</el-main>		  	 	
 	</el-container>
 	<script>
 		var vm = new Vue({
 			el:"#home",
+			components:{
+				SystemMenu
+			},
 			data:function(){				
 				return {
 					

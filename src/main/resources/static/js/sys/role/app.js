@@ -1,5 +1,8 @@
 var app = new Vue({
 	el:"#app",
+	components:{
+		SystemMenu
+	},
 	data:function(){				
 		return{
 			total:10,							//记录总条数

@@ -22,7 +22,11 @@
 	  	 	</el-header>
 	  	 	<el-main>
 	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
-	  	 			<el-col :span = "10" :offset = "14">
+	  	 			<el-col :span = "2">
+	  	 				<!-- 引入左侧导航栏 -->
+						<system-menu></system-menu>
+	  	 			</el-col>
+	  	 			<el-col :span = "10" :offset = "12">
 	  	 				<el-form :inline = "true">
 	  	 					<el-form-item width = "200">
 	  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
@@ -94,6 +98,9 @@
 	<script>
 		var app = new Vue({
 			el:"#app",
+			components:{
+				SystemMenu
+			},
 			data:function(){	
 				return{
 					total:10,							//记录总条数

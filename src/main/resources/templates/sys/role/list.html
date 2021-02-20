@@ -15,10 +15,11 @@
 	  	 	</el-header>
 	  	 	<el-main>
 	  	 		<el-row type = "flex" justify = "center" align = "middle">
-	  	 			<!--el-col :span = "4">
-	  	 				<el-button type = "info" icon = "el-icon-menu" circle plain></el-button>
-	  	 			</el-col-->
-	  	 			<el-col :span = "2" :offset = "22">
+	  	 			<el-col :span = "2">
+	  	 				<!-- 引入左侧导航栏 -->
+						<system-menu></system-menu>
+	  	 			</el-col>
+	  	 			<el-col :span = "2" :offset = "20">
 	  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addRole('roleForm')" size = "small">新增</el-button>
 	  	 			</el-col>
 	  	 		</el-row>
