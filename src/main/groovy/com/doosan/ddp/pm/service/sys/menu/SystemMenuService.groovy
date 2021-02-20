@@ -32,4 +32,10 @@ interface SystemMenuService {
 	 * @return
 	 */
 	List<SystemMenu> getAll()
+	/**
+	 * 根据ids获取菜单清单
+	 * @param ids
+	 * @return
+	 */
+	List<SystemMenu> getMenusByIds(List<String> ids)
 }

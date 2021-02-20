@@ -98,16 +98,15 @@ class SystemMenuController {
 	@GetMapping("/items")
 	def items(String roleid){
 		def menus = systemMenuService.getAll()
-		menus.each {
-			if(it.getStatus() == 2)
-				it.setStsStr("停用")
-			else
-				it.setStsStr("在用")
-		}
+//		menus.each {
+//			if(it.getStatus() == 2)
+//				it.setStsStr("停用")
+//			else
+//				it.setStsStr("在用")
+//		}
 		def authed = systemAuthService.getByRoleId(roleid)
 		def authedMenu = []
 		authed.each{
-			//authedMenu << systemMenuService.getMenuById(it.getMenuid())
 			authedMenu << it.getMenuid()
 		}
 		def data = [:]

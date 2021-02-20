@@ -22,7 +22,8 @@ var app = new Vue({
 			},					
 			roleData: [],						//角色数据list
 			menuData: [],						//菜单数据list
-			menuSelected: []				//选择的菜单
+			menuSelected: [],					//选择的菜单
+			menuAuthed:[]						//已授权菜单
 		}
 	},
 	methods:{
@@ -110,10 +111,9 @@ var app = new Vue({
       		    }
       		}).then(function (response) {
       			var result = response.data
-      			alert(result.data.menus)
-      			alert(result.data.authed)
       			app.menuData = result.data.menus
-      			app.menuSelected = result.data.authed
+      			app.menuAuthed = result.data.authed
+      			app.toggleSelection()
       		    console.log(response)
       		}).catch(function (error) {
       		    console.log(error)
@@ -152,7 +152,22 @@ var app = new Vue({
         		})	
       		}
       	},
-      	handleSelectionChange(val) {
+      	//设置选中
+      	toggleSelection:function() {
+      		this.$nextTick(()=>{
+      		  this.menuData.forEach(row => {
+      		    if(this.menuAuthed.indexOf(row.tid) >= 0){
+      		      this.$refs.menuList.toggleRowSelection(row, true)
+      		    }
+      		  })
+      		})
+        },
+        //点击行选中
+        handleTrChange(row, event, column){
+            this.$refs.menuList.toggleRowSelection(row)
+        },
+        //设置已选中的值
+      	handleSelectionChange:function(val) {
       		this.menuSelected = val
         },
       	//分页

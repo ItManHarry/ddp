@@ -86,7 +86,7 @@ class ProgramMainServiceImp implements ProgramMainService {
 		return programMainDao.count(getSpecForPM(name, code, charger))
 	}
 	@Transactional
-	public List<ProgramMain> getProListForUser(List<String> ids) {
+	List<ProgramMain> getProListForUser(List<String> ids) {
 		// TODO Auto-generated method stub
 		return programMainDao.findAll(getSpecForProList(ids))
 	}

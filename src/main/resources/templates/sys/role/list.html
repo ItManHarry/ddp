@@ -100,7 +100,7 @@
 				 	</div>
  				</el-dialog>	
  				<el-dialog title = "权限维护" :visible.sync = "menuVisible" :close-on-click-modal = "false">
- 					<el-table :data="menuData" style="width:100%;" :max-height = "height" @selection-change="handleSelectionChange">
+ 					<el-table :data="menuData" style="width:100%;" :max-height = "height" @row-click="handleTrChange" @selection-change="handleSelectionChange" ref="menuList">
  					 	<el-table-column type="selection" width="55"></el-table-column>
   	 					<!-- 使用 v-if 隐藏列 -->
 				      	<el-table-column prop = "tid" label = "ID" v-if = "false"></el-table-column>
