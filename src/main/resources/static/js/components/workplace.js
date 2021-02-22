@@ -1,55 +1,15 @@
 var ProgramChart = {
 	template:`
 		<div>
-			<div id="main" style="width:100%;height:800px;"></div>
+			<div id="program" style="width:100%;height:200px;"></div>
 		</div>
 	`,
 	data:function(){
 		return {
 			option: {
-	            /*title: {
-	                text: '烟台地区蒸发量和降水量',
-	                //left:'center'
-	                //backgroundColor:'#000',
-	                //borderColor:'#ccc',
-	                //borderWidth:2,
-	                padding:5,
-	                textStyle:{
-	                	color:'#000'
-	                },
-	                subtext:'(2018-01-01 ~ 2018-08-31)',
-	                subtextStyle:{
-	                	color:'#888'
-	                }
-	            },*/
 	            tooltip: {
 	            	trigger:"axis"	//不设置默认为item
 	            },
-	            legend: {
-	                data:['蒸发量','降水量'] //必须和series里的各个name属性值一只
-	            },
-	            /*toolbox:{
-	            	show:true,
-	            	feature:{
-	            		mark:{
-	            			show:true
-	            		},
-	            		dataView:{
-	            			show:true,
-	            			readOnly:true
-	            		},
-	            		magicType:{
-	            			show:true,
-	            			type:['line','bar']
-	            		},
-	            		restore:{
-	            			show:true
-	            		},
-	            		saveAsImage:{
-	            			//show:true
-	            		}
-	            	}
-	            },*/
 	            calculable:true,
 	            xAxis: [{
 	            	type:"category",
@@ -82,9 +42,71 @@ var ProgramChart = {
 	methods:{
 		draw:function() {
 	      //通过echarts初始化我们的div
-	      let proChart = echarts.init(document.getElementById('main'))
+	      let issueChart = echarts.init(document.getElementById('program'))
 	      //为这个echarts的图添加属性
-	      proChart.setOption(this.option, true)
+	      issueChart.setOption(this.option, true)
+	    }
+	},
+	mounted:function(){		
+		this.draw()
+	}
+}
+var IssueChart = {
+	template:`
+		<div>
+			<div id="issue" style="width:100%;height:200px;"></div>
+		</div>
+	`,
+	data:function(){
+		return {
+			option: {
+				tooltip: {
+	            	trigger:"item",	//不设置默认为item
+	            	formatter:"{a} <br>{b} : {c} ({d}%)" //a:系列名称 b:数据项名称 c:数值 d:(饼图：百分比 | 雷达图：指标名称)
+	            },
+	            calculable:true,
+	            series: [{
+	            	name:"访问来源",
+	            	type:"pie",
+	            	radius:"70%", //半径：支持绝对值（px）和百分比， 百分比计算比：min(width,height) / 2 * 75%,传数组实现环形图[内半径，外半径]
+	            	center:["50%","60%"], //圆心坐标：支持绝对值（px）和百分比， 百分比计算比：min(width,height) * 50%
+	            	itemStyle:{
+	            		normal:{
+	            			label:{
+	            				show:true,
+	            				formatter:"{b}: {c} ({d}%)"
+	            			}
+	            		}
+	            	},
+	            	data:[{
+            			value:335,
+            			name:"直接访问"
+            		},{
+            			value:310,
+            			name:"邮件营销"
+            		},{
+            			value:234,
+            			name:"联盟广告"
+            		},{
+            			value:135,
+            			name:"视频广告"
+            		},{
+            			value:1548,
+            			name:"搜索引擎"
+            		}]
+	            }]
+		    }
+		}
+	},
+	props:[
+		
+	],
+	methods:{
+		draw:function() {
+	      //通过echarts初始化我们的div
+	      let issueChart = echarts.init(document.getElementById('issue'))
+	      //为这个echarts的图添加属性
+	      issueChart.setOption(this.option, true)
 	    }
 	},
 	mounted:function(){		

@@ -19,10 +19,20 @@
 					<system-menu location = "Home"></system-menu>
   	 			</el-col>
 	  	 	</el-row>
-	  	 	<el-row type = "flex" :justify = "end" :align = "middle">
-  	 			<el-col :span = "24">
+	  	 	<el-row type = "flex" :justify = "end" :align = "middle" style = "border-top:1px solid #ddd;margin-top:15px;padding-top:15px;border-bottom:1px solid #ddd;padding-bottom:15px;margin-bottom:15px;">
+  	 			<el-col :span = "12">
+  	 				<span style = "font-size:14px;color:#888;">项目现况</span>
  	 				<program-chart></program-chart>
   	 			</el-col>
+  	 			<el-col :span = "12">
+  	 				<span style = "font-size:14px;color:#888;">Issue现况</span>
+ 	 				<issue-chart></issue-chart>
+  	 			</el-col>
+	  	 	</el-row>
+	  	 	<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 		<el-col :span = "24">
+	  	 			<span style = "font-size:14px;color:#888;">Work To Do</span>
+	  	 		</el-col>
 	  	 	</el-row>
 		</el-main>		  	 	
 	</el-container>
@@ -31,7 +41,8 @@
 			el:"#home",
 			components:{
 				SystemMenu,
-				ProgramChart
+				ProgramChart,
+				IssueChart
 			},
 			data:function(){				
 				return {
