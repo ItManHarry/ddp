@@ -15,11 +15,11 @@
 		  	 	</el-header>
 		  	 	<el-main>
 		  	 		<el-row type = "flex" justify = "center" align = "middle">
-		  	 			<el-col :span = "2">
+		  	 			<el-col :span = "4">
 		  	 				<!-- 引入左侧导航栏 -->
-							<system-menu></system-menu>
+							<system-menu location = "字典管理"></system-menu>
 		  	 			</el-col>
-		  	 			<el-col :span = "2" :offset = "20">
+		  	 			<el-col :span = "2" :offset = "18">
 		  	 				<el-button type = "primary" icon = "el-icon-plus" round plain @click = "addDict('dictForm')" size = "small">新增</el-button>
 		  	 				<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeDictionary" :close-on-click-modal = "false">
 		  	 					<el-form :model="form" :rules = "rules" ref = "dictForm">

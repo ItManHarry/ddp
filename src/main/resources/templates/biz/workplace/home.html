@@ -14,9 +14,14 @@
 		</el-header>
 		<el-main>
 			<el-row type = "flex" :justify = "end" :align = "middle">
-  	 			<el-col :span = "2">
+  	 			<el-col :span = "4">
  	 				<!-- 引入左侧导航栏 -->
-					<system-menu></system-menu>
+					<system-menu location = "Home"></system-menu>
+  	 			</el-col>
+	  	 	</el-row>
+	  	 	<el-row type = "flex" :justify = "end" :align = "middle">
+  	 			<el-col :span = "24">
+ 	 				<program-chart></program-chart>
   	 			</el-col>
 	  	 	</el-row>
 		</el-main>		  	 	
@@ -25,7 +30,8 @@
 		var vm = new Vue({
 			el:"#home",
 			components:{
-				SystemMenu
+				SystemMenu,
+				ProgramChart
 			},
 			data:function(){				
 				return {
