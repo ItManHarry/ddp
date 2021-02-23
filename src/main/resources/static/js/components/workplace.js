@@ -46,6 +46,10 @@ var IssueChart = {
 	                name: 'Reopen',
 	                type: 'bar',
 	                data: [2,1,4,6,2,4]
+	            },{
+	                name: '处理完成',
+	                type: 'bar',
+	                data: [20,12,32,23,15,18]
 	            }]
 		    }
 		}
@@ -95,7 +99,7 @@ var ProgramChart = {
 	            		normal:{
 	            			label:{
 	            				show:true,
-	            				formatter:"{b}: {c} ({d}%)"
+	            				formatter:"{b}: {c}"
 	            			}
 	            		}
 	            	},
@@ -112,7 +116,7 @@ var ProgramChart = {
             			value:5,
             			name:"进行中"
             		},{
-            			value:60,
+            			value:30,
             			name:"结束"
             		}]
 	            }]
