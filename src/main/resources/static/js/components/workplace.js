@@ -1,11 +1,19 @@
-var ProgramChart = {
+/*
+ * 	Issue现况柱状图
+ * 	取进行中的项目issue数量
+ */
+var IssueChart = {
 	template:`
 		<div>
-			<div id="program" style="width:100%;height:200px;"></div>
+			<div id="program" :style="style"></div>
 		</div>
 	`,
 	data:function(){
 		return {
+			style:{
+				width:'100%',
+				height:window.screen.height * 0.5+'px'
+			},
 			option: {
 	            tooltip: {
 	            	trigger:"axis"	//不设置默认为item
@@ -13,25 +21,31 @@ var ProgramChart = {
 	            calculable:true,
 	            xAxis: [{
 	            	type:"category",
-	                data: ["1","2","3","4","5","6","7","8","9","10","11","12"],
+	                data: ["微信三期升级","数据中台二期","培训系统升级","DSES系统升级","信审升级","财务报销系统"],
 		              axisLabel:{
-		            	  formatter:'{value} 月'	//个性化设置坐标值
+		            	  interval:0,
+                          rotate:30
 		              }
 	            }],
 	            yAxis: [{
-	            	type:"value",
-		              axisLabel:{
-		            	  formatter:'{value} mm'	//个性化设置坐标值
-		              }
+	            	type:"value"
 	            }],
 	            series: [{
-	                name: '蒸发量',
+	                name: '待确认',
 	                type: 'bar',
-	                data: [2,4.9,7,23.2,25.6,76.7,135.6,162.2,32.6,20,6.4,3.3]
+	                data: [5,2,6,3,6,3]
 	            },{
-	                name: '降水量',
+	                name: '处理中',
 	                type: 'bar',
-	                data: [2.6,5.6,9,26.4,28.7,70.7,175.6,182.2,48.7,18.8,6,2.3]
+	                data: [20,21,12,18,19,23]
+	            },{
+	                name: '已取消',
+	                type: 'bar',
+	                data: [4,7,2,5,8,4]
+	            },{
+	                name: 'Reopen',
+	                type: 'bar',
+	                data: [2,1,4,6,2,4]
 	            }]
 		    }
 		}
@@ -51,25 +65,32 @@ var ProgramChart = {
 		this.draw()
 	}
 }
-var IssueChart = {
+/**
+ * 各个状态下的项目现况
+ */
+var ProgramChart = {
 	template:`
 		<div>
-			<div id="issue" style="width:100%;height:200px;"></div>
+			<div id="issue" :style="style"></div>
 		</div>
 	`,
 	data:function(){
 		return {
+			style:{
+				width:'100%',
+				height:window.screen.height * 0.5+'px'
+			},
 			option: {
 				tooltip: {
-	            	trigger:"item",	//不设置默认为item
-	            	formatter:"{a} <br>{b} : {c} ({d}%)" //a:系列名称 b:数据项名称 c:数值 d:(饼图：百分比 | 雷达图：指标名称)
+	            	trigger:"item",							//不设置默认为item
+	            	formatter:"{a} <br>{b} : {c} ({d}%)" 	//a:系列名称 b:数据项名称 c:数值 d:(饼图：百分比 | 雷达图：指标名称)
 	            },
 	            calculable:true,
 	            series: [{
-	            	name:"访问来源",
+	            	name:"项目现况",
 	            	type:"pie",
-	            	radius:"70%", //半径：支持绝对值（px）和百分比， 百分比计算比：min(width,height) / 2 * 75%,传数组实现环形图[内半径，外半径]
-	            	center:["50%","60%"], //圆心坐标：支持绝对值（px）和百分比， 百分比计算比：min(width,height) * 50%
+	            	radius:"70%", 			//半径：支持绝对值（px）和百分比， 百分比计算比：min(width,height) / 2 * 75%,传数组实现环形图[内半径，外半径]
+	            	center:["50%","50%"], 	//圆心坐标：支持绝对值（px）和百分比， 百分比计算比：min(width,height) * 50%
 	            	itemStyle:{
 	            		normal:{
 	            			label:{
@@ -79,20 +100,20 @@ var IssueChart = {
 	            		}
 	            	},
 	            	data:[{
-            			value:335,
-            			name:"直接访问"
+            			value:2,
+            			name:"等待"
             		},{
-            			value:310,
-            			name:"邮件营销"
+            			value:0,
+            			name:"合同准备"
             		},{
-            			value:234,
-            			name:"联盟广告"
+            			value:3,
+            			name:"起案进行"
             		},{
-            			value:135,
-            			name:"视频广告"
+            			value:5,
+            			name:"进行中"
             		},{
-            			value:1548,
-            			name:"搜索引擎"
+            			value:60,
+            			name:"结束"
             		}]
 	            }]
 		    }
