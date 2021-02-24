@@ -5,4 +5,6 @@ import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramStatus
 interface ProgramStatusDao extends JpaRepository<ProgramStatus, String> {
 
 	List<ProgramStatus> findByProgramid(String proId)
+	
+	List<ProgramStatus> findByState(int state)
 }

@@ -20,4 +20,15 @@ interface ProgramStatusService {
 	 * @return
 	 */
 	ProgramStatus getById(String id)
+	/**
+	 * 获取所有的系统状态信息
+	 * @return
+	 */
+	List<ProgramStatus> getAll()
+	/**
+	 * 根据状态获取数据
+	 * @param state
+	 * @return
+	 */
+	List<ProgramStatus> getByState(int state)
 }

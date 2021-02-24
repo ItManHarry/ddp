@@ -28,4 +28,12 @@ class ProgramStatusServiceImp implements ProgramStatusService {
 		// TODO Auto-generated method stub
 		return programStatusDao.getOne(id)
 	}
+	@Transactional
+	List<ProgramStatus> getAll(){
+		return programStatusDao.findAll()
+	}
+	@Transactional
+	List<ProgramStatus> getByState(int state){
+		return programStatusDao.findByState(state)
+	}
 }

@@ -135,6 +135,17 @@ var ProgramChart = {
 	    }
 	},
 	mounted:function(){		
-		this.draw()
+		var app = this
+		//获取菜单权限
+		axios.get('/pm/biz/pro/charts', {
+  		    params: {}
+  		}).then(function (response) {
+  			var result = response.data
+  			app.option.series[0].data = result.data
+  			app.draw()
+  		    console.log(response)
+  		}).catch(function (error) {
+  		    console.log(error)
+  		})
 	}
 }

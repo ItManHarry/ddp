@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import com.doosan.ddp.pm.comm.results.ServerResultJson
+import com.doosan.ddp.pm.controller.sys.dict.EnumerationController
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramGroup
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramInvoice
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
@@ -16,6 +17,7 @@ import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramStatus
 import com.doosan.ddp.pm.dao.domain.sys.user.SystemUser
 import com.doosan.ddp.pm.service.biz.pro.ProgramGroupService
 import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
+import com.doosan.ddp.pm.service.biz.pro.ProgramStatusService
 import com.doosan.ddp.pm.service.sys.user.SystemUserService
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
@@ -30,6 +32,10 @@ class ProgramMainController {
 	SystemUserService systemUserService
 	@Autowired
 	ProgramGroupService programGroupService
+	@Autowired
+	ProgramStatusService programStatusService
+	@Autowired
+	EnumerationController enumerationController
 	/**
 	 *	跳转项目清单
 	 * 	@return
@@ -125,6 +131,25 @@ class ProgramMainController {
 			programGroupService.save(group)
 		}
 		return ServerResultJson.success()
+	}
+	/**
+	 * 	首页项目现况图表
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/charts") 
+	def charts(HttpServletRequest request) {
+		def sc = enumerationController.getOptions('D003')	//项目状态枚举数据
+		def data = [], item = null
+		sc.each { k, v -> 
+			item = [:]
+			item.put('value', programStatusService.getByState(Integer.parseInt(k)).size())
+			item.put('name', v)
+			data << item
+		}
+		println 'Program chart data : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + data
+		return ServerResultJson.success(data)	
 	}
 	
 	static void main(String[] args) {
