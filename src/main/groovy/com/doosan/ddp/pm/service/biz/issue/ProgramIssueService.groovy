@@ -19,5 +19,12 @@ interface ProgramIssueService {
 	 * @return
 	 */
 	ProgramIssue getIssueById(String id)
+	/**
+	 * 根据项目id和项目状态获取issue数据
+	 * @param proId
+	 * @param state
+	 * @return
+	 */
+	List<ProgramIssue> getProgramIssuesByPidAndStat(String proId, int state)
 	
 }

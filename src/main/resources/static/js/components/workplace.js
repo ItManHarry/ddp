@@ -22,10 +22,10 @@ var IssueChart = {
 	            xAxis: [{
 	            	type:"category",
 	                data: ["微信三期升级","数据中台二期","培训系统升级","DSES系统升级","信审升级","财务报销系统"],
-		              axisLabel:{
-		            	  interval:0,
-                          rotate:30
-		              }
+		            axisLabel:{
+		            	interval:0,
+                        rotate:20
+		            }
 	            }],
 	            yAxis: [{
 	            	type:"value"
@@ -66,7 +66,19 @@ var IssueChart = {
 	    }
 	},
 	mounted:function(){		
-		this.draw()
+		var app = this
+		//获取菜单权限
+		axios.get('/pm/biz/pro/issue/charts', {
+  		    params: {}
+  		}).then(function (response) {
+  			var result = response.data
+  			app.option.xAxis[0].data = result.data.xdata
+  			app.option.series = result.data.ydata
+  			app.draw()
+  		    console.log(response)
+  		}).catch(function (error) {
+  		    console.log(error)
+  		})
 	}
 }
 /**

@@ -26,7 +26,7 @@ interface ProgramMainService {
 	 */
 	ProgramMain getProgramByCode(String code)
 	/**
-	 * 	根据ID获取用户
+	 * 	根据ID获取项目
 	 * 	@param id
 	 * 	@return
 	 */
@@ -69,4 +69,9 @@ interface ProgramMainService {
 	 * @return
 	 */
 	List<ProgramMain> getProListForUser(List<String> ids)
+	/**
+	 * 获取所有的项目
+	 * @return
+	 */
+	List<ProgramMain> getAll()
 }

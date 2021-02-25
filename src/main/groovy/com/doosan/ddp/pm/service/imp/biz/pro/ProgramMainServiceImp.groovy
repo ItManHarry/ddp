@@ -90,6 +90,10 @@ class ProgramMainServiceImp implements ProgramMainService {
 		// TODO Auto-generated method stub
 		return programMainDao.findAll(getSpecForProList(ids))
 	}
+	@Transactional
+	List<ProgramMain> getAll(){
+		return programMainDao.findAll()
+	}
 	/**
 	 * 获取所有参与的项目清单 - 项目中的每个人	 
 	 * @param name

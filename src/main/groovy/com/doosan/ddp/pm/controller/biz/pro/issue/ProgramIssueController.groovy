@@ -198,4 +198,40 @@ class ProgramIssueController {
 		}
 		return ul
 	}
+	
+	/**
+	 * 	首页Issue现况图表
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/charts")
+	def charts(HttpServletRequest request) {
+		def data = [:]
+		def sc = enumerationController.getOptions('D009')	//issue状态枚举数据
+		def pros = programMainService.getAll()
+		def xdata = []										//项目名称(x轴数据)
+		def pis = []										//项目ID
+		pros.each {
+			xdata << it.getName()
+			pis << it.getTid()
+		}
+		def item = null, subItem = null
+		def ydata = []
+		sc.each { k, v ->
+			item = [:]
+			item.put('name', v)
+			item.put('type', 'bar')
+			subItem = []
+			pis.each{
+				subItem << programIssueService.getProgramIssuesByPidAndStat(it, Integer.parseInt(k)).size()
+			}
+			item.put("data", subItem)
+			ydata << item
+		}
+		data.put("xdata", xdata)
+		data.put("ydata", ydata)
+		println 'Program chart data : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + data
+		return ServerResultJson.success(data)
+	}
 }
