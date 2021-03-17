@@ -19,7 +19,7 @@ class LoginInterceptor implements HandlerInterceptor {
 			System.out.println("用户已登录系统 ...")
 			return true
 		}else{
-			System.out.println("用户未登录系统,跳转至登录页面 ...")
+			System.out.println("用户未登录系统,跳转值登录页面 ...")
 			response.sendRedirect("/pm/web/login")
 			return false
 		}
