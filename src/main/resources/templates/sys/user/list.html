@@ -350,11 +350,6 @@
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data
-		      			alert('Code : ' + response)
-		      			alert('Message : ' + response)
-		      			for(var o in response){
-		      				alert('Value is : ' + o + ':' + response[o])
-		      			}
 		      			app.userData = result.data
 		      			app.total = result.number
 		      		    console.log(response)
