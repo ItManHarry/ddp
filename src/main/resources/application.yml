@@ -6,7 +6,7 @@ server:
 spring:
  datasource:
   driverClassName: com.mysql.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/pmdb?serverTimezone=UTC
+  url: jdbc:mysql://10.41.128.217:3306/pmdb?serverTimezone=UTC
   username: root
   password: root2019
  jpa:
