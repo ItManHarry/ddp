@@ -142,6 +142,12 @@
 		    <groupId>com.google.code.gson</groupId>  
 		    <artifactId>gson</artifactId>  
 		</dependency>
+		<!-- svn工具包 -->
+		<dependency>
+		    <groupId>org.tmatesoft.svnkit</groupId>
+		    <artifactId>svnkit</artifactId>
+		    <version>1.9.0</version>
+		</dependency>		
 	</dependencies>
 	<build>
 		<finalName>pm</finalName>
