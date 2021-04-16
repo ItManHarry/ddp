@@ -19,7 +19,6 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil
 /**
  * SVN工具
  */
-@Component
 class SvnTool {
 	
 	SVNClientManager clientManager

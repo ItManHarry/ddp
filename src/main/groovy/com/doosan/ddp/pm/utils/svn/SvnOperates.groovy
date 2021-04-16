@@ -6,7 +6,6 @@ import org.tmatesoft.svn.core.SVNNodeKind
 import org.tmatesoft.svn.core.io.SVNRepository
 
 import com.doosan.ddp.pm.utils.svn.bean.SvnEntry
-@Component
 /**
  * SVN操作
  */
