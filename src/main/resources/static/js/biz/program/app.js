@@ -27,7 +27,8 @@ var app = new Vue({
 				enddate:'',
 				amount:'',
 				contractno:'',
-				prno:''
+				prno:'',
+				svnadd:''
 			},
 			stsform:{
 				id:'',
@@ -140,6 +141,7 @@ var app = new Vue({
 			this.form.amount = ''
 			this.form.contractno = ''
 			this.form.prno = ''
+			this.form.svnadd = ''
 		},
 		//关闭项目维护窗体
 		closePro:function(){					
@@ -166,6 +168,7 @@ var app = new Vue({
       		this.form.amount = row.amount
       		this.form.contractno = row.contractno
       		this.form.prno = row.prno
+      		this.form.svnadd = row.svnadd
       		this.$refs['proForm'].clearValidate()
       	},
       	//维护项目成员
@@ -228,6 +231,7 @@ var app = new Vue({
 		            	contractno:app.form.contractno,
 		            	prno:app.form.prno,
 		            	status:1,
+		            	svnadd:app.form.svnadd,
 		            	user:'admin'
 		            }).then(function (response) {
 		            	var result = response.data

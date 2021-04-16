@@ -45,6 +45,8 @@
 	  	 				<el-table :data="proData" style="width:100%;" :max-height = "height">
 	  	 					<!-- 使用 v-if 隐藏列 -->
 					      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "amount" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "svnadd" v-if = "false"></el-table-column>
 					      	<el-table-column prop = "code" label = "项目编号"></el-table-column>
 					      	<el-table-column prop = "name" label = "项目名称"></el-table-column>
 					      	<el-table-column prop = "contractno" label = "合同编号"></el-table-column>
@@ -160,10 +162,15 @@
 							</el-col>
 						</el-row>									    
 						<el-row type = "flex" justify = "left" align = "middle">
-							<el-col :span = "10">
+							<el-col :span = "12">
 								<el-form-item label="合同金额" :label-width="formLabelWidth1" prop = "amount">
 			      					<el-input v-model="form.amount" autocomplete="off"><template slot="append">￥</template></el-input>
 			    				</el-form-item>
+							</el-col>
+							<el-col :span = "12">
+								<el-form-item label="SVN地址" :label-width="formLabelWidth1" prop = "svnadd">
+				      				<el-input v-model="form.svnadd" autocomplete="off"></el-input>
+				    			</el-form-item>
 							</el-col>
 						</el-row>								    									
 					 </el-form>

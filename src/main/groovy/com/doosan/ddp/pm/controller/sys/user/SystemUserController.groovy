@@ -150,6 +150,8 @@ class SystemUserController {
 		int status = json.get("status").asInt
 		String pwd = json.get("pwd").asString
 		String email = json.get("email").asString
+		String svncode = json.get("svncode").asString
+		String svnpwd = json.get("svnpwd").asString
 		//String userId = json.get("user").asString
 		SystemUser user = new SystemUser()
 		if(id) {
@@ -171,6 +173,8 @@ class SystemUserController {
 		user.setEmail(email)
 		user.setStatus(status)
 		user.setPwd(pwd)
+		user.setSvncode(svncode)
+		user.setSvnpwd(svnpwd)
 		systemUserService.save(user)
 		return ServerResultJson.success()
 	}

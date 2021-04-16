@@ -40,4 +40,7 @@ class ProgramMain extends TableEntityBaseModel {
 	//PR编号
 	@Column(name="prno", length=40)
 	String prno
+	//SVN地址
+	@Column(name="svnadd", length=200)
+	String svnadd
 }

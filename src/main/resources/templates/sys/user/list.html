@@ -85,6 +85,18 @@
 									</el-form-item>
   	 							</el-col>
   	 						</el-row>	
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="SVN账号" :label-width="formLabelWidth" prop = "svncode">
+								      <el-input v-model="form.svncode" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 							<el-col :span = "12">
+  	 								<el-form-item label="SVN密码" :label-width="formLabelWidth" prop = "svnpwd">
+								      <el-input v-model="form.svnpwd" autocomplete="off" show-password></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>	
   	 						<el-row type = "flex" justify = "left" align = "middle">
   	 							<el-col :span = "12">
   	 								<el-form-item label="邮箱地址" :label-width="formLabelWidth">
@@ -107,6 +119,8 @@
 						      	<el-table-column prop = "userrole" v-if = "false"></el-table-column>
 						      	<el-table-column prop = "userorg" v-if = "false"></el-table-column>
 						      	<el-table-column prop = "pwd" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "svncode" v-if = "false"></el-table-column>
+						      	<el-table-column prop = "svnpwd" v-if = "false"></el-table-column>
 						      	<el-table-column prop = "code" label = "用户账号"></el-table-column>
 						      	<el-table-column prop = "name" label = "用户名称"></el-table-column>
 						      	<el-table-column prop = "utStr" label = "用户类型"></el-table-column>
@@ -190,7 +204,9 @@
 						usertype:'',
 						userorg:'',
 						status:1,
-						email:''
+						email:'',
+						svncode:'',
+						svnpwd:''
 					},
 					rules:{
 						code:[
@@ -228,6 +244,8 @@
 					this.form.usertype = ''
 					this.form.userorg = ''
 					this.form.email = ''
+					this.form.svncode = ''
+					this.form.svnpwd = ''
 					this.devperson = false
 					this.form.status = 1
 				},
@@ -265,6 +283,8 @@
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
 		      		this.form.email = row.email
+		      		this.form.svncode = row.svncode
+		      		this.form.svnpwd = row.svnpwd
 		      		this.$refs['userForm'].clearValidate()
 		      	},
 		      	//停用用户
@@ -306,6 +326,8 @@
 			            	status:app.form.status,
 			            	pwd:app.form.pwd,
 			            	email:app.form.email,
+			            	svncode:app.form.svncode,
+			            	svnpwd:app.form.svnpwd,
 			            	user:'admin'
 			            }
 		      		}		      		

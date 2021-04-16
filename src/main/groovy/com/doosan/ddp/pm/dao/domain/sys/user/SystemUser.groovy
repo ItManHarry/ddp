@@ -35,6 +35,12 @@ class SystemUser extends TableEntityBaseModel {
 	//用户邮箱
 	@Column(name="email",length=40)
 	String email
+	//svn账号
+	@Column(name="svncode", length=40)
+	String svncode
+	//svn密码
+	@Column(name="svnpwd", length=40)
+	String svnpwd
 	@Transient
 	String uoStr
 	//用户状态,此栏位不会生成列

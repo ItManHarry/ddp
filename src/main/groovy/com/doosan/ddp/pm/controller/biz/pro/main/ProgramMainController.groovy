@@ -101,6 +101,7 @@ class ProgramMainController {
 		String contractno = json.get("contractno").asString
 		String prno = json.get("prno").asString
 		int status = json.get("status").asInt
+		String svnadd = json.get("svnadd").asString
 		//String user = json.get("user").asString
 		ProgramMain pro = new ProgramMain()
 		if(id) {
@@ -121,6 +122,7 @@ class ProgramMainController {
 		pro.setContractno(contractno)
 		pro.setPrno(prno)
 		pro.setStatus(status)
+		pro.setSvnadd(svnadd)
 		programMainService.save(pro)
 		//新建的项目要新增项目成员(PM)
 		if(!id) {
