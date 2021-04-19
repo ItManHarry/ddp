@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - SVN</title>
+	<!--link rel = "stylesheet" th:href = "@{/static/quill/css/quill.core.css}" media="screen"/>
+	<link rel = "stylesheet" th:href = "@{/static/quill/css/quill.snow.css}" media="screen"/>
+	<link rel = "stylesheet" th:href = "@{/static/quill/css/quill.bubble.css}" media="screen"/-->
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})">
+		<!--script type = "text/javascript" th:src = "@{/static/quill/js/quill.js}" charset="UTF-8"></script>
+		<script type = "text/javascript" th:src = "@{/static/quill/js/vue-quill-editor.js}" charset="UTF-8"></script>
+		<script type = "text/javascript" th:src = "@{/static/ckeditor/ckeditor.js}" charset="UTF-8"></script-->
+	</div>
+	<div id = "app">
+	  	 <el-container>
+	  	 	<el-header>
+				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+	  	 	</el-header>
+	  	 	<el-main>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "4">
+	  	 				<!-- 引入左侧导航栏 -->
+						<system-menu location = "SVN文档"></system-menu>
+	  	 			</el-col>
+	  	 			<el-col :span = "10" :offset = "10">
+	  	 				<el-form :inline = "true">
+	  	 					<el-form-item width = "200">
+	  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
+			  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
+			  					</el-select>
+	  	 					</el-form-item>	  	 					
+	  	 				</el-form>		  	 				
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "24" v-if = "show">
+	  	 				<el-alert
+						    :title="message"
+						    type="error"
+						    effect="dark"
+						    show-icon>
+						 </el-alert>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 	</el-main>
+	  	 </el-container>	  	  		  	 
+	</div>	
+	<script>
+		var app = new Vue({
+			el:"#app",
+			components:{
+				SystemMenu
+			},
+			data:function(){	
+				return{
+					proId: '',		//项目UUID	
+					prolist: [],	//项目list
+					message:'',		//SVN获取返回信息
+					show:false
+				}
+			},
+			methods:{				
+				changePro:function(){
+					//alert(this.proId)
+					//重新获取SVN文档清单
+					this.getSvnDocuments('/','0')
+				},				
+				//获取issue项目下拉清单数据
+				getProList:function(){
+		      		axios.get('/pm/biz/pro/svn/prolist', {
+		      		    params: {
+		      		    	
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			app.prolist = result.data
+		      			//赋默认值
+		      			app.proId = app.prolist.length == 0 ? "" : app.prolist[0].tid
+		      			//获取SVN根节点
+						app.getSvnDocuments('/', '0')
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+				},
+				//获取svn路径 path：svn相对路径，id：树几点id, proId：项目id
+				getSvnDocuments:function(path, id){
+					axios.get('/pm/biz/pro/svn/docs', {
+		      		    params: {
+		      		    	path:path,
+		      		    	id:id,
+		      		    	proId:app.proId
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.status == 200){
+		      				app.show = false
+		      				alert(result.data)
+		      			}else{
+		      				app.show = true
+		      				app.message = result.message
+		      			}
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+				}
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+				this.getProList()					
+			}
+		});		
+	</script>
+</body>
+</html>

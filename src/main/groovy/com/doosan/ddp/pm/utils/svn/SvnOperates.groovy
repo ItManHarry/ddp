@@ -4,27 +4,28 @@ import org.tmatesoft.svn.core.SVNDirEntry
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.SVNNodeKind
 import org.tmatesoft.svn.core.io.SVNRepository
-
 import com.doosan.ddp.pm.utils.svn.bean.SvnEntry
 /**
  * SVN操作
  */
 class SvnOperates {
 	
-	List<SVNDirEntry> listEntries(SVNRepository repository, String path)	throws SVNException {
-		def r_entries = []
+	List<SvnEntry> listEntries(SVNRepository repository, String path, String parentId)	throws SVNException {
+		def es = [] 			//SVN实体节点
 		//获取版本库的path目录下的所有条目。参数－1表示是最新版本。
 		Collection entries = repository.getDir(path, -1, null,(Collection)null)
 		Iterator iterator = entries.iterator()
+		SvnEntry node = null
 		while (iterator.hasNext()) {
 			SVNDirEntry entry = (SVNDirEntry)iterator.next()
-			//System.out.println("/" + (path.equals("") ? "" : path + "/") + entry.getName())
-			r_entries << entry
-			/*if (entry.getKind() == SVNNodeKind.DIR) {
-				listEntries(repository, (path.equals("")) ? entry.getName(): path + "/" + entry.getName())
-			}*/
-		}
-		return r_entries
+			node = new SvnEntry(name:entry.getName(),
+				path:(path+"/"+entry.getRelativePath()),
+				isDir:entry.getKind()==SVNNodeKind.DIR?1:0,
+				id:UUID.randomUUID().toString().replaceAll("-",""))
+			node.setParentId(parentId)
+			es << node			
+		}		
+		return es
 	}
 	
 	static void main(String[] args) {
@@ -34,30 +35,15 @@ class SvnOperates {
 		SVNRepository repository = svn.getSVNRepository()
 		println "SVN catalog"
 		SvnOperates op = new SvnOperates()
-		def path = "/"
-		def entries = op.listEntries(repository, path)
-		println "Catalog size is : " + entries.size()
-		for(SVNDirEntry entry : entries) {
-			//println "Catalog name : " + entry.getName()
-			//println "URI Path :" + entry.getRepositoryRoot().getURIEncodedPath() 
-			//println "URI Host :" + entry.getRepositoryRoot().getHost()
-			//println "URI Path :" + entry.getRepositoryRoot().getPath()
-			//println "URI Port :" + entry.getRepositoryRoot().getProtocol()
-			//println "Catalog svn path is : " + (entry.getRepositoryRoot().getProtocol()+"://"+entry.getRepositoryRoot().getHost()+entry.getRepositoryRoot().getPath()+"/"+entry.getRelativePath())
-		}
+		def path = "/"		
 		println '-' * 80
-		path = "/08. 运营指南"
-		entries = op.listEntries(repository, path)
-		println "Catalog size is : " + entries.size()
-		def es = [] 	//SVN实体集
-		for(SVNDirEntry entry : entries) 
-			es << new SvnEntry(name:entry.getName(),
-				path:(entry.getRepositoryRoot().getProtocol()+"://"+entry.getRepositoryRoot().getHost()+entry.getRepositoryRoot().getPath()+path+"/"+entry.getRelativePath()),
-				isDir:entry.getKind()==SVNNodeKind.DIR?1:0)
+		def es = op.listEntries(repository, path, '0')		
 		for(SvnEntry entry : es) {
 			println "SVN Catalog name : " + entry.getName()
 			println "SVN Catalog path : " + entry.getPath() 
-			println "SVN Catalog is directory ? " + entry.getIsDir()
+			println "SVN Catalog is directory ? " + (entry.getIsDir()==1?'Y':'N')
+			println "SVN Catalog id : " + entry.getId()
+			println "SVN Parent id : " + entry.getParentId()
 			println '-' * 80
 		}
 	}

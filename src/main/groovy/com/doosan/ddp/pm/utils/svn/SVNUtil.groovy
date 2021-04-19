@@ -33,9 +33,15 @@ class SVNUtil {
 	* 获取SVN仓库
 	*/
    SVNRepository getSVNRepository() throws SVNException{
-	   SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl))
-	   ISVNAuthenticationManager authManager =  SVNWCUtil.createDefaultAuthenticationManager(username, password)
-	   repository.setAuthenticationManager(authManager)
+	   SVNRepository repository = null
+	   ISVNAuthenticationManager authManager = null
+	   try {
+		   repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl))
+		   authManager =  SVNWCUtil.createDefaultAuthenticationManager(username, password)
+		   repository.setAuthenticationManager(authManager)
+	   }catch(Exception e) {
+		   throw new RuntimeException("SVN创建库连接失败:" + e.getMessage())
+	   }	   
 	   return repository
    }
    /**

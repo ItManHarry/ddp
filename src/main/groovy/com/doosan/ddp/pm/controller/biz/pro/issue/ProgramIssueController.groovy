@@ -58,7 +58,7 @@ class ProgramIssueController {
 	def getProList(HttpServletRequest request) {
 		//session获取用户账号
 		def userId = request.getSession().getAttribute("currentUser")
-		//获取所有项目
+		//获取所有参与的项目
 		List<ProgramMain> pros = getUserPros(userId)
 		println "Program list size is : " + pros.size()
 		return ServerResultJson.success(pros)
