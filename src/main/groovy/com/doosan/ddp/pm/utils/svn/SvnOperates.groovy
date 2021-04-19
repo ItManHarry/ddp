@@ -11,18 +11,26 @@ import com.doosan.ddp.pm.utils.svn.bean.SvnEntry
 class SvnOperates {
 	
 	List<SvnEntry> listEntries(SVNRepository repository, String path, String parentId)	throws SVNException {
-		def es = [] 			//SVN实体节点
-		//获取版本库的path目录下的所有条目。参数－1表示是最新版本。
+		//SVN实体节点
+		def es = [] 			
+		//获取版本库的path目录下的所有条目。参数"-1"表示是最新版本。
 		Collection entries = repository.getDir(path, -1, null,(Collection)null)
 		Iterator iterator = entries.iterator()
 		SvnEntry node = null
+		println "Parent id is : >>>>>>>>>>>>>>>>>>>>>>>>>>>" + parentId
 		while (iterator.hasNext()) {
 			SVNDirEntry entry = (SVNDirEntry)iterator.next()
-			node = new SvnEntry(name:entry.getName(),
-				path:(path+"/"+entry.getRelativePath()),
-				isDir:entry.getKind()==SVNNodeKind.DIR?1:0,
-				id:UUID.randomUUID().toString().replaceAll("-",""))
-			node.setParentId(parentId)
+			node = new SvnEntry(
+				name:entry.getName(),
+				path:(parentId=="0"?path+entry.getRelativePath():path+"/"+entry.getRelativePath()),				
+				leaf:entry.getKind()==SVNNodeKind.DIR?false:true,
+				parent:entry.getKind()==SVNNodeKind.DIR?true:false,
+				icon:"/static/images/ztree/folder_close.png",
+				iconOpen:"/static/images/ztree/folder_open.png",
+				iconClose:"/static/images/ztree/folder_close.png",
+				open:true,
+				id:UUID.randomUUID().toString().replaceAll("-",""),
+				pId:parentId)
 			es << node			
 		}		
 		return es
@@ -41,9 +49,9 @@ class SvnOperates {
 		for(SvnEntry entry : es) {
 			println "SVN Catalog name : " + entry.getName()
 			println "SVN Catalog path : " + entry.getPath() 
-			println "SVN Catalog is directory ? " + (entry.getIsDir()==1?'Y':'N')
+			println "SVN Catalog is directory ? " + (entry.getLeaf()==1?'Y':'N')
 			println "SVN Catalog id : " + entry.getId()
-			println "SVN Parent id : " + entry.getParentId()
+			println "SVN Parent id : " + entry.getpId()
 			println '-' * 80
 		}
 	}

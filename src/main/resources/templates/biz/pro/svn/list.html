@@ -1,19 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{::link})">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>项目管理系统 - SVN</title>
-	<!--link rel = "stylesheet" th:href = "@{/static/quill/css/quill.core.css}" media="screen"/>
-	<link rel = "stylesheet" th:href = "@{/static/quill/css/quill.snow.css}" media="screen"/>
-	<link rel = "stylesheet" th:href = "@{/static/quill/css/quill.bubble.css}" media="screen"/-->
+	<link rel = "stylesheet" th:href = "@{/static/css/ztree/zTreeStyle.css}" media="screen"/>
 </head>
 <body>
 	<!-- 引入公共js文件 -->
 	<div th:replace="commons/js-elementui::common_js(~{::script})">
-		<!--script type = "text/javascript" th:src = "@{/static/quill/js/quill.js}" charset="UTF-8"></script>
-		<script type = "text/javascript" th:src = "@{/static/quill/js/vue-quill-editor.js}" charset="UTF-8"></script>
-		<script type = "text/javascript" th:src = "@{/static/ckeditor/ckeditor.js}" charset="UTF-8"></script-->
+		<script type = "text/javascript" th:src = "@{/static/js/ztree/jquery.ztree.all.min.js}" charset="UTF-8"></script>
 	</div>
 	<div id = "app">
 	  	 <el-container>
@@ -21,35 +17,76 @@
 				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
 	  	 	</el-header>
 	  	 	<el-main>
-	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
-	  	 			<el-col :span = "4">
-	  	 				<!-- 引入左侧导航栏 -->
-						<system-menu location = "SVN文档"></system-menu>
-	  	 			</el-col>
-	  	 			<el-col :span = "10" :offset = "10">
-	  	 				<el-form :inline = "true">
-	  	 					<el-form-item width = "200">
-	  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
-			  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
-			  					</el-select>
-	  	 					</el-form-item>	  	 					
-	  	 				</el-form>		  	 				
-	  	 			</el-col>
-	  	 		</el-row>
-	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
-	  	 			<el-col :span = "24" v-if = "show">
-	  	 				<el-alert
-						    :title="message"
-						    type="error"
-						    effect="dark"
-						    show-icon>
-						 </el-alert>
-	  	 			</el-col>
-	  	 		</el-row>
-	  	 	</el-main>
+		  	 	<el-container>
+				  <el-header>
+				  	<el-row type = "flex" :justify = "end" :align = "middle">
+		  	 			<el-col :span = "4">
+		  	 				<!-- 引入左侧导航栏 -->
+							<system-menu location = "SVN文档"></system-menu>
+		  	 			</el-col>
+		  	 			<el-col :span = "10" :offset = "10">
+		  	 				<el-form :inline = "true">
+		  	 					<el-form-item width = "200">
+		  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
+				  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
+				  					</el-select>
+		  	 					</el-form-item>	  	 					
+		  	 				</el-form>		  	 				
+		  	 			</el-col>
+		  	 		</el-row>
+		  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+		  	 			<el-col :span = "24" v-show = "show">
+		  	 				<el-alert
+							    :title="message"
+							    type="error"
+							    effect="dark"
+							    show-icon>
+							 </el-alert>
+		  	 			</el-col>
+		  	 		</el-row>
+				  </el-header>
+				  <el-container>
+			    	<el-aside :width="treeWidth" v-show = "!show">
+			    		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 					<el-col :span = "24">
+			    				<ul id = "tree" class = "ztree"></ul>
+			    			</el-col>
+			    		</el-row>
+			    	</el-aside>
+				    <el-main>Main</el-main>
+				  </el-container>
+				</el-container>
+			</el-main>
 	  	 </el-container>	  	  		  	 
 	</div>	
 	<script>
+		var zTree = null;	//目录树	
+	   	var setting = {		//树配置
+	        view: {
+	            selectedMulti: false
+	        },
+	        data: {
+	            simpleData: {
+	                enable:true,
+	                idKey: "id",
+	                pIdKey: "pId",
+	                rootPId: ""
+	            }
+	        },
+	        callback: {
+	            beforeClick: function(treeId, treeNode) {
+	            	alert('Parent : ' + treeNode.parent + ', Leaf :' + treeNode.leaf + ', Tree id : ' + treeNode.id + ', name : ' + treeNode.name + ', parent id : ' + treeNode.pId + ", path : " + treeNode.path)
+	            	if (!treeNode.parent) {
+						alert("请选择父节点");
+						return false;
+					} else {
+						alert('目录节点')
+						app.getSvnDocuments(treeNode.path, treeNode.id)
+						return true;
+					}
+	            }
+	        }
+	    }
 		var app = new Vue({
 			el:"#app",
 			components:{
@@ -60,7 +97,8 @@
 					proId: '',		//项目UUID	
 					prolist: [],	//项目list
 					message:'',		//SVN获取返回信息
-					show:false
+					show:false,
+					treeWidth:window.screen.width * 0.25+'px'
 				}
 			},
 			methods:{				
@@ -100,7 +138,9 @@
 		      			var result = response.data	
 		      			if(result.status == 200){
 		      				app.show = false
-		      				alert(result.data)
+		      				var t = $("#tree")
+							var zNodes = result.data
+							zTree = $.fn.zTree.init(t, setting, zNodes)
 		      			}else{
 		      				app.show = true
 		      				app.message = result.message

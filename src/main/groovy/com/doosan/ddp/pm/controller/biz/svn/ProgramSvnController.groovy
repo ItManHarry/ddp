@@ -16,6 +16,7 @@ import com.doosan.ddp.pm.service.biz.pro.ProgramMainService
 import com.doosan.ddp.pm.service.sys.user.SystemUserService
 import com.doosan.ddp.pm.utils.svn.SVNUtil
 import com.doosan.ddp.pm.utils.svn.SvnOperates
+import com.doosan.ddp.pm.utils.svn.bean.SvnEntry
 /**
  * 项目SVN管理
  */
@@ -69,22 +70,37 @@ class ProgramSvnController {
 			return ServerResultJson.error(ServerResults.ERROR_SVN_CODE)
 		if(user.getSvnpwd() == null)
 			return ServerResultJson.error(ServerResults.ERROR_SVN_PWD)
-		println 'User svn code is : ' + user.getSvncode() + ', password is : ' + user.getSvnpwd()
-		println 'SVN path is : ' + path + ', parent node id is : ' + id + ', Program id is : ' + proId
 		ProgramMain program = programMainService.getProgramById(proId)
 		if(program.getSvnadd() == null)
 			return ServerResultJson.error(ServerResults.ERROR_SVN_ADD)
-		println 'Svn address is : ' + program.getSvnadd()
 		SVNUtil svn = new SVNUtil(user.getSvncode(), user.getSvnpwd(), program.getSvnadd())
 		SVNRepository repository = null
 		try {
 			repository = svn.getSVNRepository()
 		}catch(Exception e) {
-			println "SVN创建库连接失败" + e.getMessage()
 			return ServerResultJson.error(ServerResults.ERROR_SVN_AUTH) 
 		}
 		SvnOperates op = new SvnOperates()
-		def es = op.listEntries(repository, path, id)
-		return ServerResultJson.success(es)
+		//获取svn节点
+		SvnEntry root = null
+		if(id == '0') {
+			root = new SvnEntry(
+				name:'Root',
+				path:'/',
+				leaf:false,
+				parent:true,
+				icon:"/static/images/ztree/folder_close.png",
+				iconOpen:"/static/images/ztree/folder_open.png",
+				iconClose:"/static/images/ztree/folder_close.png",
+				open:true,
+				id:id,
+				pId:null)
+			def nodes = op.listEntries(repository, path, id)
+			root.setChildren(nodes)
+			return ServerResultJson.success(root)
+		}else {
+			def nodes = op.listEntries(repository, path, id)
+			return ServerResultJson.success(nodes)
+		}		
 	}
 }
