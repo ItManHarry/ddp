@@ -33,7 +33,7 @@ class ProgramSvnController {
 	ProgramIssueController programIssueController
 	
 	/**
-	 *	跳转项目SVN清单
+	 *	跳转项目SVN清单 - 树结构
 	 * 	@return
 	 */
 	@RequestMapping("/list")
@@ -41,6 +41,16 @@ class ProgramSvnController {
 		def userId = request.getSession().getAttribute("currentUserId")
 		println "User uuid is : $userId"
 		return WEB_URL + "/list"
+	}
+	/**
+	 *	跳转项目SVN清单 - ElementUI树表格
+	 * 	@return
+	 */
+	@RequestMapping("/table")
+	def table(HttpServletRequest request, Map map) {
+		def userId = request.getSession().getAttribute("currentUserId")
+		println "User uuid is : $userId"
+		return WEB_URL + "/tablelist"
 	}
 		
 	@ResponseBody
@@ -82,7 +92,7 @@ class ProgramSvnController {
 		}
 		SvnOperates op = new SvnOperates()
 		//获取svn节点
-		SvnEntry root = null
+		/*SvnEntry root = null
 		if(id == '0') {
 			root = new SvnEntry(
 				name:'Root',
@@ -101,6 +111,21 @@ class ProgramSvnController {
 		}else {
 			def nodes = op.listEntries(repository, path, id)
 			return ServerResultJson.success(nodes)
-		}		
+		}*/	
+		//获取svn子目录
+		def nodes = op.listEntries(repository, path, id)
+		def nodeMap = [:]
+		//按照文档名称排序
+		def names = []
+		nodes.each { 
+			names << it.getName()
+			nodeMap.put(it.getName(), it)
+		}
+		def data = []
+		names.sort().each { 
+			println 'Name :' + it
+			data << nodeMap.get(it)
+		}
+		return ServerResultJson.success(data)
 	}
 }

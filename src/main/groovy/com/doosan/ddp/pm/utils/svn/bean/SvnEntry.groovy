@@ -14,6 +14,7 @@ class SvnEntry {
 	String 	iconClose		//闭合时的图标
 	boolean leaf			//是否是文件(是:true 否:false)
 	boolean parent			//是否是父节点(是:true 否:false)
+	boolean hasChildren		//是否有子节点
 	List<SvnEntry> children	//子节点
 	
 }

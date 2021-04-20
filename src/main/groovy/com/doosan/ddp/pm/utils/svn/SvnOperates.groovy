@@ -25,6 +25,7 @@ class SvnOperates {
 				path:(parentId=="0"?path+entry.getRelativePath():path+"/"+entry.getRelativePath()),				
 				leaf:entry.getKind()==SVNNodeKind.DIR?false:true,
 				parent:entry.getKind()==SVNNodeKind.DIR?true:false,
+				hasChildren:entry.getKind()==SVNNodeKind.DIR?true:false,
 				icon:"/static/images/ztree/folder_close.png",
 				iconOpen:"/static/images/ztree/folder_open.png",
 				iconClose:"/static/images/ztree/folder_close.png",

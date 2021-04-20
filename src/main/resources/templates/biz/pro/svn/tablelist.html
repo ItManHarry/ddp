@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - SVN</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+	<div id = "app">
+	  	 <el-container>
+	  	 	<el-header>
+				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+	  	 	</el-header>
+	  	 	<el-main>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "4">
+	  	 				<!-- 引入左侧导航栏 -->
+						<system-menu location = "SVN文档"></system-menu>
+	  	 			</el-col>
+	  	 			<el-col :span = "10" :offset = "10">
+	  	 				<el-form :inline = "true">
+	  	 					<el-form-item width = "200">
+	  	 						<el-select v-model="proId" placeholder="请选择项目" @change = "changePro" style = "width:300px">
+			  						<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
+			  					</el-select>
+	  	 					</el-form-item>	  	 					
+	  	 				</el-form>		  	 				
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "24" v-show = "show">
+	  	 				<el-alert
+						    :title="message"
+						    type="error"
+						    effect="dark"
+						    show-icon>
+						 </el-alert>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "24" v-show = "!show">
+	  	 				<el-table
+						    :data="tableData"
+						    style="width: 100%"
+						    row-key="id"
+						    border
+						    lazy
+						    :load="load"
+						    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+						    <el-table-column
+						      prop="name"
+						      label="文档">
+						    </el-table-column>
+						    <!--el-table-column
+						      prop="path"
+						      label="路径">
+						    </el-table-column-->
+						    <el-table-column label = "操作" width = "250" align = "center">
+					      		<template slot-scope="scope">
+					      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-edit"
+								          plain
+								          @click="editPro(scope.$index, scope.row)">
+								        </el-button>
+							        </el-tooltip>
+							        <el-tooltip style="margin:4px;" effect="light" content="成员管理" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type="success"
+								          plain
+								          @click="groupUsers(scope.$index, scope.row)"><i class = "fa fa-users"></i>
+								      	</el-button>
+								    </el-tooltip>
+								    <el-tooltip style="margin:4px;" effect="light" content="状态管理" placement="bottom-start">
+									      <el-button
+									          size="mini"
+									          type="warning"
+									          icon = "el-icon-s-flag"
+									          plain
+									          @click="proStatus(scope.$index, scope.row)">
+									       </el-button>
+									</el-tooltip>
+									<el-tooltip style="margin:4px;" effect="light" content="发票管理" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type="success"
+								          plain
+								          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-money"></i>
+								        </el-button>
+								     </el-tooltip> 
+						      </template>
+					      	</el-table-column>
+						</el-table>
+	  	 			</el-col>
+	  	 		</el-row>
+			</el-main>
+	  	 </el-container>	  	  		  	 
+	</div>	
+	<script>		
+		var app = new Vue({
+			el:"#app",
+			components:{
+				SystemMenu
+			},
+			data:function(){	
+				return{
+					proId: '',		//项目UUID	
+					prolist: [],	//项目list
+					message:'',		//SVN获取返回信息
+					show:false,
+					tableData:[]
+				}
+			},
+			methods:{				
+				changePro:function(){
+					//alert(this.proId)
+					//获取svn子文档清单
+					this.getSvnDocuments('/','0')
+				},				
+				//获取issue项目下拉清单数据
+				getProList:function(){
+		      		axios.get('/pm/biz/pro/svn/prolist', {
+		      		    params: {
+		      		    	
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			app.prolist = result.data
+		      			//赋默认值
+		      			app.proId = app.prolist.length == 0 ? "" : app.prolist[0].tid
+		      			//获取SVN根节点
+						app.getSvnDocuments('/', '0')
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+				},
+				//获取svn路径 path：svn相对路径，id：树几点id, proId：项目id
+				getSvnDocuments:function(path, id){
+					axios.get('/pm/biz/pro/svn/docs', {
+		      		    params: {
+		      		    	path:path,
+		      		    	id:id,
+		      		    	proId:app.proId
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.status == 200){
+		      				app.show = false
+		      				app.tableData = result.data
+		      			}else{
+		      				app.show = true
+		      				app.message = result.message
+		      			}
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+				},
+				load:function(tree, treeNode, resolve) {
+					//alert('id is : ' + tree.id + ',path is : ' + tree.path + ', program id : ' + this.proId + ', parent id : ' + tree.pId)
+			        axios.get('/pm/biz/pro/svn/docs', {
+		      		    params: {
+		      		    	path:tree.path,
+		      		    	id:tree.id,
+		      		    	proId:app.proId
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.status == 200){		      				
+		      				resolve(result.data)
+		      			}
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+			      }
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+				this.getProList()					
+			}
+		});		
+	</script>
+</body>
+</html>
