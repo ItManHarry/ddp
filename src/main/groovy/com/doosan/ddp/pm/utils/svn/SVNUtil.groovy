@@ -3,9 +3,6 @@ import org.springframework.stereotype.Component
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.SVNURL
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager
-import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory
-import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory
-import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions
 import org.tmatesoft.svn.core.wc.ISVNOptions
 import org.tmatesoft.svn.core.wc.SVNClientManager
@@ -27,57 +24,46 @@ class SVNUtil {
 		this.password = password
 		this.svnUrl = svnUrl
 	}
-	
-	
-   /**
+	/**
+	 * SVN身份认证
+	 * @return
+	 */
+	ISVNAuthenticationManager getAuthManager() throws Exception{
+		ISVNAuthenticationManager authManager = null
+		try {
+			authManager = SVNWCUtil.createDefaultAuthenticationManager(username, password)
+		} catch (Exception e) {
+			throw new RuntimeException("SVN身份认证失败：" + e.getMessage())
+		}
+		return authManager
+	}
+	/**
 	* 获取SVN仓库
 	*/
-   SVNRepository getSVNRepository() throws SVNException{
+	SVNRepository getSVNRepository() throws SVNException{
 	   SVNRepository repository = null
 	   ISVNAuthenticationManager authManager = null
 	   try {
 		   repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl))
-		   authManager =  SVNWCUtil.createDefaultAuthenticationManager(username, password)
+		   authManager =  getAuthManager()
 		   repository.setAuthenticationManager(authManager)
 	   }catch(Exception e) {
 		   throw new RuntimeException("SVN创建库连接失败:" + e.getMessage())
 	   }	   
 	   return repository
-   }
-   /**
-    * 初始化库
-    */
-   void setupLibrary() {
-	   DAVRepositoryFactory.setup()
-	   SVNRepositoryFactoryImpl.setup()
-	   FSRepositoryFactory.setup()
-   }
-   /**
-    * 获取SVN更新实例
+	}
+	/**
+        * 获取客户端管理器
     * @return
     */
-   SVNUpdateClient getSVNUpdateClient(){
-	   //声明SVN客户端管理类
-	   SVNClientManager ourClientManager = null   
-	   //初始化库。 必须先执行此操作。
-	   setupLibrary()
-	   ISVNOptions options = SVNWCUtil.createDefaultOptions(true)
-	   //实例化客户端管理类
-	   ourClientManager = SVNClientManager.newInstance((DefaultSVNOptions)options, username, password)   
-	   //通过客户端管理类获得updateClient类的实例。
-	   SVNUpdateClient updateClient = ourClientManager.getUpdateClient()   
-	   updateClient.setIgnoreExternals(false)   
-	   return updateClient   
-   }
-   /**
-    * 获取客户端管理器
-    * @return
-    */
-   SVNClientManager getSVNClientManager(){
-	   DAVRepositoryFactory.setup()
-	   ISVNOptions options = SVNWCUtil.createDefaultOptions(true)
-	   //实例化客户端管理类
-	   return SVNClientManager.newInstance((DefaultSVNOptions)options, username, password)
-   }
-   
+   	SVNClientManager getSVNClientManager(SVNRepository repository) throws Exception{
+	    SVNClientManager clientManager = null
+	    ISVNOptions options = SVNWCUtil.createDefaultOptions(true)
+		try{		
+			clientManager = SVNClientManager.newInstance(options, repository.getAuthenticationManager())
+		}catch(Exception e) {
+			throw new RuntimeException("SVN客户端管理器获取失败:" + e.getMessage())
+		}
+		return clientManager
+	}   		   
 }

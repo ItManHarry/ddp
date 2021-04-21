@@ -51,46 +51,50 @@
 						    :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
 						    <el-table-column
 						      prop="name"
-						      label="文档">
+						      label="文档目录">
 						    </el-table-column>
-						    <!--el-table-column
+						    <el-table-column
 						      prop="path"
-						      label="路径">
-						    </el-table-column-->
+						      label="路径"
+						      v-if = "false">
+						    </el-table-column>
 						    <el-table-column label = "操作" width = "250" align = "center">
 					      		<template slot-scope="scope">
-					      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
-								        <el-button
-								          size="mini"
-								          type = "primary"
-								          icon = "el-icon-edit"
-								          plain
-								          @click="editPro(scope.$index, scope.row)">
-								        </el-button>
-							        </el-tooltip>
-							        <el-tooltip style="margin:4px;" effect="light" content="成员管理" placement="bottom-start">
-								        <el-button
-								          size="mini"
-								          type="success"
-								          plain
-								          @click="groupUsers(scope.$index, scope.row)"><i class = "fa fa-users"></i>
-								      	</el-button>
-								    </el-tooltip>
-								    <el-tooltip style="margin:4px;" effect="light" content="状态管理" placement="bottom-start">
+					      			<el-tooltip style="margin:4px;" effect="light" content="创建文件夹" placement="bottom-start">
 									      <el-button
 									          size="mini"
 									          type="warning"
-									          icon = "el-icon-s-flag"
+									          icon = "el-icon-folder-add"
 									          plain
-									          @click="proStatus(scope.$index, scope.row)">
+									          :disabled = "scope.row.hasChildren == false"
+									          @click="folder(scope.$index, scope.row)">
 									       </el-button>
 									</el-tooltip>
-									<el-tooltip style="margin:4px;" effect="light" content="发票管理" placement="bottom-start">
+					      			<el-tooltip style="margin:4px;" effect="light" content="上传" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-upload2"
+								          plain
+								          @click="upload(scope.$index, scope.row)">
+								        </el-button>
+							        </el-tooltip>
+							        <el-tooltip style="margin:4px;" effect="light" content="下载" placement="bottom-start">
 								        <el-button
 								          size="mini"
 								          type="success"
+								          icon = "el-icon-download"
 								          plain
-								          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-money"></i>
+								          @click="download(scope.$index, scope.row)">
+								      	</el-button>
+								    </el-tooltip>
+									<el-tooltip style="margin:4px;" effect="light" content="删除" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type="danger"
+								          icon = "el-icon-delete"
+								          plain
+								          @click="proInvoice(scope.$index, scope.row)">
 								        </el-button>
 								     </el-tooltip> 
 						      </template>
@@ -98,6 +102,21 @@
 						</el-table>
 	  	 			</el-col>
 	  	 		</el-row>
+	  	 		<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeDialog" :close-on-click-modal = "false">
+  	 					<el-form :model="form" :rules = "rules" ref = "svnForm">
+  	 						<el-row type = "flex" justify = "center" align = "middle">
+  	 							<el-col :span = "24">
+  	 								<el-form-item label="文件夹" :label-width="formLabelWidth" prop = "name">
+								      <el-input v-model="form.name" autocomplete="off"></el-input>
+								    </el-form-item>
+  	 							</el-col>
+  	 						</el-row>		  	 						
+						 </el-form>
+						 <div slot="footer" class="dialog-footer">						    
+						    <el-button type="primary" @click="createFolder('svnForm')">创建</el-button>
+						    <el-button @click="closeDialog">取 消</el-button>
+						 </div>
+  	 				</el-dialog>
 			</el-main>
 	  	 </el-container>	  	  		  	 
 	</div>	
@@ -109,11 +128,22 @@
 			},
 			data:function(){	
 				return{
-					proId: '',		//项目UUID	
-					prolist: [],	//项目list
-					message:'',		//SVN获取返回信息
-					show:false,
-					tableData:[]
+					proId: '',			//项目UUID	
+					prolist: [],		//项目list
+					message:'',			//SVN获取返回信息
+					show:false,				
+					tableData:[],
+					formVisible:false,
+					formTitle:'新增目录',	//用户窗体标题
+					form:{
+						name:''
+					},
+					rules:{
+						name:[
+							{required:true, message:'请输入目录!', trigger:'blur'}
+						],
+					},
+					svnPath:''
 				}
 			},
 			methods:{				
@@ -163,6 +193,54 @@
 		      			alert("error")
 		      		    console.log(error)
 		      		})
+				},
+				//关闭用户维护窗体
+				closeDialog:function(){					
+					this.formVisible = false
+					this.form.name = ''
+				},
+				folder:function(index, row){
+					this.formVisible = true
+					this.svnPath = row.path
+				},
+				createFolder:function(form){
+					this.$refs[form].validate(function(valid) {
+			          if (valid) {
+			        	  axios.get('/pm/biz/pro/svn/mkdir', {
+				      		    params: {
+				      		    	path:app.svnPath,
+				      		    	folder:app.form.name
+				      		    }
+				      		}).then(function (response) {
+				      			var result = response.data	
+				      			if(result.status == 200){
+				      				app.$message({
+				            			message:'目录创建成功!',
+				            			type:'warning',
+				            			duration:1000,
+				            			offset:120,
+				            			onClose:function(){
+				            				app.closeDialog()
+				            			}
+				            		})	
+				      			}else{
+				      				app.$message({
+				            			message:result.message,
+				            			type:'warning',
+				            			duration:2000,
+				            			offset:120
+				            		})	
+				      			}
+				      		    console.log(response)
+				      		}).catch(function (error) {
+				      			alert("error")
+				      		    console.log(error)
+				      		})            
+			          } else {
+			            console.log('error submit!!')
+			            return false;
+			          }
+			        });
 				},
 				load:function(tree, treeNode, resolve) {
 					//alert('id is : ' + tree.id + ',path is : ' + tree.path + ', program id : ' + this.proId + ', parent id : ' + tree.pId)

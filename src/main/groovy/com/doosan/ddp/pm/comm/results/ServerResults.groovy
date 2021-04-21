@@ -16,7 +16,8 @@ public enum ServerResults {
 	ERROR_SVN_CODE(800, "用户svn账号没有维护!"),
 	ERROR_SVN_PWD(801, "用户svn密码为空!"),
 	ERROR_SVN_ADD(802, "系统svn地址没有维护!"),
-	ERROR_SVN_AUTH(803, "SVN创建连接失败,SVN地址有误或账号无权限,请联系管理员!")
+	ERROR_SVN_AUTH(803, "SVN创建连接失败,SVN地址有误或账号无权限,请联系管理员!"),
+	ERROR_SVN_FOLDER(804, "SVN新增目录失败,请联系管理员!")
 	
 	private int status
 	private String message
