@@ -73,19 +73,28 @@ class ProgramSvnController {
 	@ResponseBody
 	@GetMapping("/docs")
 	def getSvnDocuments(String path,String id, String proId, HttpServletRequest request) {
-		//session获取用户账号
-		def userId = request.getSession().getAttribute("currentUser")
-		SystemUser user = systemUserService.getUserByCode(userId)
-		if(user.getSvncode() == null)
-			return ServerResultJson.error(ServerResults.ERROR_SVN_CODE)
-		if(user.getSvnpwd() == null)
-			return ServerResultJson.error(ServerResults.ERROR_SVN_PWD)
-		ProgramMain program = programMainService.getProgramById(proId)
-		if(program.getSvnadd() == null)
-			return ServerResultJson.error(ServerResults.ERROR_SVN_ADD)
-		SVNUtil svn = new SVNUtil(user.getSvncode(), user.getSvnpwd(), program.getSvnadd())
-		//将SVN库放入session中,便于后续其他的SVN操作
-		request.getSession().setAttribute("svninstance", svn)
+		SVNUtil svn = null
+		String currentPropramId = request.getSession().getAttribute("programid")==null ? "" : request.getSession().getAttribute("programid")
+		if(currentPropramId && currentPropramId.equals(proId)){
+			println "获取session中的svn实例>>>>>>>>>>>>>"
+			svn = request.getSession().getAttribute("svninstance")
+		}else{
+			println "重新构筑svn实例>>>>>>>>>>>>>"
+			//session获取用户账号
+			def userId = request.getSession().getAttribute("currentUser")
+			SystemUser user = systemUserService.getUserByCode(userId)
+			if(user.getSvncode() == null)
+				return ServerResultJson.error(ServerResults.ERROR_SVN_CODE)
+			if(user.getSvnpwd() == null)
+				return ServerResultJson.error(ServerResults.ERROR_SVN_PWD)
+			ProgramMain program = programMainService.getProgramById(proId)
+			if(program.getSvnadd() == null)
+				return ServerResultJson.error(ServerResults.ERROR_SVN_ADD)
+			svn = new SVNUtil(user.getSvncode(), user.getSvnpwd(), program.getSvnadd())
+			//将SVN库放入session中,便于后续其他的SVN操作
+			request.getSession().setAttribute("svninstance", svn)
+			request.getSession().setAttribute("programid", proId)
+		}		
 		SVNRepository repository = null
 		try {
 			repository = svn.getSVNRepository()
