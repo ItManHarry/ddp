@@ -83,13 +83,19 @@ class ProgramSvnController {
 			//session获取用户账号
 			def userId = request.getSession().getAttribute("currentUser")
 			SystemUser user = systemUserService.getUserByCode(userId)
-			if(user.getSvncode() == null)
+			if(user.getSvncode() == null) {
+				request.getSession().removeAttribute("programid")
 				return ServerResultJson.error(ServerResults.ERROR_SVN_CODE)
-			if(user.getSvnpwd() == null)
+			}
+			if(user.getSvnpwd() == null) {
+				request.getSession().removeAttribute("programid")
 				return ServerResultJson.error(ServerResults.ERROR_SVN_PWD)
+			}
 			ProgramMain program = programMainService.getProgramById(proId)
-			if(program.getSvnadd() == null)
+			if(program.getSvnadd() == null) {
+				request.getSession().removeAttribute("programid")
 				return ServerResultJson.error(ServerResults.ERROR_SVN_ADD)
+			}
 			svn = new SVNUtil(user.getSvncode(), user.getSvnpwd(), program.getSvnadd())
 			//将SVN库放入session中,便于后续其他的SVN操作
 			request.getSession().setAttribute("svninstance", svn)
@@ -124,19 +130,42 @@ class ProgramSvnController {
 			return ServerResultJson.success(nodes)
 		}*/	
 		//获取svn子目录
-		def nodes = op.listEntries(repository, path, id)
-		def nodeMap = [:]
-		//按照文档名称排序
-		def names = []
-		nodes.each { 
-			names << it.getName()
-			nodeMap.put(it.getName(), it)
+		def nodes = [], data = []
+		//println "The path is : $path"
+		try {
+			nodes = op.listEntries(repository, path, id)
+		}catch(Exception e) {
+			return ServerResultJson.error(ServerResults.ERROR_SVN_AUTH)
 		}
-		def data = []
-		names.sort().each { 
-			println 'Name :' + it
-			data << nodeMap.get(it)
-		}
+		if(nodes) {
+			def nodeMap = [:]
+			//按照文档名称排序
+			def names = []
+			nodes.each {
+				names << it.getName()
+				nodeMap.put(it.getName(), it)
+			}			
+			names.sort().each {
+				println 'Name :' + it
+				data << nodeMap.get(it)
+			}
+		}else {
+			if(path == "/") {
+				SvnEntry node = new SvnEntry(
+					name:"/",
+					path:"/",
+					leaf:false,
+					parent:true,
+					hasChildren:true,
+					icon:"/static/images/ztree/folder_close.png",
+					iconOpen:"/static/images/ztree/folder_open.png",
+					iconClose:"/static/images/ztree/folder_close.png",
+					open:true,
+					id:UUID.randomUUID().toString().replaceAll("-",""),
+					pId:null)
+				data << node
+			}			
+		}		
 		return ServerResultJson.success(data)
 	}
 	/**
@@ -155,10 +184,32 @@ class ProgramSvnController {
 		SVNURL url = SVNURL.parseURIEncoded(folderPath)
 		SvnOperates op = new SvnOperates()
 		try{
-			op.makeDirectory(svn.getSVNClientManager(svn.getSVNRepository()), url, 'new folder , add by program syste!')
+			op.makeDirectory(svn.getSVNClientManager(svn.getSVNRepository()), url, 'new folder , add by program system!')
 		}catch(Exception e) {
 			return ServerResultJson.error(ServerResults.ERROR_SVN_FOLDER)
 		}		
+		return ServerResultJson.success()
+	}
+	/**
+	 * 删除目录/文件
+	 * @param path
+	 * @param folder
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/delete")
+	def delete(String path, HttpServletRequest request) {
+		SVNUtil svn = request.getSession().getAttribute("svninstance")
+		String svnPath = svn.getSvnUrl()
+		String deletePath = svnPath + path
+		SVNURL url = SVNURL.parseURIEncoded(deletePath)
+		SvnOperates op = new SvnOperates()
+		try{
+			op.delete(svn.getSVNClientManager(svn.getSVNRepository()), url, 'delete folder/file , deleted by program system!')
+		}catch(Exception e) {
+			return ServerResultJson.error(ServerResults.ERROR_SVN_DELETE)
+		}
 		return ServerResultJson.success()
 	}
 }

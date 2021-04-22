@@ -48,8 +48,8 @@ class SvnOperates {
 		return es
 	}
 	/**
-	 * 创建目录
-	 * @param repository
+	 * 	创建目录
+	 * @param clientManager
 	 * @param url
 	 * @param commitMessage
 	 * @return
@@ -59,6 +59,19 @@ class SvnOperates {
 		def urls = []		
 		urls << url
 		return clientManager.getCommitClient().doMkDir((SVNURL[])urls.toArray(), commitMessage)
+	}
+	/**
+	 * 删除目录/文件
+	 * @param clientManager
+	 * @param url
+	 * @param commitMessage
+	 * @return
+	 * @throws SVNException
+	 */
+	SVNCommitInfo delete(SVNClientManager clientManager, SVNURL url , String commitMessage ) throws SVNException {
+		def urls = []
+		urls << url
+		return clientManager.getCommitClient().doDelete((SVNURL[])urls.toArray(), commitMessage)
 	}
 	
 	static void main(String[] args) {

@@ -94,7 +94,7 @@
 								          type="danger"
 								          icon = "el-icon-delete"
 								          plain
-								          @click="proInvoice(scope.$index, scope.row)">
+								          @click="doDelete(scope.$index, scope.row)">
 								        </el-button>
 								     </el-tooltip> 
 						      </template>
@@ -216,11 +216,12 @@
 				      			if(result.status == 200){
 				      				app.$message({
 				            			message:'目录创建成功!',
-				            			type:'warning',
+				            			type:'success',
 				            			duration:1000,
 				            			offset:120,
 				            			onClose:function(){
 				            				app.closeDialog()
+				            				app.getSvnDocuments('/','0')
 				            			}
 				            		})	
 				      			}else{
@@ -241,6 +242,56 @@
 			            return false;
 			          }
 			        });
+				},
+				doDelete:function(index, row){	
+					//alert('path' + row.path)
+					$.confirm({
+					    title: '提示!',
+					    content: '确定要删除？',
+					    boxWidth: '25%',
+					    useBootstrap: false,
+					    type: 'red',
+					    typeAnimated: true,
+					    buttons: {
+					        cancel:{
+					        	text:"取消"
+					        },
+					        confirm:{
+					        	text:"确定",
+					        	action:function () {
+					        		axios.get('/pm/biz/pro/svn/delete', {
+						      		    params: {
+						      		    	path:row.path
+						      		    }
+						      		}).then(function (response) {
+						      			var result = response.data	
+						      			if(result.status == 200){
+						      				app.$message({
+						            			message:'目录/文件删除成功!',
+						            			type:'success',
+						            			duration:1000,
+						            			offset:120,
+						            			onClose:function(){
+						            				app.getSvnDocuments('/','0')
+						            			}
+						            		})	
+						      			}else{
+						      				app.$message({
+						            			message:result.message,
+						            			type:'warning',
+						            			duration:2000,
+						            			offset:120
+						            		})	
+						      			}
+						      		    console.log(response)
+						      		}).catch(function (error) {
+						      			alert("error")
+						      		    console.log(error)
+						      		})  
+					        	}
+					        }
+					    }
+					});
 				},
 				load:function(tree, treeNode, resolve) {
 					//alert('id is : ' + tree.id + ',path is : ' + tree.path + ', program id : ' + this.proId + ', parent id : ' + tree.pId)
