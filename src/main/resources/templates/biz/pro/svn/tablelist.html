@@ -76,6 +76,7 @@
 								          type = "primary"
 								          icon = "el-icon-upload2"
 								          plain
+								          :disabled = "scope.row.hasChildren == false"
 								          @click="upload(scope.$index, scope.row)">
 								        </el-button>
 							        </el-tooltip>
@@ -85,6 +86,7 @@
 								          type="success"
 								          icon = "el-icon-download"
 								          plain
+								          :disabled = "scope.row.hasChildren == true"
 								          @click="download(scope.$index, scope.row)">
 								      	</el-button>
 								    </el-tooltip>
@@ -242,6 +244,32 @@
 			            return false;
 			          }
 			        });
+				},
+				download:function(index, row){
+					axios.get('/pm/biz/pro/svn/checkout', {
+		      		    params: {
+		      		    	path:row.path
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.status == 200){
+		      				//动态form实现下载
+		      				var form = $("<form method='post' action='/pm/biz/pro/svn/download'>")
+		                    $('body').append(form)
+		                    form.submit()
+		      			}else{
+		      				app.$message({
+		            			message:result.message,
+		            			type:'warning',
+		            			duration:2000,
+		            			offset:120
+		            		})	
+		      			}
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})  
 				},
 				doDelete:function(index, row){	
 					//alert('path' + row.path)

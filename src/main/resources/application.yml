@@ -24,3 +24,5 @@ mail:
  #多人以逗号隔开
  user:
   to: guoqian.cheng@doosan.com
+svn: 
+ temp: c:/svn/temp

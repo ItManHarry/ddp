@@ -1,12 +1,18 @@
 package com.doosan.ddp.pm.controller.biz.svn
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import org.apache.commons.io.FileUtils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.tmatesoft.svn.core.SVNURL
 import org.tmatesoft.svn.core.io.SVNRepository
+import org.tmatesoft.svn.core.wc.SVNRevision
 import com.doosan.ddp.pm.comm.results.ServerResultJson
 import com.doosan.ddp.pm.comm.results.ServerResults
 import com.doosan.ddp.pm.controller.biz.pro.issue.ProgramIssueController
@@ -31,6 +37,8 @@ class ProgramSvnController {
 	SystemUserService systemUserService
 	@Autowired
 	ProgramIssueController programIssueController
+	@Value('${svn.temp}')
+	String svnTempPath
 	
 	/**
 	 *	跳转项目SVN清单 - 树结构
@@ -211,5 +219,66 @@ class ProgramSvnController {
 			return ServerResultJson.error(ServerResults.ERROR_SVN_DELETE)
 		}
 		return ServerResultJson.success()
+	}
+	/**
+	 *  下载
+	 * @param path
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/checkout")
+	def checkout(String path, HttpServletRequest request) {
+		String fileName = path.split("/")[-1]
+		String folderName = path.split("/")[-2]
+		File toDiskPath = new File(svnTempPath+"/"+folderName)
+		//用于svn checkout的目录必须为空，所以每次要删除后重建
+		if(toDiskPath.exists())
+			toDiskPath.delete()		
+		toDiskPath.mkdirs()
+		SVNUtil svn = request.getSession().getAttribute("svninstance")
+		String svnPath = svn.getSvnUrl()
+		String copyPath = svnPath + path.substring(0, path.lastIndexOf("/"))
+		SVNURL url = SVNURL.parseURIEncoded(copyPath)
+		SvnOperates op = new SvnOperates()
+		try{
+			op.checkout(svn.getSVNClientManager(svn.getSVNRepository()), url, SVNRevision.HEAD, toDiskPath, true)
+		}catch(Exception e) {
+			return ServerResultJson.error(ServerResults.ERROR_SVN_CHECKOUT)
+		}
+		String downloadFilePath = svnTempPath+"/"+folderName+"/"+fileName
+		request.getSession().setAttribute("downloadFileName", fileName)			//下载文件名称
+		request.getSession().setAttribute("downloadFilePath", downloadFilePath)	//下载文件路径
+		return ServerResultJson.success()
+	}
+	/**
+	 * 文件下载
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("/download")
+	def download(HttpServletRequest request, HttpServletResponse response) {
+		String fileName = request.getSession().getAttribute("downloadFileName")	
+		String filePath = request.getSession().getAttribute("downloadFilePath")
+		try {
+			InputStream bis = new BufferedInputStream(new FileInputStream(new File(filePath)))
+			fileName = URLEncoder.encode(fileName,"UTF-8")
+			//设置文件下载头
+			response.addHeader("Content-Disposition", "attachment;filename=" + fileName)
+			//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
+			response.setContentType("multipart/form-data");
+			BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream())
+			byte[] buffer = new byte[1024]
+			int len = bis.read(buffer)
+			while(len != -1){
+				out.write(len)
+				out.flush()
+				len = bis.read(buffer)
+			}
+			out.close()
+		} catch (Exception e) {
+			println "文件下载异常" + e
+		}
 	}
 }

@@ -6,6 +6,7 @@ import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager
 import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions
 import org.tmatesoft.svn.core.wc.ISVNOptions
 import org.tmatesoft.svn.core.wc.SVNClientManager
+import org.tmatesoft.svn.core.wc.SVNRevision
 import org.tmatesoft.svn.core.wc.SVNUpdateClient
 import org.tmatesoft.svn.core.wc.SVNWCUtil
 import org.tmatesoft.svn.core.io.SVNRepository
@@ -65,5 +66,5 @@ class SVNUtil {
 			throw new RuntimeException("SVN客户端管理器获取失败:" + e.getMessage())
 		}
 		return clientManager
-	}   		   
+	}
 }

@@ -7,6 +7,8 @@ import org.tmatesoft.svn.core.SVNNodeKind
 import org.tmatesoft.svn.core.SVNURL
 import org.tmatesoft.svn.core.io.SVNRepository
 import org.tmatesoft.svn.core.wc.SVNClientManager
+import org.tmatesoft.svn.core.wc.SVNRevision
+import org.tmatesoft.svn.core.wc.SVNUpdateClient
 
 import com.doosan.ddp.pm.utils.svn.bean.SvnEntry
 /**
@@ -72,6 +74,25 @@ class SvnOperates {
 		def urls = []
 		urls << url
 		return clientManager.getCommitClient().doDelete((SVNURL[])urls.toArray(), commitMessage)
+	}
+	/**
+	 * Checkout文件到本地磁盘
+	 * @param clientManager
+	 * @param url
+	 * @param revision
+	 * @param destPath
+	 * @param isRecursive
+	 * @return
+	 * @throws SVNException
+	 */
+	void checkout(SVNClientManager clientManager, SVNURL url, SVNRevision revision, File destPath, boolean isRecursive ) throws SVNException {
+		SVNUpdateClient updateClient = clientManager.getUpdateClient()
+		updateClient.setIgnoreExternals(false)
+		try {
+			updateClient.doCheckout( url , destPath , revision , revision , isRecursive )
+		} catch(Exception e) {
+			throw new RuntimeException("检出SVN文件异常:" + e.getMessage())
+		}
 	}
 	
 	static void main(String[] args) {
