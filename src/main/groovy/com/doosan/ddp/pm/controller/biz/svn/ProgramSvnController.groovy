@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.multipart.MultipartFile
 import org.tmatesoft.svn.core.SVNURL
 import org.tmatesoft.svn.core.io.SVNRepository
 import org.tmatesoft.svn.core.wc.SVNRevision
@@ -221,24 +223,34 @@ class ProgramSvnController {
 		return ServerResultJson.success()
 	}
 	/**
-	 *  下载
-	 * @param path
+	 * checkout svn
+	 * @param path		//svn路径
+	 * @param action	//action标识："upload":用以checkout svn后上传文件 ； "download"：用以checkout后下载文件
 	 * @param request
 	 * @return
 	 */
 	@ResponseBody
 	@GetMapping("/checkout")
-	def checkout(String path, HttpServletRequest request) {
-		String fileName = path.split("/")[-1]
-		String folderName = path.split("/")[-2]
-		File toDiskPath = new File(svnTempPath+"/"+folderName)
-		//用于svn checkout的目录必须为空，所以每次要删除后重建
-		if(toDiskPath.exists())
-			toDiskPath.delete()		
-		toDiskPath.mkdirs()
+	def checkout(String path, String action, HttpServletRequest request) {
+		String fileName = ""		//下载文件名称
+		String folderName = ""		//SVN checkout目录
+		String copyPath = ""		//SVN checkout路径
 		SVNUtil svn = request.getSession().getAttribute("svninstance")
 		String svnPath = svn.getSvnUrl()
-		String copyPath = svnPath + path.substring(0, path.lastIndexOf("/"))
+		if(action == 'upload') {
+			folderName = path.split("/")[-1]
+			copyPath = svnPath + path
+		}else {
+			fileName = path.split("/")[-1]
+			folderName = path.split("/")[-2]
+			copyPath = svnPath + path.substring(0, path.lastIndexOf("/"))
+		}
+		File toDiskPath = new File(svnTempPath+"/"+folderName)
+		//用于svn checkout的目录必须为空，所以每次要删除后重建
+		if(toDiskPath.exists()) {
+			deleteFile(toDiskPath)
+		}
+		toDiskPath.mkdirs()		
 		SVNURL url = SVNURL.parseURIEncoded(copyPath)
 		SvnOperates op = new SvnOperates()
 		try{
@@ -246,11 +258,30 @@ class ProgramSvnController {
 		}catch(Exception e) {
 			return ServerResultJson.error(ServerResults.ERROR_SVN_CHECKOUT)
 		}
-		String downloadFilePath = svnTempPath+"/"+folderName+"/"+fileName
+		String filePath = svnTempPath+"/"+folderName+"/"+fileName
+		String workingCopyPath = svnTempPath+"/"+folderName
 		request.getSession().setAttribute("downloadFileName", fileName)			//下载文件名称
-		request.getSession().setAttribute("downloadFilePath", downloadFilePath)	//下载文件路径
+		request.getSession().setAttribute("downloadFilePath", filePath)			//下载文件路径
+		request.getSession().setAttribute("workingCopyPath", workingCopyPath)	//checkout工作空间路径
 		return ServerResultJson.success()
 	}
+	/**
+	 * 上传文件至临时工作区
+	 * @param file
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/upload")
+	def upload(MultipartFile file, HttpServletRequest request){
+		//上传路径
+		println ">>>>>>>>>>>>>>>>>>>>>>>>>>> do the upload action..."
+		String workingCopyPath = request.getSession().getAttribute("workingCopyPath")
+		println "File Name : " + file.getOriginalFilename()
+		println "File type : " + file.getContentType()
+		file.transferTo(new File(workingCopyPath+"/"+file.getOriginalFilename()))
+		return ServerResultJson.success()
+	}	
 	/**
 	 * 文件下载
 	 * @param request
@@ -264,9 +295,7 @@ class ProgramSvnController {
 		try {
 			InputStream bis = new BufferedInputStream(new FileInputStream(new File(filePath)))
 			fileName = URLEncoder.encode(fileName,"UTF-8")
-			//设置文件下载头
 			response.addHeader("Content-Disposition", "attachment;filename=" + fileName)
-			//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
 			response.setContentType("multipart/form-data");
 			BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream())
 			byte[] buffer = new byte[1024]
@@ -279,6 +308,25 @@ class ProgramSvnController {
 			out.close()
 		} catch (Exception e) {
 			println "文件下载异常" + e
+		}
+	}
+	/**
+	 * 删除文件/文件夹
+	 * @param file
+	 */
+	void deleteFile(File file) {
+		if(file.exists()) {
+			if(file.isFile()) {
+				file.delete()
+			}else{
+				def files = file.listFiles()
+				files.each { 
+					deleteFile(it)
+				}
+				file.delete()
+			}
+		}else {
+			println "要删除的文件不存在!"
 		}
 	}
 }

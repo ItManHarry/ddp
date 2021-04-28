@@ -105,20 +105,23 @@
 	  	 			</el-col>
 	  	 		</el-row>
 	  	 		<el-dialog :title = "formTitle" :visible.sync = "formVisible" @close = "closeDialog" :close-on-click-modal = "false">
-  	 					<el-form :model="form" :rules = "rules" ref = "svnForm">
-  	 						<el-row type = "flex" justify = "center" align = "middle">
-  	 							<el-col :span = "24">
-  	 								<el-form-item label="文件夹" :label-width="formLabelWidth" prop = "name">
-								      <el-input v-model="form.name" autocomplete="off"></el-input>
-								    </el-form-item>
-  	 							</el-col>
-  	 						</el-row>		  	 						
-						 </el-form>
-						 <div slot="footer" class="dialog-footer">						    
-						    <el-button type="primary" @click="createFolder('svnForm')">创建</el-button>
-						    <el-button @click="closeDialog">取 消</el-button>
-						 </div>
-  	 				</el-dialog>
+ 					<el-form :model="form" :rules = "rules" ref = "svnForm">
+	 					<el-row type = "flex" justify = "center" align = "middle">
+	 						<el-col :span = "24">
+	 							<el-form-item label="文件夹" :label-width="formLabelWidth" prop = "name">
+						   			<el-input v-model="form.name" autocomplete="off"></el-input>
+					    		</el-form-item>
+	 						</el-col>
+	 					</el-row>		  	 						
+					 </el-form>
+					 <div slot="footer" class="dialog-footer">						    
+					    <el-button type="primary" @click="createFolder('svnForm')">创建</el-button>
+					    <el-button @click="closeDialog">取 消</el-button>
+					 </div>
+ 				</el-dialog>
+ 				<el-dialog title = "上传文件" :visible.sync = "fileFormVisible" :close-on-click-modal = "false">
+ 					<input type="file" class = "form-control" name = "file" id = "file" @change="doUpload"/>
+ 				</el-dialog>
 			</el-main>
 	  	 </el-container>	  	  		  	 
 	</div>	
@@ -136,6 +139,7 @@
 					show:false,				
 					tableData:[],
 					formVisible:false,
+					fileFormVisible:false,
 					formTitle:'新增目录',	//用户窗体标题
 					form:{
 						name:''
@@ -248,7 +252,8 @@
 				download:function(index, row){
 					axios.get('/pm/biz/pro/svn/checkout', {
 		      		    params: {
-		      		    	path:row.path
+		      		    	path:row.path,
+		      		    	action:'download'
 		      		    }
 		      		}).then(function (response) {
 		      			var result = response.data	
@@ -270,6 +275,60 @@
 		      			alert("error")
 		      		    console.log(error)
 		      		})  
+				},
+				upload:function(index, row){
+					axios.get('/pm/biz/pro/svn/checkout', {
+		      		    params: {
+		      		    	path:row.path,
+		      		    	action:'upload'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			if(result.status == 200){
+		      				app.fileFormVisible = true
+		      			}else{
+		      				app.$message({
+		            			message:result.message,
+		            			type:'warning',
+		            			duration:2000,
+		            			offset:120
+		            		})	
+		      			}
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})  
+				},
+				doUpload:function(e){
+					var file = e.target.files[0]
+					var form = new FormData()
+					form.append('file', file)
+					var config = {'Content-Type':'multipart/form-data'}
+					axios.post('/pm/biz/pro/svn/upload', form, config)
+						.then(function (response) {
+							var result = response.data	
+			      			if(result.status == 200){
+			      				app.$message({
+			            			message:'文件上传成功!',
+			            			type:'success',
+			            			duration:1000,
+			            			offset:120,
+			            			onClose:function(){
+			            				app.fileFormVisible = false
+			            			}
+			            		})				      				
+			      			}else{
+			      				app.$message({
+			            			message:result.message,
+			            			type:'warning',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+			      			}
+			      		    console.log(response)
+						}
+					)
 				},
 				doDelete:function(index, row){	
 					//alert('path' + row.path)
@@ -345,7 +404,7 @@
 				//alert('Mounted!!!')
 				this.getProList()					
 			}
-		});		
+		});	
 	</script>
 </body>
 </html>
