@@ -279,7 +279,32 @@ class ProgramSvnController {
 		String workingCopyPath = request.getSession().getAttribute("workingCopyPath")
 		println "File Name : " + file.getOriginalFilename()
 		println "File type : " + file.getContentType()
-		file.transferTo(new File(workingCopyPath+"/"+file.getOriginalFilename()))
+		File dest = new File(workingCopyPath+"/"+file.getOriginalFilename())
+		//若存在,执行删除后再上传
+		if(dest.exists())
+			dest.delete()
+		file.transferTo(dest)
+		//文件上传成功后执行SVN更新
+		SVNUtil svn = request.getSession().getAttribute("svninstance")
+		SvnOperates op = new SvnOperates()
+		try{
+			op.update(svn.getSVNClientManager(svn.getSVNRepository()), new File(workingCopyPath), SVNRevision.HEAD, true)
+		}catch(Exception e) {
+			return ServerResultJson.error(ServerResults.ERROR_SVN_UPDATE)
+		}
+		println "SVN更新成功，执行版本控制添加>>>>>>>>>>>>>>>>>>>>>>"
+		try{
+			op.addVersionToSvn(svn.getSVNClientManager(svn.getSVNRepository()), new File(workingCopyPath), true)
+		}catch(Exception e) {
+			return ServerResultJson.error(ServerResults.ERROR_SVN_VERSION)
+		}
+		println "SVN版本控制添加成功，执行SVN提交>>>>>>>>>>>>>>>>>>>>>>"
+		//SVN提交
+		try{
+			op.commit(svn.getSVNClientManager(svn.getSVNRepository()), new File(workingCopyPath), false, "add new file ")
+		}catch(Exception e) {
+			return ServerResultJson.error(ServerResults.ERROR_SVN_COMMIT)
+		}
 		return ServerResultJson.success()
 	}	
 	/**
@@ -292,23 +317,50 @@ class ProgramSvnController {
 	def download(HttpServletRequest request, HttpServletResponse response) {
 		String fileName = request.getSession().getAttribute("downloadFileName")	
 		String filePath = request.getSession().getAttribute("downloadFilePath")
-		try {
-			InputStream bis = new BufferedInputStream(new FileInputStream(new File(filePath)))
-			fileName = URLEncoder.encode(fileName,"UTF-8")
-			response.addHeader("Content-Disposition", "attachment;filename=" + fileName)
-			response.setContentType("multipart/form-data");
-			BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream())
-			byte[] buffer = new byte[1024]
-			int len = bis.read(buffer)
-			while(len != -1){
-				out.write(len)
-				out.flush()
-				len = bis.read(buffer)
+		File file = new File(filePath)
+		fileName = URLEncoder.encode(fileName,"UTF-8")
+		if (file.exists()) {
+			try {
+				//以流的形式下载文件。
+				InputStream input = new BufferedInputStream(new FileInputStream(file.getPath()))
+				byte[] buffer = new byte[input.available()]
+				input.read(buffer)
+				input.close()
+				//清空response
+				response.reset()
+				generate(fileName, request, response)
+				OutputStream output = new BufferedOutputStream(response.getOutputStream())
+				output.write(buffer)
+				output.flush()
+				output.close()
+			} catch (IOException e) {
+				e.printStackTrace()
+				println "文件下载异常" + e
 			}
-			out.close()
-		} catch (Exception e) {
-			println "文件下载异常" + e
 		}
+	}
+	/**
+	 * 处理文件名/内容乱码和浏览器兼容问题
+	 * @param fileName
+	 * @param request
+	 * @param response
+	 * @throws UnsupportedEncodingException
+	 */
+	void generate(String fileName, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
+		response.setCharacterEncoding("UTF-8")
+		response.setContentType("application/octet-stream")
+		response.setHeader("success", "true")
+		String userAgent = request.getHeader("User-Agent")
+		String formFileName = ""
+		if (userAgent.contains("MSIE") || userAgent.contains("Trident")) {
+			// 针对IE或者以IE为内核的浏览器：
+			formFileName = URLEncoder.encode(fileName, "UTF-8")
+		} else {
+			// 非IE浏览器的处理：
+			formFileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1")
+		}
+		//如果输出的是中文名的文件，在此处就要用URLEncoder.encode方法进行处理
+		response.setHeader("Content-Disposition", "attachment;filename=" + formFileName)
 	}
 	/**
 	 * 删除文件/文件夹

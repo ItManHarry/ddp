@@ -19,7 +19,10 @@ public enum ServerResults {
 	ERROR_SVN_AUTH(803, "SVN创建连接失败,SVN地址有误或账号无权限,请联系管理员!"),
 	ERROR_SVN_FOLDER(804, "SVN新增目录失败,请联系管理员!"),
 	ERROR_SVN_DELETE(805, "SVN目录/文件删除失败,请联系管理员!"),
-	ERROR_SVN_CHECKOUT(806, "SVN文件检出失败,请联系管理员!")
+	ERROR_SVN_CHECKOUT(806, "SVN文件检出失败,请联系管理员!"),
+	ERROR_SVN_UPDATE(807, "SVN文件更新失败,请联系管理员!"),
+	ERROR_SVN_VERSION(808, "添加到SVN版本控制失败,请联系管理员!"),
+	ERROR_SVN_COMMIT(809, "SVN文件提交失败,请联系管理员!")
 	
 	private int status
 	private String message

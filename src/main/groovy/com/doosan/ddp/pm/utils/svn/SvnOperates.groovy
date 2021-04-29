@@ -1,14 +1,17 @@
 package com.doosan.ddp.pm.utils.svn
 import org.springframework.stereotype.Component
 import org.tmatesoft.svn.core.SVNCommitInfo
+import org.tmatesoft.svn.core.SVNDepth
 import org.tmatesoft.svn.core.SVNDirEntry
 import org.tmatesoft.svn.core.SVNException
 import org.tmatesoft.svn.core.SVNNodeKind
 import org.tmatesoft.svn.core.SVNURL
 import org.tmatesoft.svn.core.io.SVNRepository
 import org.tmatesoft.svn.core.wc.SVNClientManager
+import org.tmatesoft.svn.core.wc.SVNConflictChoice
 import org.tmatesoft.svn.core.wc.SVNRevision
 import org.tmatesoft.svn.core.wc.SVNUpdateClient
+import org.tmatesoft.svn.core.wc.SVNWCUtil
 
 import com.doosan.ddp.pm.utils.svn.bean.SvnEntry
 /**
@@ -92,6 +95,96 @@ class SvnOperates {
 			updateClient.doCheckout( url , destPath , revision , revision , isRecursive )
 		} catch(Exception e) {
 			throw new RuntimeException("检出SVN文件异常:" + e.getMessage())
+		}
+	}
+	/**
+	 * 递归检查不在版本控制的文件，并add到svn
+	 * @param clientManager
+	 * @param wcPath
+	 * @param merge
+	 * @throws SVNException
+	 */
+	void addVersionToSvn(SVNClientManager clientManager, File wcPath, boolean merge) throws SVNException {
+		if(!SVNWCUtil.isVersionedDirectory(wcPath)) {
+			try{
+				addEntry(clientManager, wcPath, merge)
+			}catch(SVNException e) {
+				throw e	
+			}
+		}
+		if(wcPath.isDirectory()) {
+			for (File sub : wcPath.listFiles()) {
+				if (sub.isDirectory() && sub.getName().equals(".svn")) {
+					continue
+				}
+				addVersionToSvn(clientManager, sub, merge)
+			}
+		}
+	}
+	/**
+	 * 添加到版本控制
+	 * @param clientManager
+	 * @param wcPath
+	 * @throws SVNException
+	 */
+	void addEntry(SVNClientManager clientManager, File wcPath, boolean merge) throws SVNException {
+		try {
+			clientManager.getWCClient().doAdd(wcPath, false, false, false, true)
+		} catch(SVNException  e) {
+			e.printStackTrace()
+			if(e.getMessage().contains('E155015')) {
+				// 解决冲突
+				// SVNConflictChoice.MERGED  是把本地和远程仓库文件合并，以本地为主
+				// SVNConflictChoice.THEIRS_CONFLICT
+				// SVNConflictChoice.THEIRS_FULL
+				// SVNConflictChoice.MINE_CONFLICT
+				if(merge) {
+					clientManager.getWCClient().doResolve(wcPath, SVNDepth.INFINITY, SVNConflictChoice.MERGED)
+				} else {
+					throw e
+				}
+			}else if(e.getMessage().concat('E150002')){
+				//already under version control
+				println "already under version control , "+e.getMessage()
+			}else {
+				throw e
+			}
+		}
+    }
+	/**
+	 * 更新SVN
+	 * @param clientManager
+	 * @param wcPath
+	 * @param updateToRevision
+	 * @param isRecursive
+	 * @throws SVNException
+	 */
+	void update(SVNClientManager clientManager,File wcPath, SVNRevision updateToRevision , boolean isRecursive) throws SVNException{
+		SVNUpdateClient updateClient = clientManager.getUpdateClient()
+		updateClient.setIgnoreExternals(false)
+		try {
+			updateClient.doUpdate(wcPath, updateToRevision, isRecursive)
+		} catch(Exception e) {
+			throw new RuntimeException("SVN更新异常:" + e.getMessage())
+		}
+		
+	}
+	/**
+	 * 文件提交
+	 * @param clientManager
+	 * @param wcPath
+	 * @param keepLocks
+	 * @param commitMessage
+	 * @throws SVNException
+	 */
+	void commit(SVNClientManager clientManager, File wcPath, boolean keepLocks, String commitMessage) throws SVNException {
+		def files = []
+		files << wcPath
+		try {
+			clientManager.getCommitClient().doCommit((File[])files.toArray(), keepLocks, commitMessage, false, true)
+		}catch(Exception e) {
+			e.printStackTrace()
+			throw new RuntimeException("SVN提交异常:" + e.getMessage())
 		}
 	}
 	
