@@ -56,11 +56,11 @@ class ProgramSvnController {
 	 *	跳转项目SVN清单 - ElementUI树表格
 	 * 	@return
 	 */
-	@RequestMapping("/table")
-	def table(HttpServletRequest request, Map map) {
+	@RequestMapping("/doclist")
+	def doclist(HttpServletRequest request, Map map) {
 		def userId = request.getSession().getAttribute("currentUserId")
 		println "User uuid is : $userId"
-		return WEB_URL + "/tablelist"
+		return WEB_URL + "/doclist"
 	}
 		
 	@ResponseBody
