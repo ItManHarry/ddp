@@ -39,7 +39,10 @@ class ProgramInvoiceController {
 		String programid = json.get("proId").asString
 		int stage = json.get("stage").asInt
 		int percent = json.get("percent").asInt
-		String invoicedt = json.get("invoicedt").asString
+		int makeout = json.get("makeout").asInt
+		String invoicedt = json.get("invoicedt")!=null?json.get("invoicedt").asString:""
+		String checkeddt = json.get("checkeddt")!=null?json.get("checkeddt").asString:""
+		String remark = json.get("remark")!=null?json.get("remark").asString:""
 		//String user = json.get("user").asString
 		ProgramInvoice invoice = new ProgramInvoice()
 		if(id) {
@@ -53,7 +56,13 @@ class ProgramInvoiceController {
 		invoice.setProgramid(programid)
 		invoice.setStage(stage)
 		invoice.setPercent(percent)
-		invoice.setInvoicedt(invoicedt)
+		invoice.setMakeout(makeout)
+		if(makeout == 1)
+			invoice.setInvoicedt(invoicedt)
+		else
+			invoice.setInvoicedt(null)
+		invoice.setCheckeddt(checkeddt)
+		invoice.setRemark(remark)
 		programInvoiceService.save(invoice)
 		return ServerResultJson.success()
 	}
@@ -82,6 +91,7 @@ class ProgramInvoiceController {
 					it.setStageStr('Null')
 					break
 			}
+			it.setMakeoutStr(it.getMakeout()==1?'是':'否')
 		}
 		if(invoices) {
 			return ServerResultJson.success(invoices)

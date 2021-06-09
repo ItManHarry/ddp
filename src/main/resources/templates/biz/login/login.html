@@ -105,7 +105,11 @@
 								vm.show = false
 								vm.message = ''
 								vm.disabled = false
-								location.href="/pm/web/work";
+								//工厂跳转主页,开发跳转issue处理页面
+								if(r.userType == 1)
+									location.href="/pm/web/work"
+								else
+									location.href="/pm/biz/report/issuereport"
 							}							
 						},
 						error:function(){

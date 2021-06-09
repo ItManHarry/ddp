@@ -143,6 +143,7 @@ class ProgramMainController {
 	@GetMapping("/charts") 
 	def charts(HttpServletRequest request) {
 		def sc = enumerationController.getOptions('D003')	//项目状态枚举数据
+		def year = request.getParameter('year')
 		def data = [], item = null
 		sc.each { k, v -> 
 			item = [:]
@@ -150,7 +151,8 @@ class ProgramMainController {
 			item.put('name', v)
 			data << item
 		}
-		println 'Program chart data : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + data
+		println "Chart year is : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>$year"
+		println "Program chart data $year : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + data
 		return ServerResultJson.success(data)	
 	}
 	

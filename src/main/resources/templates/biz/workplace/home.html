@@ -23,11 +23,11 @@
 	  	 	<el-row type = "flex" :justify = "end" :align = "middle" style = "border-top:0px;margin-top:15px;padding-top:15px;">
   	 			<el-col :span = "9">
   	 				<span style = "font-size:14px;color:#888;">项目现况</span>
- 	 				<program-chart></program-chart>
+ 	 				<program-chart :year = "year"></program-chart>
   	 			</el-col>
   	 			<el-col :span = "15">
   	 				<span style = "font-size:14px;color:#888;">Issue现况</span>
- 	 				<issue-chart></issue-chart>
+ 	 				<issue-chart :year = "year"></issue-chart>
   	 			</el-col>
 	  	 	</el-row>
 	  	 	<!--el-row type = "flex" :justify = "end" :align = "middle">
@@ -48,7 +48,7 @@
 			},
 			data:function(){				
 				return {
-					
+					year:2020
 				}
 			},
 			methods:{

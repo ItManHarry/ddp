@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramInvoice
 import com.doosan.ddp.pm.dao.jpa.biz.pro.ProgramInvoiceDao
 import com.doosan.ddp.pm.service.biz.pro.ProgramInvoiceService
+import org.springframework.data.domain.Sort
 @Service
 class ProgramInvoiceServiceImp implements ProgramInvoiceService {
 	
@@ -20,7 +21,8 @@ class ProgramInvoiceServiceImp implements ProgramInvoiceService {
 	@Transactional
 	List<ProgramInvoice> getProgramInvoiceByProId(String proId) {
 		// TODO Auto-generated method stub
-		return programInvoiceDao.findByProgramid(proId)
+		Sort sort = Sort.by("stage")
+		return programInvoiceDao.findByProgramid(proId, sort)
 	}
 
 	@Transactional

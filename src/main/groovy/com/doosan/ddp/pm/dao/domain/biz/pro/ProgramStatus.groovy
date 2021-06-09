@@ -12,7 +12,7 @@ class ProgramStatus extends TableEntityBaseModel {
 	//所属项目(项目uuid)
 	@Column(name="programid", length=40)
 	String programid
-	//客户公司(存储组织uuid)
+	//客户公司
 	@Column(name="company", length=40)
 	String company
 	//是否新项目(1 :  是 2 : 否)
@@ -33,7 +33,7 @@ class ProgramStatus extends TableEntityBaseModel {
 	//合同结束日期
 	@Column(name="contractend", length=20)
 	String contractend
-	//法人(存储组织信息uuid，维护DICC/DISD/DIVC/DICI等法人信息)
+	//法人
 	@Column(name="legalorg", length=40)
 	String legalorg
 	//客户公司主管部门

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - Issue管理</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})">
+	</div>
+	<div id = "app">
+	  	 <el-container>
+	  	 	<el-header>
+				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+	  	 	</el-header>
+	  	 	<el-main>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "4">
+	  	 				<!-- 引入左侧导航栏 -->
+						<system-menu location = "Issue管理"></system-menu>
+	  	 			</el-col>
+	  	 			<el-col :span = "20">
+	  	 				<el-form :model="queryForm" >
+							<el-row>
+								<el-col :span="7">
+									<el-form-item label="项目" :label-width="formLabelWidth" prop = "proId">
+										<el-select clearable v-model="queryForm.programid" placeholder="请选择项目" @change = "changePro">
+											<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
+										</el-select>
+									</el-form-item>
+								</el-col>
+								<el-col :span="7">
+									<el-form-item label="类型" :label-width="formLabelWidth" prop = "issuetype">
+										<el-select clearable v-model="queryForm.issuetype" placeholder="请选择">
+											<el-option v-for = "type in types" :label="type.view" :value="type.value" :key="type.value"></el-option>
+										</el-select>
+									</el-form-item>
+								</el-col>
+								<el-col :span="10">
+									<el-form-item label="紧急度" :label-width="formLabelWidth" prop = "issuegrade">
+										<el-select clearable v-model="queryForm.issuegrade" placeholder="请选择">
+											<el-option v-for = "grade in grades" :label="grade.view" :value="grade.value" :key="grade.value"></el-option>
+										</el-select>
+									</el-form-item>
+								</el-col>
+							</el-row>
+							<el-row>
+								<el-col :span="7">
+									<el-form-item label="处理人员" :label-width="formLabelWidth" prop = "handler">
+										<el-select clearable v-model="queryForm.handler" placeholder="请选择">
+											<el-option v-for = "m in gm" :label="m.name" :value="m.code" :key="m.code"></el-option>
+										</el-select>
+									</el-form-item>
+								</el-col>
+								<el-col :span="7">
+									<el-form-item label="处理状态" :label-width="formLabelWidth" prop = "state">
+										<el-select clearable v-model="queryForm.state" placeholder="请选择">
+											<el-option v-for = "state in states" :label="state.view" :value="state.value" :key="state.value"></el-option>
+										</el-select>
+									</el-form-item>
+								</el-col>
+								<el-col :span="10">
+									<el-form-item label="结束日期" :label-width="formLabelWidth" prop = "finishdate">
+										<el-date-picker v-model="queryForm.finishdate_2" value-format="yyyy-MM-dd"	type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" clearable>
+										</el-date-picker>
+									</el-form-item>
+								</el-col>
+							</el-row>
+							<el-row>
+								<el-col :span="7" :offset="17">
+									<el-form-item>
+										<el-button icon = "el-icon-search" round plain type = "success" @click = "getIssueData">查找</el-button>
+										<el-button icon = "el-icon-add" round plain type = "primary" @click = "addIssue">新增</el-button>
+										<!--el-button icon = "el-icon-s-grid" round plain type = "primary" @click = "excelDownload">导出</el-button-->
+									</el-form-item>
+								</el-col>
+							</el-row>
+	  	 				</el-form>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row>
+	  	 			<el-col :span = "24">
+	  	 				<el-table :data="issueData" style="width:100%;" :max-height = "height">
+	  	 					<!-- 使用 v-if 隐藏列 -->
+					      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "programid" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "program" label = "项目所属"></el-table-column>
+					      	<el-table-column prop = "issuetype" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "type" label = "Issue类型"></el-table-column>
+					      	<el-table-column prop = "issuegrade" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "grade" label = "紧急度"></el-table-column>
+					      	<el-table-column prop = "handler" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "handlerNm" label = "处理人员"></el-table-column>
+							<el-table-column prop = "issueremark" label = "issue内容" min-width="180" show-overflow-tooltip></el-table-column>
+							<el-table-column prop = "picOne" label = "问题截图" min-width="80">
+								<template slot-scope="scope" v-if="scope.row.picOne">
+									<el-popover placement="left" title="" trigger="hover" width="80px">
+										<img :src="$Image+scope.row.picOne" style="width:600px;height: 400px"/>
+										<img slot="reference" :src="$Image+scope.row.picOne" :alt="$Image+scope.row.picOne"
+											 style="max-height:60px;max-width: 70px">
+									</el-popover>
+								</template>
+							</el-table-column>
+							<el-table-column prop = "picTwo" label = "问题截图" min-width="80">
+								<template slot-scope="scope" v-if="scope.row.picTwo">
+									<el-popover placement="left" title="" trigger="hover" width="80px">
+										<img :src="$Image+scope.row.picTwo" style="width:600px;height: 400px"/>
+										<img slot="reference" :src="$Image+scope.row.picTwo" :alt="$Image+scope.row.picTwo"
+											 style="max-height:60px;max-width: 70px">
+									</el-popover>
+								</template>
+							</el-table-column>
+					      	<el-table-column prop = "state" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "stateStr" label = "Issue状态"></el-table-column>
+							<el-table-column prop = "finishdate" label = "结束时间"></el-table-column>
+					      	<el-table-column label = "操作" width = "100" align = "center">
+					      		<template slot-scope="scope">
+					      			<el-tooltip style="margin:4px;" effect="light" content="修改" placement="bottom-start">
+								        <el-button
+								          size="mini"
+								          type = "primary"
+								          icon = "el-icon-edit"
+								          plain
+								          @click="editIssue(scope.$index, scope.row)">
+								        </el-button>
+								      </el-tooltip>
+							        <!--el-button
+							          size="mini"
+							          type="success"
+							          plain
+							          @click="proInvoice(scope.$index, scope.row)"><i class = "fa fa-list"></i></el-button--> 
+						      </template>
+					      	</el-table-column>
+					    </el-table>	
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" justify = "end" align = "bottom">
+	  	 			<el-col :span = "24">
+	  	 				<el-pagination 
+	  	 					layout="prev, pager, next" 
+	  	 					:total="total" 
+	  	 					:page-size="items"
+							:current-page.sync="page"
+	  	 					@current-change = "changePage"
+	  	 					small >
+	  	 				</el-pagination>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<!-- 项目表单窗体 -->
+		 		<el-dialog :title = "formTitle" width = "45%" :visible.sync = "formVisible" @close = "closeIssue" :close-on-click-modal = "false">
+					<el-form :model="form" :rules = "rules" ref = "issueForm">
+						<el-row type = "flex" justify = "center" align = "middle">
+							<el-col :span = "12">
+								<el-form-item label="项目" :label-width="formLabelWidth" prop = "program">
+									<el-select v-model="form.programid" :disabled.sync="editProgramEditable" placeholder="请选择项目" @change = "changePro_editDialog">
+										<el-option v-for = "pro in prolist" :label="pro.name" :value="pro.tid"></el-option>
+									</el-select>
+								</el-form-item>
+							</el-col>
+							<el-col :span = "12">
+								<el-form-item label="邀请完成日期" :label-width="formLabelWidth" prop = "finishdate">
+									<el-date-picker
+											v-model="form.finishdate"
+											type="date"
+											placeholder="选择日期"
+											value-format = "yyyy-MM-dd">
+									</el-date-picker>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row type = "flex" justify = "center" align = "middle">
+							<el-col :span = "12">
+								<el-form-item label="类型" :label-width="formLabelWidth" prop = "issuetype">
+				      				<el-select v-model="form.issuetype" placeholder="请选择">
+									    <el-option v-for = "type in types" :label="type.view" :value="type.value" :key="type.value"></el-option>
+									</el-select>
+				    			</el-form-item>
+							</el-col>
+							<el-col :span = "12">
+								<el-form-item label="紧急度" :label-width="formLabelWidth" prop = "issuegrade">
+				      				<el-select v-model="form.issuegrade" placeholder="请选择">
+									    <el-option v-for = "grade in grades" :label="grade.view" :value="grade.value" :key="grade.value"></el-option>
+									</el-select>
+				    			</el-form-item>
+							</el-col>
+						</el-row>	
+						<el-row type = "flex" justify = "center" align = "middle">
+							<el-col :span = "12">
+								<el-form-item label="处理人员" :label-width="formLabelWidth" prop = "handler">
+				      				<el-select v-model="form.handler" placeholder="请选择">
+									    <el-option v-for = "m in gm_edit" :label="m.name" :value="m.code" :key="m.code"></el-option>
+									</el-select>
+				    			</el-form-item>
+							</el-col>
+							<el-col :span = "12">
+								<el-form-item label="处理状态" :label-width="formLabelWidth" prop = "state">
+				      				<el-select v-model="form.state" placeholder="请选择">
+									    <el-option v-for = "state in states" :label="state.view" :value="state.value" :key="state.value"></el-option>
+									</el-select>
+				    			</el-form-item>
+							</el-col>
+						</el-row>	
+						<el-row type = "flex" justify = "center" align = "middle">
+							<el-col :span = "24">
+								<el-form-item label="描述" :label-width="formLabelWidth" prop = "issueremark">
+				      				<el-input type = "textarea" :rows="5" autosize v-model="form.issueremark" autocomplete="off"></el-input>
+				    			</el-form-item>
+							</el-col>
+						</el-row>
+                        <el-row>
+                            <el-col :span = "24">
+                                <el-form-item label="图片" :label-width="formLabelWidth" prop = "pic">
+                                    <el-upload
+                                            action="/comm/file/upload"
+											:data="uploadData"
+                                            list-type="picture-card"
+                                            multiple
+                                            :on-success="uploadsuccess"
+                                            :on-preview="handlePictureCardPreview"
+                                            :on-remove="handleRemove"
+                                            :on-exceed="handleExceed"
+											:on-progress="handleProgress"
+                                            ref="upload"
+                                            :limit=2
+                                            :file-list="form.piclist">
+                                        <i slot="default" class="el-icon-plus"></i>
+                                    </el-upload>
+                                    <el-dialog :visible.sync="dialogVisible" append-to-body>
+                                        <img width="100%" :src="dialogImageUrl" alt="">
+                                    </el-dialog>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+					 </el-form>
+					 <div slot="footer">
+					    <el-button @click="closeIssue">取 消</el-button>
+					    <el-button type="primary" @click="saveIssue('issueForm')">保存</el-button>
+					 </div>
+				</el-dialog>
+	  	 	</el-main>
+	  	 </el-container>	  	  		  	 
+	</div>
+	<style>
+
+	</style>
+	<script>
+		var app = new Vue({
+			mixins:[commonMixin],
+			el:"#app",
+			components:{
+				SystemMenu
+			},
+			data:function(){	
+				return{
+					total:10,							//记录总条数
+					items:10,							//每页条数
+					page: 1,							//当前页
+					height: window.screen.height * 0.55,//表格最大高度
+					formTitle:'新增Issue',				//项目窗体标题
+					formVisible: false,					//项目窗体显示
+					formLabelWidth:'120px',
+                    dialogImageUrl: '',
+                    dialogVisible: false,
+					editProgramEditable :false,        //编辑界面，项目字段是否可编辑
+					uploadData:{
+						fileDirectory:"issuepic"
+					},
+					queryForm:{
+						programid: '',
+						issuetype:'',
+						issuegrade:'',
+						issueremark:'',
+						state:'',
+						finishdate_2:''
+					},
+					form:{
+						id:'',
+                        programid:'',
+						issuetype:'1',
+						issuegrade:'1',
+						issueremark:'',
+						state:'1',
+						handler:'',
+						finishdate:'',
+						piclist:[]
+					},
+					prolist: [],	//项目list
+					issueData:[],	//项目issue list
+					types:[],		//issue类型
+					grades:[],		//issue等级
+					states:[],		//issue状态
+					gm:[],			//项目组人员
+                    gm_edit:[],      //项目组人员，编辑界面
+				    removePic:[]
+				}
+			},
+			methods:{
+				//翻页
+				changePage:function(){
+					this.getIssueData();
+				},
+				//重置form
+				resetFormValues:function(){
+					this.form.id = ''
+                    this.form.programid=this.prolist[0].tid
+					this.form.issuetype = '1'
+					this.form.issuegrade = '1'
+					this.form.issueremark = ''
+					this.form.state = '1'
+					this.form.handler = ''
+					this.form.startdate = ''
+					this.form.finishdate = ''
+					this.form.piclist = []
+				},
+				changePro:function(e){
+					//重新获取issue清单
+					this.queryForm.programid=e;
+					this.getGroupMember("filter",this.queryForm.programid)
+				},
+				changePro_editDialog:function(e){
+					this.queryForm.programid=e;
+					this.getGroupMember("editer",this.form.programid)
+				},
+				//关闭issue维护窗体
+				closeIssue:function(){					
+					this.formVisible = false
+					this.resetFormValues()
+				},
+				addIssue:function(){
+					this.resetFormValues()
+					this.formTitle = '新增Issue'
+					this.getGroupMember("editer",this.form.programid)
+					this.editProgramEditable = false
+					this.formVisible = true
+				},
+				//编辑issue信息
+		      	editIssue:function(index, row){
+		      		this.formVisible = true
+					this.editProgramEditable = true
+		      		this.formTitle = '修改Issue'
+		      		this.form.id = row.tid
+                    this.form.programid=row.programid+''
+		      		this.form.issuetype = row.issuetype+''
+					this.form.issuegrade = row.issuegrade+''
+					this.form.issueremark = row.issueremark
+					this.form.state = row.state+''
+					this.form.handler = row.handler
+					this.form.finishdate = row.finishdate
+					var pics=[]
+					if(row.picOne!=null&&row.picOne!="") pics.push({name:row.picOne,url:this.$Image+row.picOne})
+					if(row.picTwo!=null&&row.picTwo!="") pics.push({name:row.picTwo,url:this.$Image+row.picTwo})
+					this.form.piclist=pics
+					this.removePic=[]
+					this.getGroupMember("editer",this.form.programid)
+		      		this.$refs['issueForm'].clearValidate()
+		      	},
+				//获取issue清单数据
+		      	getIssueData:function(){
+		      		axios.get('/pm/biz/report/queryByPage', {
+		      		    params: {
+		      		    	page:app.page,
+							limit:app.items,
+							programid:app.queryForm.programid,
+							issuetype:app.queryForm.issuetype,
+							issuegrade:app.queryForm.issuegrade,
+							state:app.queryForm.state,
+							finishdate_2:app.queryForm.finishdate_2.toString()
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.issueData = result.data
+		      			app.total = result.number
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+		      	},
+				excelDownload:function(){
+					this.queryExport(this.queryForm,"/pm/biz/report/excelDownload");
+				},
+				//执行保存
+				saveIssue:function(form) {
+			        this.$refs[form].validate(function(valid) {
+			        	if (valid) {
+			        		axios.post('/pm/biz/pro/issue/save',	{
+				            	id:app.form.id,
+				            	programid:app.form.programid,
+				            	issuetype:app.form.issuetype,
+				            	issuegrade:app.form.issuegrade,
+				            	issueremark:app.form.issueremark,
+				            	handler:app.form.handler,
+				            	state:app.form.state,
+				            	finishdate:app.form.finishdate,
+				            	user:'admin',
+								piclist:app.form.piclist
+				            }).then(function (response) {
+				            	var result = response.data
+				            	if(result.status == 0)
+				            		app.$message({
+				            			message:result.message,
+				            			type:'warning',
+				            			duration:2000,
+				            			offset:120
+				            		})	
+				            	else{		            		
+				            		app.formVisible = false
+				            		app.getIssueData()	            		
+				            	}
+				            	app.handleRemovePic()
+				            }).catch(function (error) {
+				            	app.$message({
+			            			message:result.message,
+			            			type:'danger',
+			            			duration:2000,
+			            			offset:120
+			            		})	
+				            });
+			        	}else{
+			            	console.log('error submit!!')
+			            	return false;
+			            }
+			        });
+		      	},
+				//获取issue项目下拉清单数据
+				getProList:function(){
+		      		axios.get('/pm/biz/pro/issue/prolist', {
+		      		    params: {
+		      		    	
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data	
+		      			app.prolist = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+				},
+				//获取issue类型下拉列表
+	      		getTypes:function(){
+					axios.get('/pm/sys/enum/options', {
+						params: {
+							code:'D007'
+						}
+					}).then(function (response) {
+						var result = response.data
+						app.types = result.data
+						console.log(response)
+					}).catch(function (error) {
+						console.log(error)
+					})
+				},
+	      		//获取issue等级下拉列表
+	      		getGrades:function(){
+		      		axios.get('/pm/sys/enum/options', {
+		      		    params: {
+		      		      code:'D008'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.grades = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+	      		},
+	      		//获取issue状态下拉列表
+	      		getStates:function(){
+		      		axios.get('/pm/sys/enum/options', {
+		      		    params: {
+		      		      code:'D009'
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			app.states = result.data
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      		    console.log(error)
+		      		})
+	      		},
+	      		getGroupMember:function(e,programid){
+	      			axios.get('/pm/biz/pro/issue/gm', {
+		      		    params: {
+		      		    	proId:programid
+		      		    }
+		      		}).then(function (response) {
+		      			var result = response.data
+		      			//alert(result.data)
+                        if(e=="filter"){
+                            app.gm=result.data
+                        }else{
+                            app.gm_edit=result.data
+                        }
+		      		    console.log(response)
+		      		}).catch(function (error) {
+		      			alert("error")
+		      		    console.log(error)
+		      		})
+	      		},
+                uploadsuccess:function (response, file, fileList) {
+                    file.url=this.$Image+file.response.data
+					file.name=file.response.data
+					this.form.piclist=fileList
+					console.log(this.form.piclist)
+                },
+                handleRemove(file, fileList) {
+					this.removePic.push(file.url.split(this.$Image)[1])
+					this.form.piclist=fileList
+					console.log(this.form.piclist)
+                },
+				handleRemovePic(){
+					axios.post('/comm/file/remove',app.removePic
+					).then(function (response) {
+					}).catch(function (error) {
+						alert("error")
+					})
+				},
+                handlePictureCardPreview(file) {
+                    this.dialogImageUrl = file.url;
+                    this.dialogVisible = true;
+                },
+                handleExceed(files, fileList){
+				    this.$message.warning("最多上传2张图片，请确认~");
+                },
+				handleProgress(event, file, fileList){
+					if(fileList.size()>=2){
+						this.$message.warning("最多上传2张图片，请确认~");
+					}
+				}
+			},
+			mounted:function(){
+				//alert('Mounted!!!')
+				this.getProList()
+				this.getTypes()
+				this.getGrades()
+				this.getStates()
+				this.getIssueData()
+			}
+		});		
+	</script>
+</body>
+</html>

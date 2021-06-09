@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="commons/css-elementui::common_css(~{::title}, ~{})">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>项目管理系统 - 项目报表</title>
+</head>
+<body>
+	<!-- 引入公共js文件 -->
+	<div th:replace="commons/js-elementui::common_js(~{::script})"></div>
+	<div id = "app">
+	  	 <el-container>
+	  	 	<el-header>
+				<div th:include="commons/nav-eu::common_naveu()"></div>		  	 	
+	  	 	</el-header>
+	  	 	<el-main>
+	  	 		<el-row type = "flex" :justify = "end" :align = "middle">
+	  	 			<el-col :span = "5">
+	  	 				<!-- 引入左侧导航栏 -->
+						<system-menu location = "项目发票报表"></system-menu>
+	  	 			</el-col>	
+	  	 			<el-col :span = "19">
+	  	 				<el-form :inline = "true">	
+	  	 					<el-form-item label = "项目编号">  	 					
+	  	 						<el-input v-model="proCd" clearable size="mini"></el-input>
+	  	 					</el-form-item>
+	  	 					<el-form-item label = "项目名称">
+	  	 						<el-input v-model="proNm" clearable size="mini"></el-input>
+	  	 					</el-form-item>
+	  	 					<el-form-item label = "合同编号">  	 					
+	  	 						<el-input v-model="conCd" clearable size="mini"></el-input>
+	  	 					</el-form-item>
+	  	 					<el-form-item label = "PR编号">
+	  	 						<el-input v-model="prCd" clearable size="mini"></el-input>
+	  	 					</el-form-item>
+	  	 					<el-form-item>
+	  	 						<el-button icon = "el-icon-search" round plain type = "success" @click = "getProData" size="mini">查找</el-button>
+	  	 					</el-form-item>
+	  	 					<el-form-item>
+	  	 						<el-button icon = "el-icon-s-grid" round plain type = "primary" @click = "exportPros" size="mini">导出</el-button>
+	  	 					</el-form-item>
+	  	 				</el-form>		  	 				
+	  	 			</el-col>  	 			
+	  	 		</el-row>
+	  	 		<el-row>
+	  	 			<el-col :span = "24">
+	  	 				<el-table :data="proData" style="width:100%;"  :span-method="invoiceJoin">
+	  	 					<!-- 使用 v-if 隐藏列 -->
+					      	<el-table-column prop = "tid" v-if = "false"></el-table-column>
+					      	<el-table-column prop = "rowspan" v-if = "false" label = "行数"></el-table-column>
+					      	<el-table-column prop = "name" label = "项目名称" :rowspan="3"></el-table-column>
+					      	<el-table-column prop = "properiod" label = "项目区间"></el-table-column>
+					      	<el-table-column prop = "amount" label = "项目金额"></el-table-column>
+					      	<el-table-column prop = "charger" label = "担当"></el-table-column>
+					      	<el-table-column prop = "stage" label = "区分"></el-table-column>
+					      	<el-table-column prop = "amountpart" label = "金额"></el-table-column>
+					      	<el-table-column prop = "makeoutStr" label = "是否已开票"></el-table-column>
+					      	<el-table-column prop = "invoicedt" label = "开票时间"></el-table-column>
+					      	<el-table-column prop = "checkeddt" label = "验收时间"></el-table-column>					      	
+					      	<el-table-column prop = "remark" label = "备注"></el-table-column>
+					    </el-table>	
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 		<el-row type = "flex" justify = "end" align = "bottom">
+	  	 			<el-col :span = "24">
+	  	 				<el-pagination 
+	  	 					layout="prev, pager, next" 
+	  	 					:total="total" 
+	  	 					:page-size="items"
+	  	 					@current-change = "changePage"
+	  	 					small >
+	  	 				</el-pagination>
+	  	 			</el-col>
+	  	 		</el-row>
+	  	 	</el-main>
+	  	 </el-container>		  	 
+	</div>
+	<script>
+	var app = new Vue({
+		el:"#app",
+		components:{
+			SystemMenu
+		},
+		data:function(){	
+			return{
+				title:'项目管理系统',
+				total:10,							//记录总条数
+				items:10,							//每页条数
+				page: 1,							//当前页
+				height:window.screen.height * 0.55,	//表格最大高度
+				proCd:'',							//项目编号
+				proNm:'',							//项目名称
+				conCd:'',							//合同编号
+				prCd:'',							//PR编号
+		        proId:'',							//项目UUID
+		        group:[],							//合并分组
+		        position:0,							//合并标识
+			}
+		},
+		methods:{
+			//清空合并单元格
+			initGroups:function(){
+				this.group = []
+				this.position = 0
+			},
+	      	//分页
+	      	changePage:function(page){
+	      		this.page = page
+	      		this.getProData()
+	      	},
+	      	//获取项目清单数据
+	      	getProData:function(){
+	      		axios.get('/pm/biz/report/pro/invoice/query', {
+	      		    params: {
+	      		      	page:app.page,
+	      		      	limit:app.items,
+	      		      	name:app.proNm,
+	      		      	code:app.proCd,
+	      		    	conCd:app.conCd,
+	      		  		prCd:app.prCd
+	      		    }
+	      		}).then(function (response) {
+	      			var result = response.data
+	      			app.proData = result.data
+	      			app.total = result.number
+	      			//以下为js处理方式,不使用,合并单元格数据由后台提供"rowspan"
+	      			//app.initGroups()
+	      			//app.rowSpan(app.group, app.position, 'name')
+	      		    console.log(response)
+	      		}).catch(function (error) {
+	      		    console.log(error)
+	      		})
+	      	}/*,
+	      	rowSpan:function(group, position, column){
+	      		this.proData.forEach(function(item, index){
+	      			//alert('Item : ' + item + ', index : ' + index)
+	      			if(index === 0){
+	      				group.push(1)
+	      				position = 0
+	      			}else{
+	      				if(app.proData[index][column] == app.proData[index-1][column]){
+	      					group[position] +=1
+	      					group.push(0)
+	      				}else{
+	      					group.push(1)
+		      				position = index
+	      				}
+	      			}
+	      			//alert('Group : ' + group + ', position : ' + position)
+	      		})
+	      	}*/,
+	      	invoiceJoin:function({row, column, rowIndex, columnIndex}){
+	      		//alert('Row span : ' + row.rowspan)
+	      		if(columnIndex == 0 || columnIndex == 1 || columnIndex == 2 || columnIndex == 3){
+	      			var rows = row.rowspan
+	      			var cols = rows > 0 ? 1 : 0
+	      			return {
+                    	rowspan: rows,
+                    	colspan: cols
+                  	}
+	      		}
+	      	},
+	      	exportPros:function(){
+	      		window.open('/pm/biz/report/pro/invoice/export')
+	      	}
+		},
+		mounted:function(){
+			//alert('Mounted!!!')
+			this.getProData()
+		}
+	});	
+	</script>
+</body>
+</html>

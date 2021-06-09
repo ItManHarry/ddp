@@ -283,8 +283,8 @@
 		      		this.form.userrole = row.userrole
 		      		this.form.userorg = row.userorg
 		      		this.form.email = row.email
-		      		this.form.svncode = row.svncode
-		      		this.form.svnpwd = row.svnpwd
+		      		this.form.svncode = row.svncode==null?'':row.svncode
+		      		this.form.svnpwd = row.svnpwd==null?'':row.svnpwd
 		      		this.$refs['userForm'].clearValidate()
 		      	},
 		      	//停用用户

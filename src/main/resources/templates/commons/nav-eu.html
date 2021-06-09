@@ -10,9 +10,11 @@
  			<el-col :span = "1" :offset = "17">
  				<el-tooltip style="margin:4px;" effect="light" placement="bottom-start">
  					<div slot="content">
- 						<el-link :underline="false" href = "/pm/web/work"><i class = "fa fa-home"></i>&nbsp;&nbsp;Home</el-link>
- 						<hr>
- 						<el-link :underline="false" href = "/pm/web/logout"><i class = "fa fa-sign-out"></i>&nbsp;&nbsp;Logout</el-link>
+ 						<div th:if = "${session.currentUserType == 1}">
+ 							<el-link :underline="false" href = "/pm/web/work"><i class = "fa fa-home"></i>&nbsp;&nbsp;Home</el-link>
+ 							<hr>
+ 						</div>
+ 						<div><el-link :underline="false" href = "/pm/web/logout"><i class = "fa fa-sign-out"></i>&nbsp;&nbsp;Logout</el-link></div>
  					</div>
  					<!--el-avatar icon="el-icon-user-solid"><span th:text="${session.currentUserName}"></span></el-avatar-->
  					<el-button icon="el-icon-user" circle></el-button>

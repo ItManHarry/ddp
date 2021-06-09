@@ -23,7 +23,18 @@ class ProgramInvoice extends TableEntityBaseModel {
 	//支付比例
 	@Column(name="percent")
 	int percent
+	//是否已开票(1:是 2:否)
+	@Column(name="makeout")
+	int makeout
+	@Transient
+	String makeoutStr
 	//开票时间(YYYYMM)
 	@Column(name="invoicedt", length=10)
 	String invoicedt
+	//验收时间(YYYYMM)
+	@Column(name="checkeddt", length=10)
+	String checkeddt
+	//备注
+	@Column(name="remark", length=255)
+	String remark
 }

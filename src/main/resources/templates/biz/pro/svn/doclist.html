@@ -76,7 +76,7 @@
 								          type = "primary"
 								          icon = "el-icon-upload2"
 								          plain
-								          :disabled = "scope.row.hasChildren == false"
+								          :disabled = "scope.row.hasChildren == false || scope.row.path == '/'"
 								          @click="upload(scope.$index, scope.row)">
 								        </el-button>
 							        </el-tooltip>
@@ -96,6 +96,7 @@
 								          type="danger"
 								          icon = "el-icon-delete"
 								          plain
+								          :disabled = "scope.row.path == '/'"
 								          @click="doDelete(scope.$index, scope.row)">
 								        </el-button>
 								     </el-tooltip> 
@@ -168,9 +169,11 @@
 		      			var result = response.data	
 		      			app.prolist = result.data
 		      			//赋默认值
-		      			app.proId = app.prolist.length == 0 ? "" : app.prolist[0].tid
-		      			//获取SVN根节点
-						app.getSvnDocuments('/', '0')
+		      			if(app.prolist.length != 0){
+		      				app.proId = app.prolist[0].tid
+			      			//获取SVN根节点		      			
+							app.getSvnDocuments('/', '0')
+		      			}      			
 		      		    console.log(response)
 		      		}).catch(function (error) {
 		      			alert("error")

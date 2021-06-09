@@ -64,7 +64,7 @@ class SystemLoginController {
 		String s_vcode = request.getSession().getAttribute("radomValidatorCd").toString() //系统验证码
 		println "Vcode from session : $s_vcode"
 		def result = [:]
-		def code = 1, message = "SUCCESS"
+		def code = 1, message = "SUCCESS", userType = 0
 		if(vcode.toLowerCase().equals(s_vcode.toLowerCase())) {
 			if("admin".equals(name)) {
 				if("Ddic@2019".equals(pwd)) {
@@ -79,6 +79,7 @@ class SystemLoginController {
 				SystemUser user = systemUserService.getUserByCode(name.toUpperCase())
 				//验证用户是否存在
 				if(user) {
+					userType = user.getUsertype()
 					//验证账号是否正常在用
 					if(user.getStatus() == 0) {
 						code = 0
@@ -119,6 +120,7 @@ class SystemLoginController {
 		}
 		result.put("code", code)
 		result.put("message",message)
+		result.put("userType", userType)
 		return result
 	}
 }

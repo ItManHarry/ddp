@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.controller.biz.pro.issue
+import com.google.gson.JsonArray
 import java.text.SimpleDateFormat
 import javax.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Autowired
@@ -95,6 +96,7 @@ class ProgramIssueController {
 		String handler = json.get("handler").asString
 		int state = json.get("state").asInt
 		String finishdate = json.get("finishdate").asString
+        JsonArray picList=json.get("piclist").asJsonArray
 		//String user = json.get("user").asString
 		ProgramIssue issue = new ProgramIssue()
 		if(id) {
@@ -112,6 +114,9 @@ class ProgramIssueController {
 		issue.setHandler(handler)
 		issue.setState(state)
 		issue.setFinishdate(finishdate)
+		issue.setPicOne(picList!=null&&picList.size()>0?picList.get(0).getAsJsonObject().get("name").asString:"")
+		issue.setPicTwo(picList!=null&&picList.size()>1?picList.get(1).getAsJsonObject().get("name").asString:"")
+
 		programIssueService.save(issue)
 		//新增issue处理履历
 		IssueHandleRecord record = new IssueHandleRecord()
@@ -208,6 +213,7 @@ class ProgramIssueController {
 	@GetMapping("/charts")
 	def charts(HttpServletRequest request) {
 		def data = [:]
+		def year = request.getParameter('year')
 		def sc = enumerationController.getOptions('D009')	//issue状态枚举数据
 		def pros = programMainService.getAll()
 		def xdata = []										//项目名称(x轴数据)
@@ -231,7 +237,8 @@ class ProgramIssueController {
 		}
 		data.put("xdata", xdata)
 		data.put("ydata", ydata)
-		println 'Program chart data : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + data
+		println "Issue chart year is : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>$year"
+		println 'Program issue chart data : >>>>>>>>>>>>>>>>>>>>>>>>>>>>>' + data
 		return ServerResultJson.success(data)
 	}
 }

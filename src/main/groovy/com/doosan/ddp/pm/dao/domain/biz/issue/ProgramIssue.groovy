@@ -16,6 +16,9 @@ class ProgramIssue extends TableEntityBaseModel {
 	String programid
 	@Transient
 	String program
+	//用于查询，多个programid字符串
+	@Transient
+	String programid_2
 	//类型（1：Bug   2：改善）
 	@Column(name="issuetype")
 	int issuetype
@@ -52,4 +55,10 @@ class ProgramIssue extends TableEntityBaseModel {
 	//issue处理完成日期
 	@Column(name="finishdate", length=20)
 	String finishdate
+	@Transient
+	String finishdate_2;
+	@Column(name = "picone",length = 100)
+	String picOne
+	@Column(name = "pictwo",length = 100)
+	String picTwo
 }

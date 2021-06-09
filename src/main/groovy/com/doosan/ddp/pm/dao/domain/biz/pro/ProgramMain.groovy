@@ -43,4 +43,6 @@ class ProgramMain extends TableEntityBaseModel {
 	//SVN地址
 	@Column(name="svnadd", length=200)
 	String svnadd
+	@Transient
+	ProgramStatus proStatus
 }

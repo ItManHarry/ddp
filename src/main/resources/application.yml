@@ -16,10 +16,14 @@ spring:
   properties:
    hibernate:
     enable_lazy_load_no_trans: true
- http: 
-  multipart: 
-   maxFileSize: 100MB
-   maxRequestSize: 200MB    
+ servlet:
+  multipart:
+   max-file-size: 100MB
+   max-request-size: 200MB
+ #http:
+  #multipart:
+   #maxFileSize: 100MB
+   #maxRequestSize: 200MB
 logging:
  config: "classpath:logback-spring.xml"
 mail:
@@ -28,5 +32,10 @@ mail:
  #多人以逗号隔开
  user:
   to: guoqian.cheng@doosan.com
-svn: 
+svn:
  temp: c:/svn/temp
+minio:
+  endPoint: http://10.41.128.201:9000/
+  accessKey: DOOSANPROGRAMMANAGEMENT
+  secretKey: DoosanbPxRfiCYEXAMPLEKEY
+  bucket: programm

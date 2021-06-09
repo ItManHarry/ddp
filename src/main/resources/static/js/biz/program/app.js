@@ -3,7 +3,14 @@ var app = new Vue({
 	components:{
 		SystemMenu
 	},
-	data:function(){	
+	data:function(){
+		var validateInvoicedt = function(rule, value, callback){			
+			if (app.invcform.makeout === '1' && value === '') {
+				callback(new Error('请输入开发日期!!!'))
+	        } else {	         
+	        	callback()
+	        }
+		}
 		return{
 			title:'项目管理系统',
 			total:10,							//记录总条数
@@ -49,7 +56,10 @@ var app = new Vue({
 				id:'',
 				stage:'1',
 				percent:'',
-				invoicedt:''
+				makeout:'',
+				invoicedt:'',
+				checkeddt:'',
+				remark:''
 			},
 			rules:{
 				name:[
@@ -112,8 +122,11 @@ var app = new Vue({
 				percent:[
 					{required:true, message:'请输入支付比例!', trigger:'blur'}
 				],
+				makeout:[
+					{required:true, message:'请选择是否已开票!', trigger:'blur'}
+				],
 				invoicedt:[
-					{required:true, message:'请填写开票时间!', trigger:'blur'}
+					{validator:validateInvoicedt, trigger:'blur'}
 				]
 			},		
 			yn:[],
@@ -322,13 +335,20 @@ var app = new Vue({
       		//清空表单
       		this.resetInvoice()
       	},
+      	changeMakeout:function(){
+      		if(this.invcform.makeout == '2')
+      			this.invcform.invoicedt = ''
+      	},
       	editInvoice:function(row, column, event){
       		this.invcform.id = row.tid
-      		this.invcform.stage = row.stage
+      		this.invcform.stage = row.stage+''
       		this.invcform.percent = row.percent
-      		this.invcform.invoicedt = row.invoicedt
+      		this.invcform.makeout = row.makeout+''
+      		this.invcform.invoicedt = row.invoicedt==null?'':row.invoicedt
+      		this.invcform.checkeddt = row.checkeddt==null?'':row.checkeddt
+      		this.invcform.remark = row.remark      		
       		this.ibuttonText = '修改'
-      		this.$refs['invcform'].clearValidate()
+      		//this.$refs['invcform'].clearValidate()
       	},
       	//保存项目发票信息
       	saveInvoice:function(form){
@@ -339,7 +359,10 @@ var app = new Vue({
 		            	id:app.invcform.id,
 		            	stage:app.invcform.stage,
 		            	percent:app.invcform.percent,
+		            	makeout:app.invcform.makeout,
 		            	invoicedt:app.invcform.invoicedt,
+		            	checkeddt:app.invcform.checkeddt,
+		            	remark:app.invcform.remark,
 		            	user:'admin'
 		            }).then(function (response) {
 		            	var result = response.data
@@ -373,7 +396,10 @@ var app = new Vue({
       		this.invcform.id = ''
       		this.invcform.stage = ''
       		this.invcform.percent = ''
+      		this.invcform.makeout = '2'	
       		this.invcform.invoicedt = ''
+      		this.invcform.checkeddt = ''	
+      		this.invcform.remark = ''	
       		this.ibuttonText = '新增'
       		this.$refs['invcform'].clearValidate()
       	},

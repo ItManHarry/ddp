@@ -71,6 +71,12 @@ class SystemAuthController {
 			authedMenu << it.getMenuid()
 		}
 		def menus = systemMenuService.getMenusByIds(authedMenu)
-		return ServerResultJson.success(menus)
+		def menuList=[]
+		menus.each {
+			if(it.status==1){
+				menuList.add(it)
+			}
+		}
+		return ServerResultJson.success(menuList)
 	}
 }

@@ -55,8 +55,11 @@ var IssueChart = {
 		}
 	},
 	props:[
-		
+		'year'
 	],
+	watch:{
+		
+	},
 	methods:{
 		draw:function() {
 	      //通过echarts初始化我们的div
@@ -69,7 +72,7 @@ var IssueChart = {
 		var app = this
 		//获取菜单权限
 		axios.get('/pm/biz/pro/issue/charts', {
-  		    params: {}
+  		    params: {year:app.year}
   		}).then(function (response) {
   			var result = response.data
   			app.option.xAxis[0].data = result.data.xdata
@@ -136,7 +139,7 @@ var ProgramChart = {
 		}
 	},
 	props:[
-		
+		'year'
 	],
 	methods:{
 		draw:function() {
@@ -150,7 +153,7 @@ var ProgramChart = {
 		var app = this
 		//获取菜单权限
 		axios.get('/pm/biz/pro/charts', {
-  		    params: {}
+  		    params: {year:app.year}
   		}).then(function (response) {
   			var result = response.data
   			app.option.series[0].data = result.data

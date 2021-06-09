@@ -1,5 +1,8 @@
 package com.doosan.ddp.pm.service.biz.pro
+import com.doosan.ddp.pm.dao.domain.base.TableEntityBaseModel
 import com.doosan.ddp.pm.dao.domain.biz.pro.ProgramMain
+import com.doosan.ddp.pm.dao.jpa.base.BaseDao
+import com.doosan.ddp.pm.service.base.BaseService
 
 interface ProgramMainService {
 	/**
@@ -74,4 +77,33 @@ interface ProgramMainService {
 	 * @return
 	 */
 	List<ProgramMain> getAll()
+	/**
+	 * 报表记录总数
+	 * @param name
+	 * @param code
+	 * @param conCd
+	 * @param prCd
+	 * @return
+	 */
+	long getCountForReport(String name, String code, String conCd, String prCd)
+	/**
+	 *   报表清单-分页
+	 * @param page
+	 * @param limit
+	 * @param name
+	 * @param code
+	 * @param conCd
+	 * @param prCd
+	 * @return
+	 */
+	List<ProgramMain> getProListForReport(Integer page, Integer limit, String name, String code, String conCd, String prCd)
+	/**
+	 *   报表清单
+	 * @param name
+	 * @param code
+	 * @param conCd
+	 * @param prCd
+	 * @return
+	 */
+	List<ProgramMain> getProListForReportAll(String name, String code, String conCd, String prCd)
 }

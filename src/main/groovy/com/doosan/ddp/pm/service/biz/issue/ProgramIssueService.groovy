@@ -1,7 +1,11 @@
 package com.doosan.ddp.pm.service.biz.issue
+import com.doosan.ddp.pm.dao.domain.base.TableEntityBaseModel
 import com.doosan.ddp.pm.dao.domain.biz.issue.ProgramIssue
+import com.doosan.ddp.pm.dao.jpa.base.BaseDao
+import com.doosan.ddp.pm.dao.jpa.biz.issue.ProgramIssueDao
+import com.doosan.ddp.pm.service.base.BaseService
 
-interface ProgramIssueService {
+interface ProgramIssueService extends BaseService<BaseDao, TableEntityBaseModel> {
 	/**
 	 * 保存issue信息
 	 * @param issue
@@ -26,5 +30,4 @@ interface ProgramIssueService {
 	 * @return
 	 */
 	List<ProgramIssue> getProgramIssuesByPidAndStat(String proId, int state)
-	
 }

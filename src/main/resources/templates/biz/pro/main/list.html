@@ -299,6 +299,11 @@
 						 <el-form-item prop = "percent">
 						    <el-input v-model="invcform.percent" placeholder="支付比例"><template slot="append">%</template></el-input></el-input>
 						 </el-form-item>
+						 <el-form-item prop = "makeout">
+						 	<el-select v-model="invcform.makeout" placeholder="已开票" @change="changeMakeout">
+							    <el-option v-for = "item in yn" :label="item.view" :value="item.value" :key="item.value"></el-option>
+							</el-select>
+						 </el-form-item>
 						 <el-form-item prop = "invoicedt">
 						    <el-date-picker
 						      v-model="invcform.invoicedt"
@@ -306,6 +311,21 @@
 						      placeholder="开票时间"
 						      value-format = "yyyy-MM-dd">
 						  	</el-date-picker>
+						 </el-form-item>
+						 <el-form-item prop = "checkeddt">
+						    <el-date-picker
+						      v-model="invcform.checkeddt"
+						      type="date"
+						      placeholder="验收时间"
+						      value-format = "yyyy-MM-dd">
+						  	</el-date-picker>
+						 </el-form-item>
+						 <el-form-item prop = "remark">
+						    <el-input
+						      v-model="invcform.remark"
+						      type="textarea"
+						      placeholder="备注"	>
+						  	</el-input>
 						 </el-form-item>
 						 <el-form-item>
 						    <el-button type="primary" @click="saveInvoice('invcform')" icon = "el-icon-check" size = "mini" plain round>{{ibuttonText}}</el-button>
@@ -315,9 +335,13 @@
 		          	<el-table :data="invcData" size = "mini" @row-click = "editInvoice">
 		          		<el-table-column prop="tid" label="发票信息-ID" align = "center" v-if = "false"></el-table-column>
 				      	<el-table-column prop="stage" label="区分" align = "center" v-if = "false"></el-table-column>
+				      	<el-table-column prop="makeout" label="已开票" align = "center" v-if = "false"></el-table-column>
 				      	<el-table-column prop="stageStr" label="区分" align = "center"></el-table-column>
 				      	<el-table-column prop="percent" label="支付比例" align = "center"></el-table-column>
+				      	<el-table-column prop="makeoutStr" label="已开票" align = "center"></el-table-column>
 				      	<el-table-column prop="invoicedt" label="开票时间" align = "center"></el-table-column>
+				      	<el-table-column prop="checkeddt" label="验收时间" align = "center"></el-table-column>
+				      	<el-table-column prop="remark" label="备注" align = "center"></el-table-column>
 				    </el-table>
 		        </el-dialog>
 	  	 	</el-main>

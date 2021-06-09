@@ -1,4 +1,6 @@
 package com.doosan.ddp.pm.service.imp.biz.issue
+import com.doosan.ddp.pm.service.imp.base.BaseServiceImpl
+import javax.annotation.PostConstruct
 import javax.persistence.criteria.CriteriaBuilder
 import javax.persistence.criteria.CriteriaQuery
 import javax.persistence.criteria.Predicate
@@ -11,11 +13,15 @@ import com.doosan.ddp.pm.dao.domain.biz.issue.ProgramIssue
 import com.doosan.ddp.pm.dao.jpa.biz.issue.ProgramIssueDao
 import com.doosan.ddp.pm.service.biz.issue.ProgramIssueService
 @Service
-class ProgramIssueServiceImp implements ProgramIssueService {
+class ProgramIssueServiceImp extends BaseServiceImpl<ProgramIssueDao,ProgramIssue> implements ProgramIssueService {
 
 	@Autowired
 	ProgramIssueDao programIssueDao
-	
+	@PostConstruct
+	void setDao(){
+		super.setBaseDao(programIssueDao);
+	}
+
 	@Transactional
 	void save(ProgramIssue issue) {
 		// TODO Auto-generated method stub
@@ -36,7 +42,7 @@ class ProgramIssueServiceImp implements ProgramIssueService {
 		// TODO Auto-generated method stub
 		return programIssueDao.findAll(getSpecForState(proId, state))
 	}
-	
+
 	/**
 	 * 获取PM的所有项目信息
 	 * @param name

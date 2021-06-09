@@ -1,4 +1,5 @@
 package com.doosan.ddp.pm.dao.domain.base
+import com.doosan.ddp.pm.comm.utils.ConditionTypeEnum
 import javax.persistence.Column
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -6,6 +7,7 @@ import javax.persistence.Id
 import javax.persistence.MappedSuperclass
 import org.hibernate.annotations.GeneratorType
 import org.hibernate.annotations.GenericGenerator
+import javax.persistence.Transient
 /**
  * 基础DAO Model
  */
@@ -33,4 +35,6 @@ class TableEntityBaseModel implements Serializable {
 	/*删除标记(1 : 正常  0 : 删除)*/
 	@Column(name="status")
 	int status;
+	@Transient
+	HashMap<String, ConditionTypeEnum> mapCondition = new HashMap();
 }

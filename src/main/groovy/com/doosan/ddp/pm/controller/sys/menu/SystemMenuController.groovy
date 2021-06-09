@@ -110,8 +110,8 @@ class SystemMenuController {
 			authedMenu << it.getMenuid()
 		}
 		def data = [:]
-		data.put("menus", menus)			//所有的菜单
-		data.put("authed", authedMenu)		//已授权菜单
+		data.put("menus", menus.findAll { it.getStatus() !=2  })	//所有在用菜单
+		data.put("authed", authedMenu)								//已授权菜单
 		return ServerResultJson.success(data)
 	}
 }
